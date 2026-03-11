@@ -49,11 +49,11 @@ poetry run python src/analysis.py
 ```
 ## Outputs 
 After the analysis is executed, you should get the following files: 
-- `reports\keyword_cloud.png`
-- `reports\figures_per_article.png`
-- `reports\result_summary.csv`
-- `outputs\tei\<paper_id>.tei.xml`
-- `outputs\links\<paprr_id>.txt`
+- `reports\keyword_cloud.png`: image of the keyword map
+- `reports\figures_per_article.png`: image of histogram plotting figures per article
+- `reports\results_summary.csv`: set of num_figures / links / abstract_len per article
+- `outputs\tei\<paper_id>.tei.xml`: TEI files extracted from document
+- `outputs\links\<paprr_id>.txt`: list of links extracted from document
 
 ## Validation
 The generation of `reports\results_summary.csv` includes an automatic check on `abstract_len`. To complete there was a manual check performed on some papers comparing the `outputs\tei\<paper_id>.tei.xml` content with the abstract shown on the pdf. 
