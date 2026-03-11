@@ -39,7 +39,8 @@ poetry install
 `package-mode = False` on the .toml file should allow this fine, if poetry starts complaining about installing the proyect as a package or similar: just add --no-root
 
 ### Adding the PDFs locally
-Due to license protecting the intellectual properties of articles, they should not be directly dirstributed and thus present in this repository. Nonetheless, for the purpose of code reproducibility, their URLs are referenced in 'papers.csv', where they can obtained. 
+Due to licences protecting the intellectual properties of articles, they should not be directly dirstributed and thus present in this repository. Nonetheless, for the purpose of code reproducibility, their URLs are referenced in 'papers.csv', where they can obtained. The documents should be named as appearing on `papers.csv`, but changes are admitted as long as they're also reflected on said file. 
+
 _Licences can be consulted [here](https://arxiv.org/licenses/nonexclusive-distrib/1.0/license.html) and [here](https://creativecommons.org/publicdomain/zero/1.0/)_
 
 ### Run the analysis
@@ -54,4 +55,18 @@ After the analysis is executed, you should get the following files:
 - `outputs\tei\<paper_id>.tei.xml`
 - `outputs\links\<paprr_id>.txt`
 
+## Validation
+The generation of `reports\results_summary.csv` includes an automatic check on `abstract_len`. To complete there was a manual check performed on some papers comparing the `outputs\tei\<paper_id>.tei.xml` content with the abstract shown on the pdf. 
+
+The generation of `reports\figures_per_article.png` was validated by counting the elements in the TEI files and performed manually for an instance of document. 
+
+Method used for the links in `outputs\links\<paper_id>.txt` was done in a similar way: a check that was manually checked. 
+
+## Licences
+- Code: Apache-2.0  
+- Documents are either protected by [arxiv non-exclusive license](https://arxiv.org/licenses/nonexclusive-distrib/1.0/license.html) or [creative commons](https://creativecommons.org/publicdomain/zero/1.0/), so their third-party redistribution was dismissed.
+
+## Acknowledgments
+To all the paper authors who were featured on the dataset. 
+GROBID: used for information extraction
 
