@@ -15,6 +15,14 @@ sys.path.append(str(Path(__file__).resolve().parent))
 from grobid_client import GrobidClient, GrobidConfig
 from tei_utils import extract_abstract, count_figures, extract_links
 
+'''
+Analysis script to process a set of scientific papers with GROBID and extract insights:
+- Extract abstracts and create a keyword cloud from them
+- Count the number of figures per article and visualize it
+- Extract all links and save them per article
+- Summarize results in a CSV report
+''' 
+
 log = logging.getLogger("osai-grobid")
 
 
