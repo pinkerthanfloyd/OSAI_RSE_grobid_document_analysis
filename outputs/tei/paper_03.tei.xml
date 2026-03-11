@@ -1,0 +1,2257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">TEMPORAL GRAPH NETWORKS FOR DEEP LEARNING ON DYNAMIC GRAPHS</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability  status="unknown">
+					<licence/>
+				</availability>
+				<date type="published" when="2020-10-09">9 Oct 2020</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author role="corresp">
+							<persName><forename type="first">Emanuele</forename><surname>Rossi</surname></persName>
+							<email>erossi@twitter.com</email>
+						</author>
+						<author>
+							<persName><forename type="first">Twitter</forename><surname>Ben</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Chamberlain</forename><surname>Twitter</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Fabrizio</forename><surname>Frasca</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Davide</forename><forename type="middle">Eynard</forename><surname>Twitter</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Federico</forename><surname>Monti</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Michael</forename><surname>Bronstein Twitter</surname></persName>
+						</author>
+						<title level="a" type="main">TEMPORAL GRAPH NETWORKS FOR DEEP LEARNING ON DYNAMIC GRAPHS</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2020-10-09">9 Oct 2020</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">26A9DE147C53B26562900350E359AB25</idno>
+					<idno type="arXiv">arXiv:2006.10637v3[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.8.2" ident="GROBID" when="2026-03-11T18:22+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<label type="revision">a91ee48</label>
+					<label type="parameters">startPage=-1, endPage=-1, consolidateCitations=0, consolidateHeader=0, consolidateFunders=0, includeRawAffiliations=false, includeRawCitations=false, includeRawCopyrights=false, generateTeiIds=false, generateTeiCoordinates=[], sentenceSegmentation=false, flavor=null</label>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Graph Neural Networks (GNNs) have recently become increasingly popular due to their ability to learn complex systems of relations or interactions. These arise in a broad spectrum of problems ranging from biology and particle physics to social networks and recommendation systems. Despite the plethora of different models for deep learning on graphs, few approaches have been proposed for dealing with graphs that are dynamic in nature (e.g. evolving features or connectivity over time). We present Temporal Graph Networks (TGNs), a generic, efficient framework for deep learning on dynamic graphs represented as sequences of timed events. Thanks to a novel combination of memory modules and graph-based operators, TGNs significantly outperform previous approaches while being more computationally efficient. We furthermore show that several previous models for learning on dynamic graphs can be cast as specific instances of our framework. We perform a detailed ablation study of different components of our framework and devise the best configuration that achieves state-of-the-art performance on several transductive and inductive prediction tasks for dynamic graphs.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">INTRODUCTION</head><p>In the past few years, graph representation learning <ref type="bibr" target="#b6">(Bronstein et al., 2017;</ref><ref type="bibr">Hamilton et al., 2017b;</ref><ref type="bibr" target="#b4">Battaglia et al., 2018)</ref> has produced a sequence of successes, gaining increasing popularity in machine learning. Graphs are ubiquitously used as models for systems of relations and interactions in many fields <ref type="bibr" target="#b3">(Battaglia et al., 2016;</ref><ref type="bibr" target="#b54">Qi et al., 2018;</ref><ref type="bibr" target="#b44">Monti et al., 2016;</ref><ref type="bibr" target="#b9">Choma et al., 2018;</ref><ref type="bibr" target="#b15">Duvenaud et al., 2015;</ref><ref type="bibr" target="#b19">Gilmer et al., 2017;</ref><ref type="bibr" target="#b51">Parisot et al., 2018;</ref><ref type="bibr" target="#b55">Rossi et al., 2019)</ref>, in particular, social sciences <ref type="bibr" target="#b71">(Ying et al., 2018;</ref><ref type="bibr" target="#b45">Monti et al., 2019;</ref><ref type="bibr" target="#b56">Rossi et al., 2020)</ref> and biology <ref type="bibr" target="#b80">(Zitnik et al., 2018;</ref><ref type="bibr" target="#b65">Veselkov et al., 2019;</ref><ref type="bibr" target="#b17">Gainza et al., 2019)</ref>. Learning on such data is possible using graph neural networks (GNNs) <ref type="bibr">(Hamilton et al., 2017a)</ref> that typically operate by a message passing mechanism <ref type="bibr" target="#b4">(Battaglia et al., 2018)</ref> aggregating information in a neighborhood of a node and create node embeddings that are then used for node classification <ref type="bibr" target="#b44">(Monti et al., 2016;</ref><ref type="bibr" target="#b64">Velickovic et al., 2018;</ref><ref type="bibr" target="#b36">Kipf &amp; Welling, 2017)</ref>, graph classification <ref type="bibr" target="#b19">(Gilmer et al., 2017)</ref>, or edge prediction <ref type="bibr">(Zhang &amp; Chen, 2018)</ref> tasks.</p><p>The majority of methods for deep learning on graphs assume that the underlying graph is static. However, most real-life systems of interactions such as social networks or biological interactomes are dynamic. While it is often possible to apply static graph deep learning models <ref type="bibr" target="#b39">(Liben-Nowell &amp; Kleinberg, 2007)</ref> to dynamic graphs by ignoring the temporal evolution, this has been shown to be sub-optimal <ref type="bibr" target="#b69">(Xu et al., 2020)</ref>, and in some cases, it is the dynamic structure that contains crucial insights about the system. Learning on dynamic graphs is relatively recent, and most works are limited to the setting of discrete-time dynamic graphs represented as a sequence of snapshots of the graph <ref type="bibr" target="#b39">(Liben-Nowell &amp; Kleinberg, 2007;</ref><ref type="bibr" target="#b14">Dunlavy et al., 2011;</ref><ref type="bibr" target="#b72">Yu et al., 2019;</ref><ref type="bibr" target="#b57">Sankar et al., 2020;</ref><ref type="bibr" target="#b50">Pareja et al., 2019;</ref><ref type="bibr" target="#b74">Yu et al., 2018)</ref>. Such approaches are unsuitable for interesting real world settings such as social networks, where dynamic graphs are continuous (i.e. edges can appear at any time) and evolving (i.e. new nodes join the graph continuously). Only recently, several approaches have been proposed that support the continuous-time scenario <ref type="bibr" target="#b69">(Xu et al., 2020;</ref><ref type="bibr" target="#b62">Trivedi et al., 2019;</ref><ref type="bibr" target="#b37">Kumar et al., 2019;</ref><ref type="bibr" target="#b40">Ma et al., 2018;</ref><ref type="bibr" target="#b48">Nguyen et al., 2018;</ref><ref type="bibr" target="#b2">Bastas et al., 2019)</ref>.</p><p>Contributions. In this paper, we first propose the generic inductive framework of Temporal Graph Networks (TGNs) operating on continuous-time dynamic graphs represented as a sequence of events, and show that many previous methods are specific instances of TGNs. Second, we propose a novel training strategy allowing the model to learn from the sequentiality of the data while maintaining highly efficient parallel processing. Third, we perform a detailed ablation study of different components of our framework and analyze the tradeoff between speed and accuracy. Finally, we show state-of-the-art performance on multiple tasks and datasets in both transductive and inductive settings, while being much faster than previous methods.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">BACKGROUND</head><p>Deep learning on static graphs. A static graph G = (V, E) comprises nodes V = {1, . . . , n} and edges E ⊆ V × V, which are endowed with features, denoted by v i and e ij for all i, j = 1, . . . , n, respectively. A typical graph neural network (GNN) creates an embedding z i of the nodes by learning a local aggregation rule of the form</p><formula xml:id="formula_0">z i = j∈Ni h(m ij , v i ) m ij = msg(v i , v j , e ij ),</formula><p>which is interpreted as message passing from the neighbors j of i. Here, N i = {j : (i, j) ∈ E} denotes the neighborhood of node i and msg and h are learnable functions.</p><p>Dynamic Graphs. There exist two main models for dynamic graphs. Discrete-time dynamic graphs (DTDG) are sequences of static graph snapshots taken at intervals in time. Continuos-time dynamic graphs (CTDG) are more general and can be represented as timed lists of events, which may include edge addition or deletion, node addition or deletion and node or edge feature transformations.</p><p>Our temporal (multi-)graph is modeled as a sequence of time-stamped events G = {x(t 1 ), x(t 2 ), . . .}, representing addition or change of a node or interaction between a pair of nodes at times 0 ≤ t 1 ≤ t 2 ≤ . . .. An event x(t) can be of two types: 1) A node-wise event is represented by v i (t), where i denotes the index of the node and v is the vector attribute associated with the event. If the index i has not been seen before, the event creates node i (with the given features), otherwise it updates the features. 2) An interaction event between nodes i and j is represented by a (directed) temporal edge e ij (t) (there might be more than one edge between a pair of nodes, so technically this is a multigraph). We denote by</p><formula xml:id="formula_1">V(T ) = {i : ∃v i (t) ∈ G, t ∈ T } and E(T ) = {(i, j) : ∃e ij (t) ∈ G, t ∈ T }</formula><p>the temporal set of vertices and edges, respectively, and by</p><formula xml:id="formula_2">N i (T ) = {j : (i, j) ∈ E(T )} the neighborhood of node i in time interval T . N k i (T ) denotes the k-hop neighborhood. A snapshot of the temporal graph G at time t is the (multi-)graph G(t) = (V[0, t], E[0, t]) with n(t) nodes. Deletion events are discussed in Appendix A.1.</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">TEMPORAL GRAPH NETWORKS</head><p>Following the terminology in <ref type="bibr" target="#b33">(Kazemi et al., 2020)</ref>, a neural model for dynamic graphs can be regarded as an encoder-decoder pair, where an encoder is a function that maps from a dynamic graph to node embeddings, and a decoder takes as input one or more node embeddings and makes a task-specific prediction e.g. node classification or edge prediction. The key contribution of this paper is a novel Temporal Graph Network (TGN) encoder applied on a continuous-time dynamic graph represented as a sequence of time-stamped events and producing, for each time t, the embedding of the graph nodes Z t) = (z 1 (t), . . . , z n(t) (t) .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">CORE MODULES</head><p>Memory. The memory (state) of the model at time t consists of a vector s i (t) for each node i the model has seen so far. The memory of a node is updated after an event (e.g. interaction with another node or node-wise change), and its purpose is to represent the node's history in a compressed format.</p><p>1 2 2 3 Batch loss Messages (Updated) Memory Node Embeddings Edge Probabilities 1 2 3 4 6 5</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Aggregated Messages</head><p>Figure <ref type="figure">1</ref>: Computations performed by TGN on a batch of time-stamped interactions. Top: embeddings are produced by the embedding module using the temporal graph and the node's memory (1). The embeddings are then used to predict the batch interactions and compute the loss (2, 3). Bottom: these same interactions are used to update the memory <ref type="bibr">(4,</ref><ref type="bibr">5,</ref><ref type="bibr">6)</ref>. This is a simplified flow of operations which would prevent the training of all the modules in the bottom as they would not receiving a gradient. Section 3.2 explains how to change the flow of operations to solve this problem and figure <ref type="figure">2</ref> shows the complete diagram.</p><p>Thanks to this specific module, TGNs have the capability to memorize long term dependencies for each node in the graph. When a new node is encountered, its memory is initialized as the zero vector, and it is then updated for each event involving the node, even after the model has finished training. While a global (graph-wise) memory can also be added to the model to track the evolution of the entire network, we leave this as future work.</p><p>Message Function. For each event involving node i, a message is computed to update i's memory. In the case of an interaction event e ij (t) between source node i and target node j at time t, two messages can be computed:</p><formula xml:id="formula_3">m i (t) = msg s s i (t -), s j (t -), ∆t, e ij (t) , m j (t) = msg d s j (t -), s i (t -), ∆t, e ij (t)<label>(1)</label></formula><p>Similarly, in case of a node-wise event v i (t), a single message can be computed for the node involved in the event:</p><formula xml:id="formula_4">m i (t) = msg n s i (t -), t, v i (t) .<label>(2)</label></formula><p>Here, s i (t -) is the memory of node i just before time t (i.e., from the time of the previous interaction involving i) and msg s , msg d and msg n are learnable message functions, e.g. MLPs. In all experiments, we choose the message function as identity (id), which is simply the concatenation of the inputs, for the sake of simplicity. Deletion events are also supported by the framework and are presented in Appendix A.1. A more complex message function that involves additional aggregation from the neighbours of nodes i and j is also possible and is left for future study.</p><p>Message Aggregator. Resorting to batch processing for efficiency reasons may lead to multiple events involving the same node i in the same batch. As each event generates a message in our formulation, we use a mechanism to aggregate messages m i (t 1 ), . . . , m i (t b ) for t 1 , . . . , t b ≤ t, mi (t) = agg (m i (t 1 ), . . . , m i (t b )) .</p><p>(3)</p><p>Here, agg is an aggregation function. While multiple choices can be considered for implementing this module (e.g. RNNs or attention w.r.t. the node memory), for the sake of simplicity we considered two efficient non-learnable solutions in our experiments: most recent message (keep only most recent message for a given node) and mean message (average all messages for a given node). We leave learnable aggregation as a future research direction.</p><p>Memory Updater. As previously mentioned, the memory of a node is updated upon each event involving the node itself:</p><formula xml:id="formula_5">s i (t) = mem mi (t), s i (t -) .<label>(4)</label></formula><p>For interaction events involving two nodes i and j, the memories of both nodes are updated after the event has happened. For node-wise events, only the memory of the related node is updated. Here, mem is a learnable memory update function, e.g. a recurrent neural network such as LSTM <ref type="bibr" target="#b29">(Hochreiter &amp; Schmidhuber, 1997)</ref> or GRU <ref type="bibr" target="#b8">(Cho et al., 2014)</ref>.</p><p>Embedding. The embedding module is used to generate the temporal embedding z i (t) of node i at any time t. The main goal of the embedding module is to avoid the so-called memory staleness problem <ref type="bibr" target="#b33">(Kazemi et al., 2020)</ref>. Since the memory of a node i is updated only when the node is involved in an event, it might happen that, in the absence of events for a long time (e.g. a social network user who stops using the platform for some time before becoming active again), i's memory becomes stale. While multiple implementations of the embedding module are possible, we use the form:</p><formula xml:id="formula_6">z i (t) = emb(i, t) = j∈N k i ([0,t]) h (s i (t), s j (t), e ij , v i (t), v j (t)) ,</formula><p>where h is a learnable function. This includes many different formulations as particular cases:</p><formula xml:id="formula_7">Identity (id): emb(i, t) = s i (t)</formula><p>, which uses the memory directly as the node embedding.</p><p>Time projection (time):</p><formula xml:id="formula_8">emb(i, t) = (1 + ∆t w) • s i (t)</formula><p>, where w are learnable parameters, ∆t is the time since the last interaction, and • denotes element-wise vector product. This version of the embedding method was used in Jodie <ref type="bibr" target="#b37">(Kumar et al., 2019)</ref>.</p><p>Temporal Graph Attention (attn): A series of L graph attention layers compute i's embedding by aggregating information from its L-hop temporal neighborhood.</p><p>The input to the l-th layer is i's representation h</p><formula xml:id="formula_9">(l-1) i (t), the current timestamp t, i's neighbor- hood representation {h (l-1) 1 (t), . . . , h (l-1) N</formula><p>(t)} together with timestamps t 1 , . . . , t N and features e i1 (t 1 ), . . . , e iN (t N ) for each of the considered interactions which form an edge in i's temporal neighborhood:</p><formula xml:id="formula_10">h (l) i (t) = MLP (l) (h (l-1) i (t) h(l) i (t)), (5) h(l) i (t) = MultiHeadAttention (l) (q (l) (t), K (l) (t), V (l) (t)),<label>(6)</label></formula><formula xml:id="formula_11">q (l) (t) = h (l-1) i (t) φ(0),<label>(7)</label></formula><formula xml:id="formula_12">K (l) (t) = V (l) (t) = C (l) (t),<label>(8)</label></formula><formula xml:id="formula_13">C (l) (t) = [h (l-1) 1 (t) e i1 (t 1 ) φ(t -t 1 ), . . . , h (l-1) N (t) e iN (t N ) φ(t -t N )].<label>(9)</label></formula><p>Here, φ(•) represents a generic time encoding <ref type="bibr" target="#b69">(Xu et al., 2020)</ref>, is the concatenation operator and</p><formula xml:id="formula_14">z i (t) = emb(i, t) = h (L) i (t).</formula><p>Each layer amounts to performing multi-head-attention <ref type="bibr" target="#b63">(Vaswani et al., 2017)</ref> where the query (q (l) (t)) is a reference node (i.e. the target node or one of its L -1-hop neighbors), and the keys K (l) (t) and values V (l) (t) are its neighbors. Finally, an MLP is used to combine the reference node representation with the aggregated information. Differently from the original formulation of this layer (firstly proposed in TGAT <ref type="bibr" target="#b69">(Xu et al., 2020)</ref>) where no node-wise temporal features were used, in our case the input representation of each node h (0)</p><formula xml:id="formula_15">j (t) = s j (t) + v j (t)</formula><p>and as such it allows the model to exploit both the current memory s j (t) and the temporal node features v j (t).</p><p>Temporal Graph Sum (sum): A simpler and faster aggregation over the graph:</p><formula xml:id="formula_16">h (l) i (t) = W (l) 2 (h (l-1) i (t) h(l) i (t)), (10) h(l) i (t) = ReLu( j∈Ni([0,t]) W (l) 1 (h (l-1) j (t) e ij φ(t -t j ))).<label>(11)</label></formula><p>Here as well, φ(•) is a time encoding and z i (t) = emb(i, t) = h (L) i (t). In the experiment, both for the Temporal Graph Attention and for the Temporal Graph Sum modules we use the time encoding presented in Time2Vec <ref type="bibr">(Kazemi et al., 2019)</ref> and used in TGAT <ref type="bibr" target="#b69">(Xu et al., 2020)</ref>.</p><p>The graph embedding modules mitigate the staleness problem by aggregating information from a node's neighbors memory. When a node has been inactive for a while, it is likely that some of its</p><p>1 2 2 3 Batch loss (Old) Messages Aggregated Messages Updated Memory Node Embebbings Edge Probabilities Raw Message Store 1 7 6 5 4 3 2</p><p>Figure <ref type="figure">2</ref>: Flow of operations of TGN used to train the memory-related modules. Raw Message Store stores the necessary raw information to compute messages, i.e. the input to the message functions, which we call raw messages, for interactions which have been processed by the model in the past. This allows the model to delay the memory update brought by an interaction to later batches. At first, the memory is updated using messages computed from raw messages stored in previous batches (1, 2, 3). The embeddings can then be computed using the just updated memory (grey link) (4). By doing this, the computation of the memory-related modules directly influences the loss (5, 6), and they receive a gradient. Finally, the raw messages for this batch interactions are stored in the raw message store ( <ref type="formula" target="#formula_10">6</ref>) to be used in future batches.</p><p>neighbours have been recently active, and by aggregating their memories, TGN can compute an up-to-date embedding for the node. The temporal graph attention is additionally able to select which neighbors are more important based on both features and timing information.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2">TRAINING</head><p>TGN can be trained for a variety of tasks such as edge prediction (self-supervised) or node classification (semi-supervised). We use link prediction as an example: provided a list of time ordered interactions, the goal is to predict future interactions from those observed in the past. Figure <ref type="figure">1</ref> shows the computations performed by TGN on a batch of training data.</p><p>The complexity in our training strategy relates to the memory-related modules (Message function, Message aggregator, and Memory updater) because they do not directly influence the loss and therefore do not receive a gradient. To solve this problem, the memory must be updated before predicting the batch interactions. However, updating the memory with an interaction e ij (t) before using the model to predict that same interaction, causes information leakage. To avoid the issue, when processing a batch, we update the memory with messages coming from previous batches (which are stored in the Raw Message Store), and then predict the interactions. Figure <ref type="figure">2</ref> shows the training flow for the memory-related modules. Pseudocode for the training procedure is presented in Appendix A.2.</p><p>More formally, at any time t, the Raw Message Store contains (at most) one raw message rm i for each node i<ref type="foot" target="#foot_0">foot_0</ref> , generated from the last interaction involving i before time t. When the model processes the next interactions involving i, its memory is updated using rm i (arrows 1, 2, 3 in Figure <ref type="figure">2</ref>), then the updated memory is used to compute the node's embedding and the batch loss (arrows 4, 5, 6). Finally, the raw messages for the new interaction are stored in the raw message store (arrows 7). It is also worth noticing that all predictions in a given batch have access to the same state of the memory. While from the perspective of the first interaction in the batch the memory is up-to-date (since it contains information about all previous interactions in the graph), from the perspective of the last interaction in the batch the same memory is out-of-date, since it lacks information about previous interactions in the same batch. This disincentives the use of a big batch size (in the extreme case where the batch size is a big as the dataset, all predictions would be made using the initial zero memory). We found a batch size of 200 to be a good trade-off between speed and update granularity.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">RELATED WORK</head><p>Early models for learning on dynamic graphs focused on DTDGs. Such approaches either aggregate graph snapshots and then apply static methods <ref type="bibr" target="#b39">(Liben-Nowell &amp; Kleinberg, 2007;</ref><ref type="bibr" target="#b27">Hisano, 2018;</ref><ref type="bibr" target="#b59">Sharan &amp; Neville, 2008;</ref><ref type="bibr" target="#b31">Ibrahim &amp; Chen, 2015;</ref><ref type="bibr">Ahmed &amp; Chen, 2016;</ref><ref type="bibr">Ahmed et al., 2016)</ref>, assemble snapshots into tensors and factorize <ref type="bibr" target="#b14">(Dunlavy et al., 2011;</ref><ref type="bibr" target="#b79">Yu et al., 2017;</ref><ref type="bibr" target="#b41">Ma et al., 2019)</ref>, or encode each snapshot to produce a series of embeddings. In the latter case, the embeddings are either aggregated by taking a weighted sum <ref type="bibr" target="#b70">(Yao et al., 2016;</ref><ref type="bibr" target="#b78">Zhu et al., 2012)</ref>, fit to time series models <ref type="bibr" target="#b30">(Huang &amp; Lin, 2009;</ref><ref type="bibr" target="#b23">Güneş et al., 2016;</ref><ref type="bibr" target="#b10">da Silva Soares &amp; Prudêncio, 2012;</ref><ref type="bibr" target="#b46">Moradabadi &amp; Meybodi, 2017)</ref>, used as components in RNNs <ref type="bibr" target="#b58">(Seo et al., 2018;</ref><ref type="bibr" target="#b47">Narayan &amp; Roe, 2018;</ref><ref type="bibr" target="#b43">Manessi et al., 2020;</ref><ref type="bibr" target="#b72">Yu et al., 2019;</ref><ref type="bibr" target="#b7">Chen et al., 2018;</ref><ref type="bibr" target="#b57">Sankar et al., 2020;</ref><ref type="bibr" target="#b50">Pareja et al., 2019)</ref>, or learned by imposing a smoothness constraint over time <ref type="bibr" target="#b34">(Kim &amp; Han, 2009;</ref><ref type="bibr" target="#b24">Gupta et al., 2011;</ref><ref type="bibr" target="#b70">Yao et al., 2016;</ref><ref type="bibr" target="#b79">Zhu et al., 2017;</ref><ref type="bibr" target="#b77">Zhou et al., 2018;</ref><ref type="bibr">Singer et al., 2019;</ref><ref type="bibr" target="#b21">Goyal et al., 2018;</ref><ref type="bibr" target="#b16">Fard et al., 2019;</ref><ref type="bibr" target="#b52">Pei et al., 2016)</ref>. Another line of work encodes DTDGs by first performing random walks on an initial snapshot and then modifying the walk behaviour for subsequent snapshots <ref type="bibr" target="#b42">(Mahdavi et al., 2018;</ref><ref type="bibr" target="#b13">Du et al., 2018;</ref><ref type="bibr" target="#b67">Xin et al., 2016;</ref><ref type="bibr" target="#b12">De Winter et al., 2018;</ref><ref type="bibr" target="#b74">Yu et al., 2018)</ref>. Spatio-temporal graphs (considered by <ref type="bibr">Zhang et al. (2018)</ref>; <ref type="bibr" target="#b38">Li et al. (2018)</ref> for traffic forecasting) are specific cases of dynamic graphs where the topology of the graph is fixed.</p><p>CTDGs have been addressed only recently. Several approaches use random walk models <ref type="bibr" target="#b48">(Nguyen et al., 2018;</ref><ref type="bibr" target="#b48">Nguyen et al., 2018;</ref><ref type="bibr" target="#b2">Bastas et al., 2019)</ref> incorporating continuous time through constraints on transition probabilities. Sequence-based approaches for CTDGs <ref type="bibr" target="#b37">(Kumar et al., 2019;</ref><ref type="bibr" target="#b61">Trivedi et al., 2017;</ref><ref type="bibr">2019;</ref><ref type="bibr" target="#b40">Ma et al., 2018)</ref> use RNNs to update representations of the source and destination node each time a new edge appears. Other recent works have focused on dynamic knowledge graphs <ref type="bibr" target="#b20">(Goel et al., 2019;</ref><ref type="bibr" target="#b68">Xu et al., 2019;</ref><ref type="bibr" target="#b11">Dasgupta et al., 2018;</ref><ref type="bibr" target="#b18">García-Durán et al., 2018)</ref>. Many architectures for continuous-time dynamic graphs are based on a node-wise memory updated by an RNN when new interactions appear. Yet, they lack a GNN-like aggregation from a node's neighbors when computing its embedding, which makes them susceptible to the staleness problem (i.e. a node embedding becoming out of date) while at the same time also limiting their expressive power.</p><p>Most recent CTDGs learning models can be interpreted as specific cases of our framework (see Table <ref type="table">1</ref>). For example, Jodie <ref type="bibr" target="#b37">(Kumar et al., 2019)</ref> uses the time projection embedding module emb(i, t) = (1 + ∆tw) • s i (t). TGAT <ref type="bibr" target="#b69">(Xu et al., 2020</ref>) is a specific case of TGN when the memory and its related modules are missing, and graph attention is used as the Embedding module. DyRep <ref type="bibr" target="#b62">(Trivedi et al., 2019)</ref> computes messages using graph attention on the destination node neighbors. Finally, we note that TGN generalizes the Graph Networks (GN) model <ref type="bibr" target="#b4">(Battaglia et al., 2018)</ref> for static graphs (with the exception of the global block that we omitted from our model for the sake of simplicity), and thus the majority of existing graph message passing-type architectures.</p><p>Table <ref type="table">1</ref>: Previous models for deep learning on continuous-time dynamic graphs are specific case of our TGN framework. Shown are multiple variants of TGN used in our ablation studies. method (l,n) refers to graph convolution using l layers and n neighbors. † uses t-batches. * uses uniform sampling of neighbors, while the default is sampling the most recent neighbors. ‡ message aggregation not explained in the paper. uses a summary of the destination node neighborhood (obtained through graph attention) as additional input to the message function. </p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Mem</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">EXPERIMENTS</head><p>Datasets. We use three datasets in our experiments: Wikipedia, Reddit <ref type="bibr" target="#b37">(Kumar et al., 2019)</ref>, and Twitter, which are described in detail in Appendix A.3. Our experimental setup closely follows <ref type="bibr" target="#b69">(Xu et al., 2020)</ref> and focuses on the tasks of future edge ('link') prediction and dynamic node classification.</p><p>In future edge prediction, the goal is to predict the probability of an edge occurring between two nodes at a given time. Our encoder is combined with a simple MLP decoder mapping from the concatenation of two node embeddings to the probability of the edge. We study both the transductive and inductive settings. In the transductive task, we predict future links of the nodes observed during training, whereas in the inductive tasks we predict future links of nodes never observed before. For node classification, the transductive setting is used. For all tasks and datasets we perform the same 70%-15%-15% chronological split as in <ref type="bibr" target="#b69">Xu et al. (2020)</ref>. All the results were averaged over 10 runs. Hyperparameters and additional details can be found in Appendix A.4.</p><p>Baselines. Our strong baselines are state-of-the-art approaches for continuous time dynamic graphs (CTDNE <ref type="bibr" target="#b48">(Nguyen et al., 2018)</ref>, Jodie <ref type="bibr" target="#b37">(Kumar et al., 2019)</ref>, DyRep <ref type="bibr" target="#b62">(Trivedi et al., 2019)</ref> and TGAT <ref type="bibr" target="#b69">(Xu et al., 2020)</ref>) as well as state-of-the-art models for static graphs (GAE <ref type="bibr" target="#b35">(Kipf &amp; Welling, 2016)</ref>, VGAE <ref type="bibr" target="#b35">(Kipf &amp; Welling, 2016)</ref>, DeepWalk <ref type="bibr" target="#b53">(Perozzi et al., 2014)</ref>, Node2Vec <ref type="bibr" target="#b22">(Grover &amp; Leskovec, 2016)</ref>, GAT <ref type="bibr" target="#b64">(Velickovic et al., 2018)</ref> and GraphSAGE <ref type="bibr">(Hamilton et al., 2017b)</ref>). Due to the efficient parallel processing and the need for only one graph attention layer (see Section 5.2 for the ablation study on the number of layers), our model is up to 30× faster than TGAT per epoch (Figure <ref type="figure">3a</ref>), while requiring a similar number of epochs to converge.  Figure <ref type="figure">3</ref>: Ablation studies on the Wikipedia dataset for the transductive setting of the future edge prediction task. Means and standard deviations were computed over 10 runs.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.1">PERFORMANCE</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5.2">CHOICE OF MODULES</head><p>We perform a detailed ablation study comparing different instances of our TGN framework, focusing on the speed vs accuracy tradeoff resulting from the choice of modules and their combination. The variants we experiment with are reported in Table <ref type="table">1</ref> and their results are depicted in Figure <ref type="figure">3a</ref>.</p><p>Memory. We compare a model that does not make use of a memory (TGN-no-mem), with a model which uses memory (TGN-attn) but is otherwise identical. While TGN-att is about 3× slower, it has nearly 4% higher precision than TGN-no-mem, confirming the importance of memory for learning on dynamic graphs, due to its ability to store long-term information about a node which is otherwise hard to capture. This finding is confirmed in Figure <ref type="figure">3b</ref> where we compare different models when increasing the number of sampled neighbors: the models with memory consistently outperform the models without memory. Moreover, using the memory in conjunction with sampling the most recent neighbors reduces the number of neighbors needed to achieve the best performance when used.</p><p>Embedding Module. Figure <ref type="figure">3a</ref> compare models with different embedding modules (TGN-id, TGN-time, TGN-attn, TGN-sum). The first interesting insight is that projecting the embedding in time seems to slightly hurt, as TGN-time underperforms TGN-id. Moreover, the ability to exploit the graph is crucial for performance: we note that all graph-based projections (TGN-attn, TGN-sum) outperform the graph-less TGN-id model by a large margin, with TGN-attn being the top performer at the expense of being only slightly slower than the simpler TGN-sum. This indicates that the ability to obtain more recent information through the graph, and to select which neighbors are the most important are critical factors for the performance of the model. Message Aggregator. We compare two further models, one using the last message aggregator (TGN-attn) and another a mean aggregator (TGN-mean) but otherwise the same. While TGN-mean performs slightly better, it is more than 3× slower.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Number of layers.</head><p>While in TGAT having 2 layers is of fundamental importance for obtaining good performances (TGAT vs TGAT-1l has over 10% difference in average precision), in TGN the presence of the memory makes it enough to use just one layer to obtain very high performance (TGN-attn vs TGN-2l). This is because when accessing the memory of the 1-hop neighbors, we are indirectly accessing information from hops further away. Moreover, being able to use only one layer of graph attention speeds up the model dramatically.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="6">CONCLUSION</head><p>We introduce TGN, a generic framework for learning on continuous-time dynamic graphs. We obtain state-of-the-art results on several tasks and datasets while being faster than previous methods.</p><p>Detailed ablation studies show the importance of the memory and its related modules to store longterm information, as well as the importance of the graph-based embedding module to generate up-to-date node embeddings. We envision interesting applications of TGN in the fields of social sciences, recommender systems, and biological interaction networks, opening up a future research direction of exploring more advanced settings of our model and understanding the most appropriate domain-specific choices.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A APPENDIX A.1 DELETION EVENTS</head><p>The TGN frameworks also support edge and node deletions events.</p><p>In the case of an edge deletion event (i, j, t , t) where an edge between nodes i and j which was created at time t is deleted at time t, two messages can be computed for the source and target nodes that respectively started and received the interaction:</p><formula xml:id="formula_17">m i (t) = msg s s i (t -), s j (t -), ∆t, e ij (t) , m j (t) = msg d s j (t -), s i (t -), ∆t, e ij (t) (12)</formula><p>In case of a node deletion event, we simply remove the node (and its incoming and outgoing edges) from the temporal graph so that when computing other nodes embedding this node is not used during the temporal graph attention. Additionally, it would be possible to compute a message from the node's feature and memory and use it to update the memories of all its neighbors. is the raw message generated by event e(t), t is the instant of time of the last event involving each node, and t -the one immediately preceding t.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.2 TGN TRAINING</head><p>When parallelizing the training of TGN, it is important to mantain the temporal dependencies between interactions. If the events on each node were independent, we could treat them as a sequence and train an RNN on each node independently using Back Propagation Through Time (BTPP). However, the graph structure introduces dependencies between the events (the update of a node depends on the current memory of other nodes) which prevent us from processing nodes in parallel. Previous methods either process the interactions one at a time, or use the t-batch <ref type="bibr" target="#b37">(Kumar et al., 2019)</ref> training algorithm, which however does not satisfy temporal consistency when aggregating from the graph as in the case of TGN (since the update does not only depend on the memory of the other node involved the interaction, but also on the neighbors of the two nodes).</p><p>This issues motivate our training algorithm, which processes all interactions in batches following the chronological order. It stores the last message for each node in a message store, to process it before predicting the next interaction for the node. This allows the memory-related modules to receive a gradient. Algorithm 1 presents the pseudocode for TGN training, while Figure <ref type="figure" target="#fig_4">4</ref> shows a schematic diagram of TGN.</p><p>Algorithm 1: Training TGN 1 s ← 0 ; // Initialize memory to zeros 2 m_raw ← {} ; // Initialize raw messages 3 foreach batch (i, j, e, t) ∈ training data do 4 n ← sample negatives ; 5 m ← msg(m_raw) ; // Compute messages from raw features 1 6 m ← agg(m) ; // Aggregate messages for the same nodes 7 ŝ ← mem( m, s) ; // Get updated memory 8 z i , z j , z n ← emb ŝ(i, t), emb ŝ(j, t), emb ŝ(n, t) ; // Compute node embeddings 3 9 p pos , p neg ← dec(z i , z j ), dec(z i , z n ) ; // Compute interactions probs 10 l = BCE(p pos , p neg ) ; // Compute BCE loss 11 m_raw i , m_raw j ← (ŝ i , ŝj , t, e), (ŝ j , ŝi , t, e) ; // Compute raw messages 12 m_raw ← store_raw_messages(m_raw, m_raw i , m_raw j ) ; // Store raw messages 13 s i , s j ← ŝi , ŝj ; // Store updated memory for sources and destinations 14 end A.3 DATASETS</p><p>Reddit and Wikipedia are bipartite interaction graphs. In the Reddit dataset, users and sub-reddits are nodes, and an interaction occurs when a user writes a post to the sub-reddit. In the Wikipedia dataset, users and pages are nodes, and an interaction represents a user editing a page. In both aforementioned datasets, the interactions are represented by text features (of a post or page edit, respectively), and labels represent whether a user is banned. Both interactions and labels are time-stamped.</p><p>The Twitter dataset is a non-bipartite graph released as part of the 2020 RecSys Challenge <ref type="bibr" target="#b5">(Belli et al., 2020)</ref>. Nodes are users and interactions are retweets. The features of an interaction are a BERT-based <ref type="bibr" target="#b66">(Wolf et al., 2019)</ref> vector representation of the text of the retweet.</p><p>Node features are not present in any of these datasets, and we therefore assign the same zero feature vector to all nodes. Moreover, While our framework is general and in section 3.1 we showed how it can process any type of event, these three datasets only contain the edge creation (interaction) event type. Creating and evaluation of datasets with a wider variety of events is left as future work.</p><p>The statistics of the three datasets are reported in table 4. We then filtered the retweet multi-graph (users can be connected by multiple retweets) to only include the largest connected component. Finally, we filtered the graph to only the top 5,000 nodes in-degree and the top 5,000 by out-degree, ending up with 8,861 nodes since some nodes were in both sets.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A.4 ADDITIONAL EXPERIMENTAL SETTINGS AND RESULTS</head><p>Hyperparameters For the all datasets, we use the Adam optimizer with a learning rate of 0.0001, a batch size of 200 for both training, validation and testing, and early stopping with a patience of 5.</p><p>We sample an equal amount of negatives to the positive interactions, and use average precision as reference metric. Additional hyperparameters used for both future edge prediction and dynamic node classification are reported in table <ref type="table" target="#tab_4">5</ref>. For all the graph embedding modules we use neighbors sampling <ref type="bibr">(Hamilton et al., 2017b)</ref> (i.e. only aggregate from k neighbors) since it improves the efficiency of the model without losing in accuracy. In particular, the sampled edges are the k most recent ones, rather than the traditional approach of sampling them uniformly, since we found it to perform much better (see Figure <ref type="figure" target="#fig_5">5</ref>). All experiments and timings are conducted on an AWS p3.16xlarge machine and the results are averaged over 10 runs. The code will be made available for all our experiments to be reproduced.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Baselines Results</head><p>Our results for GAE <ref type="bibr" target="#b35">(Kipf &amp; Welling, 2016)</ref>, VGAE <ref type="bibr" target="#b35">(Kipf &amp; Welling, 2016)</ref>, DeepWalk <ref type="bibr" target="#b53">(Perozzi et al., 2014)</ref>, Node2Vec <ref type="bibr" target="#b22">(Grover &amp; Leskovec, 2016)</ref>, GAT <ref type="bibr" target="#b64">(Velickovic et al., 2018)</ref> and GraphSAGE <ref type="bibr">(Hamilton et al., 2017b)</ref>, CTDNE <ref type="bibr" target="#b48">(Nguyen et al., 2018)</ref> and TGAT <ref type="bibr" target="#b69">(Xu et al., 2020)</ref> are taken directly from the TGAT paper <ref type="bibr" target="#b69">(Xu et al., 2020)</ref>. For Jodie <ref type="bibr" target="#b37">(Kumar et al., 2019)</ref> and DyRep <ref type="bibr" target="#b62">(Trivedi et al., 2019)</ref>, in order to make the comparison as fair as possible, we implement our own version in PyTorch as a specific case of our tgn framework. For Jodie we simply use the When performing neighborhood sampling <ref type="bibr">(Hamilton et al., 2017a)</ref> in static graphs, nodes are usually sampled uniformly. While this strategy is also possible for dynamic graphs, it turns out that the most recent edges are often the most informative. In Figure <ref type="figure" target="#fig_5">5</ref> we compare two TGN-attn models (see Table <ref type="table">1</ref>) with either uniform or most recent neighbor sampling, which shows that a model which samples the most recent edges obtains higher performances. </p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><figDesc>Tradeoff between accuracy (test average precision in %) and speed (time per epoch in sec) of different models.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><figDesc>Performance of methods with different number of layers and with or without memory when sampling an increasing number of neighbors. Last and uniform refer to neighbor sampling strategy.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 4 :</head><label>4</label><figDesc>Figure4: Schematic diagram of TGN. m_raw(t) is the raw message generated by event e(t), t is the instant of time of the last event involving each node, and t -the one immediately preceding t.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 5 :</head><label>5</label><figDesc>Figure 5: Comparison of two TGN-attn models using different neighbor sampling strategies (when sampling 10 neighbors). Sampling the most recent edges clearly outperforms uniform sampling. Means and standard deviations (visualized as ellipses) were computed over 10 runs.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>Table 2 :</head><label>2</label><figDesc>Average Precision (%) for future edge prediction task in transductive and inductive settings. First, Second, Third best performing method.</figDesc><table><row><cell></cell><cell cols="2">. Mem. Updater</cell><cell>Embedding</cell><cell cols="2">Mess. Agg. Mess. Func.</cell></row><row><cell>Jodie</cell><cell>node</cell><cell>RNN</cell><cell>time</cell><cell>- †</cell><cell>id</cell></row><row><cell>TGAT</cell><cell>-</cell><cell>-</cell><cell>attn (2l, 20n)  *</cell><cell>-</cell><cell>-</cell></row><row><cell>DyRep</cell><cell>node</cell><cell>RNN</cell><cell>id</cell><cell>- ‡</cell><cell>attn</cell></row><row><cell>TGN-attn</cell><cell>node</cell><cell>GRU</cell><cell>attn (1l, 10n)</cell><cell>last</cell><cell>id</cell></row><row><cell>TGN-2l</cell><cell>node</cell><cell>GRU</cell><cell>attn (2l, 10n)</cell><cell>last</cell><cell>id</cell></row><row><cell>TGN-no-mem</cell><cell>-</cell><cell>-</cell><cell>attn (1l, 10n)</cell><cell>-</cell><cell>-</cell></row><row><cell>TGN-time</cell><cell>node</cell><cell>GRU</cell><cell>time</cell><cell>last</cell><cell>id</cell></row><row><cell>TGN-id</cell><cell>node</cell><cell>GRU</cell><cell>id</cell><cell>last</cell><cell>id</cell></row><row><cell>TGN-sum</cell><cell>node</cell><cell>GRU</cell><cell>sum (1l, 10n)</cell><cell>last</cell><cell>id</cell></row><row><cell>TGN-mean</cell><cell>node</cell><cell>GRU</cell><cell>attn (1l, 10n)</cell><cell>mean</cell><cell>id</cell></row></table><note><p>* Static graph method. † Does not support inductive.</p></note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_1"><head>Table 3 :</head><label>3</label><figDesc>ROC AUC % for the dynamic node classification.</figDesc><table><row><cell></cell><cell>Wikipedia</cell><cell>Reddit</cell></row><row><cell>GAE  *</cell><cell cols="2">74.85 ± 0.6 58.39 ± 0.5</cell></row><row><cell>VAGE  *</cell><cell cols="2">73.67 ± 0.8 57.98 ± 0.6</cell></row><row><cell>GAT  *</cell><cell cols="2">82.34 ± 0.8 64.52 ± 0.5</cell></row><row><cell cols="3">GraphSAGE  *  82.42 ± 0.7 61.24 ± 0.6</cell></row><row><cell>CTDNE</cell><cell cols="2">75.89 ± 0.5 59.43 ± 0.6</cell></row><row><cell>JODIE</cell><cell cols="2">84.84 ± 1.2 61.83 ± 2.7</cell></row><row><cell>TGAT</cell><cell cols="2">83.69 ± 0.7 65.56 ± 0.7</cell></row><row><cell>DyRep</cell><cell cols="2">84.59 ± 2.2 62.91 ± 2.4</cell></row><row><cell>TGN-attn</cell><cell cols="2">87.81 ± 0.3 67.06 ± 0.9</cell></row></table><note><p>* Static graph method.</p></note></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 4 :</head><label>4</label><figDesc>Statistics of the datasets used in the experiments.Twitter Dataset Generation To generate the Twitter dataset we started with the snapshot of the Recsys Challenge training data on 2020/09/06. We filtered the data to include only retweet edges (discarding other types of interactions) where the timestamp was present. This left approximately 10% of the edges in the original dataset.</figDesc><table><row><cell></cell><cell>Wikipedia</cell><cell>Reddit</cell><cell>Twitter</cell></row><row><cell># Nodes</cell><cell>9,227</cell><cell>11,000</cell><cell>8,861</cell></row><row><cell># Edges</cell><cell>157,474</cell><cell>672,447</cell><cell>119,872</cell></row><row><cell># Edge features</cell><cell>172</cell><cell>172</cell><cell>768</cell></row><row><cell># Edge features type</cell><cell>LIWC</cell><cell>LIWC</cell><cell>BERT</cell></row><row><cell>Timespan</cell><cell>30 days</cell><cell>30 days</cell><cell>7 days</cell></row><row><cell>Chronological Split</cell><cell cols="3">70%-15%-15% 70%-15%-15% 70%-15%-15%</cell></row><row><cell cols="2"># Nodes with dynamic labels 217</cell><cell>366</cell><cell>-</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head>Table 5 :</head><label>5</label><figDesc>Model Hyperparameters., while for DyRep we augment the messages with the result of a temporal graph attention performed on the destination's neighborhood. For both we use a vanilla RNN as the memory updater module.A.4.1 NEIGHBOR SAMPLING: UNIFORM VS MOST RECENT</figDesc><table><row><cell></cell><cell>Value</cell></row><row><cell>Memory Dimension</cell><cell>172</cell></row><row><cell cols="2">Node Embedding Dimension 100</cell></row><row><cell cols="2">Time Embedding Dimension 100</cell></row><row><cell># Attention Heads</cell><cell>2</cell></row><row><cell>Dropout</cell><cell>0.1</cell></row><row><cell>time embedding module</cell><cell></cell></row></table></figure>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="1" xml:id="foot_0"><p>The Raw Message Store does not contain a message for i only if i has never been involved in an event in the past.</p></note>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="1" xml:id="foot_1"><p>For the sake of clarity, we use the same message function for both sources and destination.</p></note>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="2" xml:id="foot_2"><p>We denote with emb ŝ an embedding layer that operates on the updated version of the memory ŝ.</p></note>
+		</body>
+		<back>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">An efficient algorithm for link prediction in temporal uncertain social networks</title>
+		<author>
+			<persName><forename type="first">Mohamed</forename><surname>Nahla</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ling</forename><surname>Ahmed</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Information Sciences</title>
+		<imprint>
+			<biblScope unit="volume">331</biblScope>
+			<biblScope unit="page" from="120" to="136" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Sampling-based algorithm for link prediction in temporal networks</title>
+		<author>
+			<persName><forename type="first">Mohamed</forename><surname>Nahla</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ling</forename><surname>Ahmed</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yulong</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bin</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yun</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Liu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Information Sciences</title>
+		<imprint>
+			<biblScope unit="volume">374</biblScope>
+			<biblScope unit="page" from="1" to="14" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Apostolos Axenopoulos, and Petros Daras. evolve2vec: Learning network representations using temporal unfolding</title>
+		<author>
+			<persName><forename type="first">Nikolaos</forename><surname>Bastas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Theodoros</forename><surname>Semertzidis</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Multimedia Modeling</title>
+		<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="447" to="458" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Interaction networks for learning about objects, relations and physics</title>
+		<author>
+			<persName><forename type="first">Razvan</forename><surname>Peter W Battaglia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthew</forename><surname>Pascanu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Danilo</forename><surname>Lai</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Jimenez Rezende</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NIPS</title>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="4502" to="4510" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<monogr>
+		<title level="m" type="main">Relational inductive biases, deep learning, and graph networks</title>
+		<author>
+			<persName><forename type="first">Jessica</forename><forename type="middle">B</forename><surname>Peter W Battaglia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Victor</forename><surname>Hamrick</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alvaro</forename><surname>Bapst</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vinicius</forename><surname>Sanchez-Gonzalez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mateusz</forename><surname>Zambaldi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Andrea</forename><surname>Malinowski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><surname>Tacchetti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Adam</forename><surname>Raposo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ryan</forename><surname>Santoro</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Faulkner</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1806.01261</idno>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Privacy-preserving recommender systems challenge on twitter&apos;s home timeline</title>
+		<author>
+			<persName><forename type="first">Luca</forename><surname>Belli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sofia</forename><forename type="middle">Ira</forename><surname>Ktena</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alykhan</forename><surname>Tejani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexandre</forename><surname>Lung-Yut-Fon</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Frank</forename><surname>Portman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuanpu</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Akshay</forename><surname>Gupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><forename type="middle">M</forename><surname>Bronstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amra</forename><surname>Delić</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2004.13715</idno>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Geometric deep learning: going beyond euclidean data</title>
+		<author>
+			<persName><forename type="first">Joan</forename><surname>Michael M Bronstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yann</forename><surname>Bruna</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arthur</forename><surname>Lecun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pierre</forename><surname>Szlam</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Vandergheynst</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Signal Process. Mag</title>
+		<imprint>
+			<biblScope unit="volume">34</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="18" to="42" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<title level="m" type="main">Gc-lstm: Graph convolution embedded lstm for dynamic link prediction</title>
+		<author>
+			<persName><forename type="first">Jinyin</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xuanheng</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yangyang</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haibin</forename><surname>Zheng</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1812.04206</idno>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Learning phrase representations using RNN encoder-decoder for statistical machine translation</title>
+		<author>
+			<persName><forename type="first">Kyunghyun</forename><surname>Cho</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bart</forename><surname>Van Merriënboer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Caglar</forename><surname>Gulcehre</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dzmitry</forename><surname>Bahdanau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fethi</forename><surname>Bougares</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Holger</forename><surname>Schwenk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yoshua</forename><surname>Bengio</surname></persName>
+		</author>
+		<idno type="DOI">10.3115/v1/D14-1179</idno>
+		<ptr target="https://www.aclweb.org/anthology/D14-1179" />
+	</analytic>
+	<monogr>
+		<title level="m">EMNLP</title>
+		<imprint>
+			<date type="published" when="2014">2014</date>
+			<biblScope unit="page" from="1724" to="1734" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Graph neural networks for icecube signal classification</title>
+		<author>
+			<persName><forename type="first">Nicholas</forename><surname>Choma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Federico</forename><surname>Monti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lisa</forename><surname>Gerhardt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tomasz</forename><surname>Palczewski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zahra</forename><surname>Ronaghi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Prabhat</forename><surname>Prabhat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wahid</forename><surname>Bhimji</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><forename type="middle">M</forename><surname>Bronstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Spencer</forename><surname>Klein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Joan</forename><surname>Bruna</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICMLA</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Time series based link prediction</title>
+		<author>
+			<persName><forename type="first">Paulo Ricardo</forename><surname>Da</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Silva</forename><surname>Soares</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ricardo</forename><surname>Bastos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cavalcante</forename><surname>Prudêncio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IJCNN</title>
+		<imprint>
+			<publisher>IEEE</publisher>
+			<date type="published" when="2012">2012</date>
+			<biblScope unit="page" from="1" to="7" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">HyTE: Hyperplane-based temporally aware knowledge graph embedding</title>
+		<author>
+			<persName><forename type="first">Swayambhu</forename><surname>Shib Sankar Dasgupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Partha</forename><surname>Nath Ray</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Talukdar</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/D18-1225</idno>
+		<ptr target="https://www.aclweb.org/anthology/D18-1225" />
+	</analytic>
+	<monogr>
+		<title level="m">EMNLP</title>
+		<imprint>
+			<date type="published" when="2001">2001-2011, 2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Combining temporal aspects of dynamic networks with node2vec for a more efficient dynamic link prediction</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">De</forename><surname>Winter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Decuypere</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Mitrović</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Baesens</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">De</forename><surname>Weerdt</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ASONAM</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="1234" to="1241" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Dynamic network embedding: An extended approach for skip-gram based network embedding</title>
+		<author>
+			<persName><forename type="first">Lun</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yun</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Guojie</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhicong</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junshan</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IJCAI</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="2086" to="2092" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Temporal link prediction using matrix and tensor factorizations</title>
+		<author>
+			<persName><forename type="first">Tamara</forename><forename type="middle">G</forename><surname>Daniel M Dunlavy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Evrim</forename><surname>Kolda</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Acar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">TKDD</title>
+		<imprint>
+			<biblScope unit="volume">5</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="1" to="27" />
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Convolutional networks on graphs for learning molecular fingerprints</title>
+		<author>
+			<persName><forename type="first">Dougal</forename><surname>David K Duvenaud</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jorge</forename><surname>Maclaurin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rafael</forename><surname>Iparraguirre</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Timothy</forename><surname>Bombarelli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alan</forename><surname>Hirzel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ryan</forename><forename type="middle">P</forename><surname>Aspuru-Guzik</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Adams</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NIPS</title>
+		<imprint>
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Relationship prediction in dynamic heterogeneous information networks</title>
+		<author>
+			<persName><forename type="first">Ebrahim</forename><surname>Amin Milani Fard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ke</forename><surname>Bagheri</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">European Conference on Information Retrieval</title>
+		<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="19" to="34" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Deciphering interaction fingerprints from protein molecular surfaces using geometric deep learning</title>
+		<author>
+			<persName><forename type="first">Pablo</forename><surname>Gainza</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature Methods</title>
+		<imprint>
+			<biblScope unit="volume">17</biblScope>
+			<biblScope unit="page" from="184" to="192" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Learning sequence encoders for temporal knowledge graph completion</title>
+		<author>
+			<persName><forename type="first">Alberto</forename><surname>García-Durán</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sebastijan</forename><surname>Dumančić</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mathias</forename><surname>Niepert</surname></persName>
+		</author>
+		<idno type="DOI">10.18653/v1/D18-1516</idno>
+	</analytic>
+	<monogr>
+		<title level="m">EMNLP</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="4816" to="4821" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Neural message passing for quantum chemistry</title>
+		<author>
+			<persName><forename type="first">Justin</forename><surname>Gilmer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Samuel</forename><forename type="middle">S</forename><surname>Schoenholz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Patrick</forename><forename type="middle">F</forename><surname>Riley</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oriol</forename><surname>Vinyals</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">George</forename><forename type="middle">E</forename><surname>Dahl</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICML</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<monogr>
+		<title level="m" type="main">Diachronic embedding for temporal knowledge graph completion</title>
+		<author>
+			<persName><forename type="first">Rishab</forename><surname>Goel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Seyed</forename><surname>Mehran Kazemi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marcus</forename><surname>Brubaker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pascal</forename><surname>Poupart</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1907.03143</idno>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<monogr>
+		<title level="m" type="main">Dyngem: Deep embedding method for dynamic graphs</title>
+		<author>
+			<persName><forename type="first">Palash</forename><surname>Goyal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nitin</forename><surname>Kamra</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xinran</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yan</forename><surname>Liu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1805.11273,abs/1805.11273</idno>
+		<ptr target="http://dblp.uni-trier.de/db/journals/corr/corr1805.html#abs-1805-11273" />
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Node2vec: Scalable feature learning for networks</title>
+		<author>
+			<persName><forename type="first">Aditya</forename><surname>Grover</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jure</forename><surname>Leskovec</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/2939672.2939754</idno>
+		<ptr target="https://doi.org/10.1145/2939672.2939754" />
+	</analytic>
+	<monogr>
+		<title level="m">KDD &apos;16, KDD &apos;16</title>
+		<meeting><address><addrLine>New York, NY, USA</addrLine></address></meeting>
+		<imprint>
+			<publisher>Association for Computing Machinery</publisher>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="855" to="864" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Link prediction using time series of neighborhood-based node similarity scores</title>
+		<author>
+			<persName><forename type="first">İsmail</forename><surname>Güneş</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Şule</forename><surname>Gündüz-Ögüdücü</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zehra</forename><surname>Çataltepe</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Data Mining and Knowledge Discovery</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="147" to="180" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Evolutionary clustering and analysis of bibliographic networks</title>
+		<author>
+			<persName><forename type="first">Manish</forename><surname>Gupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Charu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiawei</forename><surname>Aggarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yizhou</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ASONAM</title>
+		<imprint>
+			<publisher>IEEE</publisher>
+			<date type="published" when="2011">2011</date>
+			<biblScope unit="page" from="63" to="70" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Inductive representation learning on large graphs</title>
+		<author>
+			<persName><forename type="first">William</forename><forename type="middle">L</forename><surname>Hamilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rex</forename><surname>Ying</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jure</forename><surname>Leskovec</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NIPS</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<title level="m" type="main">Representation learning on graphs: Methods and applications</title>
+		<author>
+			<persName><forename type="first">Rex</forename><surname>William L Hamilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jure</forename><surname>Ying</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Leskovec</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1709.05584</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<monogr>
+		<title level="m" type="main">Semi-supervised graph embedding approach to dynamic link prediction</title>
+		<author>
+			<persName><forename type="first">Ryohei</forename><surname>Hisano</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/978-3-319-73198-8_</idno>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<publisher>Springer Proceedings in Complexity</publisher>
+			<biblScope unit="page" from="109" to="121" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<monogr>
+		<title/>
+		<idno type="DOI">10.1007/978-3-319-73198-8_10</idno>
+		<ptr target="http://dx.doi.org/10.1007/978-3-319-73198-8_10" />
+		<imprint/>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">Long short-term memory</title>
+		<author>
+			<persName><forename type="first">Sepp</forename><surname>Hochreiter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jürgen</forename><surname>Schmidhuber</surname></persName>
+		</author>
+		<idno type="DOI">10.1162/neco.1997.9.8.1735</idno>
+		<ptr target="https://doi.org/10.1162/neco.1997.9.8.1735" />
+	</analytic>
+	<monogr>
+		<title level="j">Neural Comput</title>
+		<idno type="ISSN">0899-7667</idno>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="issue">8</biblScope>
+			<biblScope unit="page" from="1735" to="1780" />
+			<date type="published" when="1997-11">November 1997</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">The time-series link prediction problem with applications in communication surveillance</title>
+		<author>
+			<persName><forename type="first">Zan</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dennis Kj</forename><surname>Lin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">INFORMS Journal on Computing</title>
+		<imprint>
+			<biblScope unit="volume">21</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="286" to="303" />
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Link prediction in dynamic social networks by integrating different types of information</title>
+		<author>
+			<persName><forename type="first">Nahla</forename><surname>Mohamed</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ahmed</forename><surname>Ibrahim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ling</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Applied Intelligence</title>
+		<imprint>
+			<biblScope unit="volume">42</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="738" to="750" />
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<title level="m" type="main">Time2vec: Learning a vector representation of time</title>
+		<author>
+			<persName><forename type="first">Rishab</forename><surname>Seyed Mehran Kazemi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sepehr</forename><surname>Goel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Janahan</forename><surname>Eghbali</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jaspreet</forename><surname>Ramanan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sanjay</forename><surname>Sahota</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stella</forename><surname>Thakur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cathal</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pascal</forename><surname>Smyth</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marcus</forename><surname>Poupart</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Brubaker</surname></persName>
+		</author>
+		<idno>CoRR, abs/1907.05321</idno>
+		<ptr target="http://arxiv.org/abs/1907.05321" />
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Representation learning for dynamic graphs: A survey</title>
+		<author>
+			<persName><forename type="first">Rishab</forename><surname>Seyed Mehran Kazemi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kshitij</forename><surname>Goel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ivan</forename><surname>Jain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Akshay</forename><surname>Kobyzev</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Sethi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pascal</forename><surname>Forsyth</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Poupart</surname></persName>
+		</author>
+		<ptr target="http://jmlr.org/papers/v21/19-447.html" />
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Machine Learning Research</title>
+		<imprint>
+			<biblScope unit="volume">21</biblScope>
+			<biblScope unit="issue">70</biblScope>
+			<biblScope unit="page" from="1" to="73" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">A particle-and-density based evolutionary clustering method for dynamic networks</title>
+		<author>
+			<persName><forename type="first">Min-Soo</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiawei</forename><surname>Han</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">VLDB</title>
+		<imprint>
+			<biblScope unit="volume">2</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="622" to="633" />
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Variational graph auto-encoders</title>
+		<author>
+			<persName><forename type="first">N</forename><surname>Thomas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Max</forename><surname>Kipf</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Welling</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NIPS Workshop on Bayesian Deep Learning</title>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Semi-Supervised Classification with Graph Convolutional Networks</title>
+		<author>
+			<persName><forename type="first">Thomas</forename><forename type="middle">N</forename><surname>Kipf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Max</forename><surname>Welling</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=SJU4ayYgl" />
+	</analytic>
+	<monogr>
+		<title level="m">ICLR</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Predicting dynamic embedding trajectory in temporal interaction networks</title>
+		<author>
+			<persName><forename type="first">Srijan</forename><surname>Kumar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xikun</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jure</forename><surname>Leskovec</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/3292500.3330895</idno>
+		<ptr target="https://doi.org/10.1145/3292500.3330895" />
+	</analytic>
+	<monogr>
+		<title level="m">KDD &apos;19</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="1269" to="1278" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Diffusion convolutional recurrent neural network: Data-driven traffic forecasting</title>
+		<author>
+			<persName><forename type="first">Yaguang</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rose</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cyrus</forename><surname>Shahabi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yan</forename><surname>Liu</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=SJiHXGWAZ" />
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">The link-prediction problem for social networks</title>
+		<author>
+			<persName><forename type="first">David</forename><surname>Liben</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">-</forename><surname>Nowell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jon</forename><surname>Kleinberg</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Am. Soc. Inf. Sci. Technol</title>
+		<idno type="ISSN">1532-2882</idno>
+		<imprint>
+			<biblScope unit="volume">58</biblScope>
+			<biblScope unit="issue">7</biblScope>
+			<biblScope unit="page" from="1019" to="1031" />
+			<date type="published" when="2007-05">May 2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<monogr>
+		<author>
+			<persName><forename type="first">Yao</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ziyi</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhaochun</forename><surname>Ren</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eric</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiliang</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dawei</forename><surname>Yin</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1810.10627</idno>
+		<title level="m">Streaming graph neural networks</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">Embedding models for episodic knowledge graphs</title>
+		<author>
+			<persName><forename type="first">Yunpu</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Erik</forename><forename type="middle">A</forename><surname>Volker Tresp</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Daxberger</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Journal of Web Semantics</title>
+		<imprint>
+			<biblScope unit="volume">59</biblScope>
+			<biblScope unit="page">100490</biblScope>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">dynnode2vec: Scalable dynamic network embedding</title>
+		<author>
+			<persName><forename type="first">Sedigheh</forename><surname>Mahdavi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shima</forename><surname>Khoshraftar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aijun</forename><surname>An</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">2018 IEEE International Conference on Big Data</title>
+		<imprint>
+			<publisher>IEEE</publisher>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="3762" to="3765" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">Dynamic graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">Franco</forename><surname>Manessi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alessandro</forename><surname>Rozza</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mario</forename><surname>Manzo</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Pattern Recognition</title>
+		<imprint>
+			<biblScope unit="volume">97</biblScope>
+			<biblScope unit="page">107000</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">Geometric deep learning on graphs and manifolds using mixture model cnns</title>
+		<author>
+			<persName><forename type="first">Federico</forename><surname>Monti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Davide</forename><surname>Boscaini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jonathan</forename><surname>Masci</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Emanuele</forename><surname>Rodolà</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jan</forename><surname>Svoboda</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><forename type="middle">M</forename><surname>Bronstein</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">CVPR</title>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<monogr>
+		<title level="m" type="main">Fake news detection on social media using geometric deep learning</title>
+		<author>
+			<persName><forename type="first">Federico</forename><surname>Monti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fabrizio</forename><surname>Frasca</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Davide</forename><surname>Eynard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Damon</forename><surname>Mannion</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><forename type="middle">M</forename><surname>Bronstein</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1902.06673</idno>
+		<ptr target="http://arxiv.org/abs/1902.06673" />
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">A novel time series link prediction method: Learning automata approach</title>
+		<author>
+			<persName><forename type="first">Behnaz</forename><surname>Moradabadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mohammad</forename><surname>Reza</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Meybodi</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physica A: Statistical Mechanics and its Applications</title>
+		<imprint>
+			<biblScope unit="volume">482</biblScope>
+			<biblScope unit="page" from="422" to="432" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">Learning graph dynamics using deep neural networks</title>
+		<author>
+			<persName><forename type="first">Apurva</forename><surname>Narayan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Peter</forename><surname>Ho'n Roe</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IFAC-PapersOnLine</title>
+		<imprint>
+			<biblScope unit="volume">51</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="433" to="438" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Dynamic network embeddings: From random walks to temporal random walks</title>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">H</forename><surname>Nguyen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Boaz Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">A</forename><surname>Rossi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">K</forename><surname>Ahmed</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Koh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kim</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">2018 IEEE International Conference on Big Data</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="1085" to="1092" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">Continuous-time dynamic network embeddings</title>
+		<author>
+			<persName><forename type="first">Giang</forename><surname>Hoang Nguyen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">John</forename><forename type="middle">Boaz</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ryan</forename><forename type="middle">A</forename><surname>Rossi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nesreen</forename><forename type="middle">K</forename><surname>Ahmed</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eunyee</forename><surname>Koh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sungchul</forename><surname>Kim</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/3184558.3191526</idno>
+		<ptr target="https://doi.org/10.1145/3184558.3191526" />
+	</analytic>
+	<monogr>
+		<title level="m">WWW &apos;18</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="969" to="976" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<monogr>
+		<title level="m" type="main">Evolvegcn: Evolving graph convolutional networks for dynamic graphs</title>
+		<author>
+			<persName><forename type="first">Aldo</forename><surname>Pareja</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Giacomo</forename><surname>Domeniconi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jie</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tengfei</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Toyotaro</forename><surname>Suzumura</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hiroki</forename><surname>Kanezashi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tim</forename><surname>Kaler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Charles</forename><forename type="middle">E</forename><surname>Leisersen</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1902.10191</idno>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Disease prediction using graph convolutional networks: Application to autism spectrum disorder and alzheimer&apos;s disease</title>
+		<author>
+			<persName><forename type="first">Sarah</forename><surname>Parisot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sofia</forename><forename type="middle">Ira</forename><surname>Ktena</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Enzo</forename><surname>Ferrante</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthew</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ricardo</forename><surname>Guerrero</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ben</forename><surname>Glocker</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Rueckert</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Med Image Anal</title>
+		<imprint>
+			<biblScope unit="volume">48</biblScope>
+			<biblScope unit="page" from="117" to="130" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">Node classification in dynamic social networks</title>
+		<author>
+			<persName><forename type="first">Yulong</forename><surname>Pei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianpeng</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">H</forename><surname>Fletcher</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mykola</forename><surname>Pechenizkiy</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">AALTD</title>
+		<imprint>
+			<biblScope unit="page">54</biblScope>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<analytic>
+		<title level="a" type="main">Deepwalk: Online learning of social representations</title>
+		<author>
+			<persName><forename type="first">Bryan</forename><surname>Perozzi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rami</forename><surname>Al-Rfou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Steven</forename><surname>Skiena</surname></persName>
+		</author>
+		<idno type="DOI">10.1145/2623330.2623732</idno>
+		<ptr target="https://doi.org/10.1145/2623330.2623732" />
+	</analytic>
+	<monogr>
+		<title level="m">KDD &apos;14</title>
+		<imprint>
+			<date type="published" when="2014">2014</date>
+			<biblScope unit="page" from="701" to="710" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<analytic>
+		<title level="a" type="main">Learning humanobject interactions by graph parsing neural networks</title>
+		<author>
+			<persName><forename type="first">Siyuan</forename><surname>Qi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wenguan</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Baoxiong</forename><surname>Jia</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jianbing</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Song-Chun</forename><surname>Zhu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ECCV</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="401" to="417" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">ncrna classification with graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">Emanuele</forename><surname>Rossi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Federico</forename><surname>Monti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><forename type="middle">M</forename><surname>Bronstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pietro</forename><surname>Liò</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">KDD Workshop on Deep Learning on Graphs</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<monogr>
+		<author>
+			<persName><forename type="first">Emanuele</forename><surname>Rossi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fabrizio</forename><surname>Frasca</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ben</forename><surname>Chamberlain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Davide</forename><surname>Eynard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><surname>Bronstein</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Federico</forename><surname>Monti</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2004.11198</idno>
+		<title level="m">Sign: Scalable inception graph neural networks</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">Dysat: Deep neural representation learning on dynamic graphs via self-attention networks</title>
+		<author>
+			<persName><forename type="first">Aravind</forename><surname>Sankar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanhong</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Liang</forename><surname>Gou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Yang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">WSDM</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page" from="519" to="527" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<analytic>
+		<title level="a" type="main">Structured sequence modeling with graph convolutional recurrent networks</title>
+		<author>
+			<persName><forename type="first">Youngjoo</forename><surname>Seo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michaël</forename><surname>Defferrard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pierre</forename><surname>Vandergheynst</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xavier</forename><surname>Bresson</surname></persName>
+		</author>
+		<idno type="DOI">10.1007/978-3-030-04167-0_33</idno>
+		<ptr target="http://dx.doi.org/10.1007/978-3-030-04167-0_33" />
+	</analytic>
+	<monogr>
+		<title level="s">Lecture Notes in Computer Science</title>
+		<idno type="ISSN">1611-3349</idno>
+		<imprint>
+			<biblScope unit="page" from="362" to="373" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">Temporal-relational classifiers for prediction in evolving domains</title>
+		<author>
+			<persName><forename type="first">Umang</forename><surname>Sharan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jennifer</forename><surname>Neville</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICDM</title>
+		<imprint>
+			<publisher>IEEE</publisher>
+			<date type="published" when="2008">2008</date>
+			<biblScope unit="page" from="540" to="549" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<analytic>
+		<title level="a" type="main">Node embedding over temporal graphs</title>
+		<author>
+			<persName><forename type="first">Uriel</forename><surname>Singer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ido</forename><surname>Guy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kira</forename><surname>Radinsky</surname></persName>
+		</author>
+		<idno type="DOI">10.24963/ijcai.2019/640</idno>
+		<ptr target="https://doi.org/10.24963/ijcai.2019/640" />
+	</analytic>
+	<monogr>
+		<title level="m">IJCAI</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page">2019</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<analytic>
+		<title level="a" type="main">Know-evolve: Deep temporal reasoning for dynamic knowledge graphs</title>
+		<author>
+			<persName><forename type="first">Rakshit</forename><surname>Trivedi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hanjun</forename><surname>Dai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yichen</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Le</forename><surname>Song</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICML</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page" from="3462" to="3471" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<analytic>
+		<title level="a" type="main">Dyrep: Learning representations over dynamic graphs</title>
+		<author>
+			<persName><forename type="first">Rakshit</forename><surname>Trivedi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mehrdad</forename><surname>Farajtabar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Prasenjeet</forename><surname>Biswal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hongyuan</forename><surname>Zha</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=HyePrhR5KX" />
+	</analytic>
+	<monogr>
+		<title level="m">ICLR</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<analytic>
+		<title level="a" type="main">Attention is all you need</title>
+		<author>
+			<persName><forename type="first">Ashish</forename><surname>Vaswani</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Noam</forename><surname>Shazeer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Niki</forename><surname>Parmar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jakob</forename><surname>Uszkoreit</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Llion</forename><surname>Jones</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aidan</forename><forename type="middle">N</forename><surname>Gomez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ł Ukasz</forename><surname>Kaiser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Illia</forename><surname>Polosukhin</surname></persName>
+		</author>
+		<ptr target="http://papers.nips.cc/paper/7181-attention-is-all-you-need.pdf" />
+	</analytic>
+	<monogr>
+		<title level="m">NIPS</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page" from="5998" to="6008" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<analytic>
+		<title level="a" type="main">Graph attention networks</title>
+		<author>
+			<persName><forename type="first">Petar</forename><surname>Velickovic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Guillem</forename><surname>Cucurull</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arantxa</forename><surname>Casanova</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Adriana</forename><surname>Romero</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pietro</forename><surname>Liò</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yoshua</forename><surname>Bengio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ICLR</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<analytic>
+		<title level="a" type="main">Hyperfoods: Machine intelligent mapping of cancer-beating molecules in foods</title>
+		<author>
+			<persName><forename type="first">Kirill</forename><surname>Veselkov</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Scientific Reports</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="1" to="12" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b66">
+	<monogr>
+		<title level="m" type="main">Huggingface&apos;s transformers: State-of-the-art natural language processing</title>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Wolf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lysandre</forename><surname>Debut</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Victor</forename><surname>Sanh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Julien</forename><surname>Chaumond</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Clement</forename><surname>Delangue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Anthony</forename><surname>Moi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pierric</forename><surname>Cistac</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tim</forename><surname>Rault</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R'emi</forename><surname>Louf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Morgan</forename><surname>Funtowicz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jamie</forename><surname>Brew</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1910.03771</idno>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b67">
+	<analytic>
+		<title level="a" type="main">An adaptive random walk sampling method on dynamic community detection</title>
+		<author>
+			<persName><forename type="first">Yu</forename><surname>Xin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhi-Qiang</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jing</forename><surname>Yang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Expert Systems with Applications</title>
+		<imprint>
+			<biblScope unit="volume">58</biblScope>
+			<biblScope unit="page" from="10" to="19" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b68">
+	<monogr>
+		<author>
+			<persName><forename type="first">Chengjin</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mojtaba</forename><surname>Nayyeri</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fouad</forename><surname>Alkhoury</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jens</forename><surname>Lehmann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hamed Shariat</forename><surname>Yazdi</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1911.07893</idno>
+		<title level="m">Temporal knowledge graph completion based on time series gaussian embedding</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b69">
+	<analytic>
+		<title level="a" type="main">Inductive representation learning on temporal graphs</title>
+		<author>
+			<persName><forename type="first">Da</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chuanwei</forename><surname>Ruan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Evren</forename><surname>Korpeoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sushant</forename><surname>Kumar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kannan</forename><surname>Achan</surname></persName>
+		</author>
+		<ptr target="https://openreview.net/forum?id=rJeW1yHYwH" />
+	</analytic>
+	<monogr>
+		<title level="m">ICLR</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b70">
+	<analytic>
+		<title level="a" type="main">Link prediction based on common-neighbors for dynamic social network</title>
+		<author>
+			<persName><forename type="first">Lin</forename><surname>Yao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Luning</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lv</forename><surname>Pan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kai</forename><surname>Yao</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Procedia Computer Science</title>
+		<imprint>
+			<biblScope unit="volume">83</biblScope>
+			<biblScope unit="page" from="82" to="89" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b71">
+	<analytic>
+		<title level="a" type="main">Graph convolutional neural networks for web-scale recommender systems</title>
+		<author>
+			<persName><forename type="first">Rex</forename><surname>Ying</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ruining</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kaifeng</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pong</forename><surname>Eksombatchai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">William</forename><forename type="middle">L</forename><surname>Hamilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jure</forename><surname>Leskovec</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">KDD &apos;18</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b72">
+	<monogr>
+		<title level="m" type="main">3d graph convolutional networks with temporal graphs: A spatial information free framework for traffic forecasting</title>
+		<author>
+			<persName><forename type="first">Bing</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mengzhang</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiyong</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhanxing</forename><surname>Zhu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1903.00919</idno>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b73">
+	<analytic>
+		<title level="a" type="main">Link prediction with spatial and temporal consistency in dynamic networks</title>
+		<author>
+			<persName><forename type="first">Wenchao</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Charu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haifeng</forename><surname>Aggarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IJCAI</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page" from="3343" to="3349" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b74">
+	<analytic>
+		<title level="a" type="main">Netwalk: A flexible deep embedding approach for anomaly detection in dynamic networks</title>
+		<author>
+			<persName><forename type="first">Wenchao</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Charu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kai</forename><surname>Aggarwal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haifeng</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">KDD &apos;18</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="2672" to="2681" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b75">
+	<analytic>
+		<title level="a" type="main">Gaan: Gated attention networks for learning on large and spatiotemporal graphs</title>
+		<author>
+			<persName><forename type="first">Jiani</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xingjian</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junyuan</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Irwin</forename><surname>King</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dit-Yan</forename><surname>Yeung</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Conference on Uncertainty in Artificial Intelligence</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b76">
+	<analytic>
+		<title level="a" type="main">Link prediction based on graph neural networks</title>
+		<author>
+			<persName><forename type="first">Muhan</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yixin</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">NIPS</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b77">
+	<analytic>
+		<title level="a" type="main">Dynamic network embedding by modeling triadic closure process</title>
+		<author>
+			<persName><forename type="first">Lekui</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yang</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiang</forename><surname>Ren</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fei</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yueting</forename><surname>Zhuang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">AAAI</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b78">
+	<analytic>
+		<title level="a" type="main">A hybrid time-series link prediction framework for large social network</title>
+		<author>
+			<persName><forename type="first">Jia</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qing</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Eun</forename><forename type="middle">Jung</forename><surname>Chin</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">DEXA</title>
+		<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2012">2012</date>
+			<biblScope unit="page" from="345" to="359" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b79">
+	<analytic>
+		<title level="a" type="main">What to do next: Modeling user behaviors by time-lstm</title>
+		<author>
+			<persName><forename type="first">Yu</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yikang</forename><surname>Liao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Beidou</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ziyu</forename><surname>Guan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haifeng</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Deng</forename><surname>Cai</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IJCAI</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="volume">17</biblScope>
+			<biblScope unit="page" from="3602" to="3608" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b80">
+	<analytic>
+		<title level="a" type="main">Modeling polypharmacy side effects with graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">Marinka</forename><surname>Zitnik</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Monica</forename><surname>Agrawal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jure</forename><surname>Leskovec</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Bioinformatics</title>
+		<imprint>
+			<biblScope unit="volume">34</biblScope>
+			<biblScope unit="issue">13</biblScope>
+			<biblScope unit="page" from="457" to="466" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

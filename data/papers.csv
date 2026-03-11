@@ -1,0 +1,11 @@
+paper_id,filename,title,doi_or_arxiv,url
+paper_01,Inductive_Representation_Learning_on_Temporal_Graphs.pdf,INDUCTIVE REPRESENTATION LEARNING ON TEMPORAL GRAPHS,,https://arxiv.org/abs/2002.07962
+paper_02,Graph_Convolutional_NNs_for_Web-Scale_Recommender_Systems.pdf,Graph Convolutional Neural Networks for Web-Scale Recommender Systems,,https://arxiv.org/abs/1806.01973
+paper_03,Temporal_Graph_Networks_for_DeepLearning_on_Dynamic_Graphs.pdf,TEMPORAL GRAPH NETWORKS FOR DEEP LEARNING ON DYNAMIC GRAPHS,,https://arxiv.org/abs/2006.10637
+paper_04,Graph_Attention_Networks.pdf,GRAPH ATTENTION NETWORKS,,https://arxiv.org/abs/1710.10903
+paper_05,Detecting_Fake_Reviewer_Groups_in_Dynamic_Networks_Adaptative_Graph_Learning_Method.pdf,Detecting Fake Reviewer Groups in Dynamic Networks: An Adaptive Graph Learning Method,,https://arxiv.org/abs/2603.08332
+paper_06,Semi-Supervised_Learning_on_Graphs_using_Graph_Neural_Networks.pdf,Semi-Supervised Learning on Graphs using Graph Neural Networks,,https://arxiv.org/abs/2602.17115
+paper_07,Learning_to_Dispatch_for_Job_Shop_Scheduling_via_Deep_Reinforcement_Learning.pdf,Learning to Dispatch for Job Shop Scheduling via Deep Reinforcement Learning,,https://arxiv.org/abs/2010.12367
+paper_08,A_Closer_Look_at_Invalid_Action_Masking_in_Policy_Gradient_Algorithms.pdf,A Closer Look at Invalid Action Masking in Policy Gradient Algorithms,,https://arxiv.org/abs/2006.14171
+paper_09,Unified_Fractional_Spectral_Framework_for_Spatiotemporal_Graph_Signals.pdf,A Unified Fractional Spectral Framework for Spatiotemporal  Graph Signals: Bi-Fractional Transform and Geodesic Coupling,,https://arxiv.org/html/2603.01484v1
+paper_10,Next_Generation_Graph_Analytics_with_LLMs.pdf,GraphSeek: Next-Generation Graph Analytics with LLMs,,https://arxiv.org/abs/2602.11052

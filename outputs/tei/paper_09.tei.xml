@@ -1,0 +1,1779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">A Unified Fractional Spectral Framework for Spatiotemporal Graph Signals: Bi-Fractional Transform and Geodesic Coupling</title>
+				<funder>
+					<orgName type="full">Foundation of Key Laboratory of System Control and Information Processing, Ministry of Education</orgName>
+				</funder>
+				<funder ref="#_32h3RtK">
+					<orgName type="full">Startup Foundation for Introducing Talent of Nanjing Institute of Technology</orgName>
+				</funder>
+				<funder ref="#_8x88fyp">
+					<orgName type="full">Open Foundation of Hubei Key Laboratory of Applied Mathematics (Hubei University)</orgName>
+				</funder>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability  status="unknown">
+					<licence/>
+				</availability>
+				<date type="published" when="2026-03-02">2 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Mingzhi</forename><surname>Wang</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Manjun</forename><surname>Cui</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Feiyue</forename><surname>Zhao</surname></persName>
+						</author>
+						<author role="corresp">
+							<persName><forename type="first">Yangfan</forename><surname>He</surname></persName>
+							<email>yangfan.he@njit.edu.cn</email>
+						</author>
+						<author>
+							<persName><roleName>Member, IEEE</roleName><forename type="first">Zhichao</forename><surname>Zhang</surname></persName>
+						</author>
+						<author>
+							<affiliation key="aff0">
+								<orgName type="department">School of Mathematics and Statistics</orgName>
+								<orgName type="institution">Nanjing University of Information Science and Technology</orgName>
+								<address>
+									<postCode>210044</postCode>
+									<settlement>Nanjing</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff1">
+								<orgName type="department" key="dep1">School of Communication and Artificial Intelli- gence</orgName>
+								<orgName type="department" key="dep2">School of Integrated Circuits</orgName>
+								<orgName type="institution">Nanjing Institute of Technology</orgName>
+								<address>
+									<postCode>211167</postCode>
+									<settlement>Nanjing</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff2">
+								<orgName type="department">Jiangsu Province Engineering Research Center of IntelliSense Technology and System</orgName>
+								<address>
+									<postCode>211167</postCode>
+									<settlement>Nanjing</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff3">
+								<orgName type="department">School of Mathematics and Statistics</orgName>
+								<orgName type="institution">Nanjing University of Information Science and Technology</orgName>
+								<address>
+									<postCode>210044</postCode>
+									<settlement>Nanjing</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff4">
+								<orgName type="department">Hubei Key Laboratory of Applied Mathematics</orgName>
+								<orgName type="institution">Hubei University</orgName>
+								<address>
+									<addrLine>Wuhan 430062</addrLine>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff5">
+								<orgName type="department" key="dep1">Key Laboratory of System Control and Information Processing</orgName>
+								<orgName type="department" key="dep2">Ministry of Education</orgName>
+								<orgName type="institution">Shanghai Jiao Tong University</orgName>
+								<address>
+									<postCode>200240</postCode>
+									<settlement>Shanghai</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">A Unified Fractional Spectral Framework for Spatiotemporal Graph Signals: Bi-Fractional Transform and Geodesic Coupling</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-02">2 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">0C9D478FE9A10091F456E4B37BC81F03</idno>
+					<idno type="arXiv">arXiv:2603.01484v1[eess.SP]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.8.2" ident="GROBID" when="2026-03-11T18:23+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<label type="revision">a91ee48</label>
+					<label type="parameters">startPage=-1, endPage=-1, consolidateCitations=0, consolidateHeader=0, consolidateFunders=0, includeRawAffiliations=false, includeRawCitations=false, includeRawCopyrights=false, generateTeiIds=false, generateTeiCoordinates=[], sentenceSegmentation=false, flavor=null</label>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>Denoising</term>
+					<term>geodesic-coupled GFRFT</term>
+					<term>joint timevertex fractional Fourier transform</term>
+					<term>two-dimensional GFRFT</term>
+					<term>two-dimensional graph bi-fractional Fourier transform</term>
+				</keywords>
+			</textClass>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Graph signal processing extends spectral analysis to data supported on irregular domains. Existing fractional transforms for two-dimensional graph signals, including the two-dimensional graph fractional Fourier transform (GFRFT), typically impose a shared fractional order across dimensions, which limits adaptivity to heterogeneous spatiotemporal spectra. To address this limitation, we propose the two-dimensional graph bi-fractional Fourier transform, which assigns independent fractional orders to the factor graphs of a Cartesian product, enabling decoupled spectral control while preserving separability, unitarity, and invertibility. To further resolve the basis ambiguity in temporal fractional analysis, we develop a geodesic-coupled GFRFT by constructing a coupling path along the principal geodesic on the unitary manifold, thereby unifying graph-induced and discrete temporal bases with guaranteed unitarity and a closed-form inverse. Building on these transforms, we derive a differentiable Wiener-type filtering framework with a hybrid optimization strategy: the fractional orders are learned endto-end from data, while the coupling parameter is fixed as a structural regularizer. Experiments on real-world time-varying graph datasets and dynamic image restoration tasks demonstrate consistent gains over state-of-the-art fractional transforms and competitive learning-based baselines.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I. INTRODUCTION</head><p>Signals originating from real-world systems are often supported on complex networks or graphs, thereby exhibiting non-Euclidean topologies. Representative examples include spatiotemporal measurements from environmental sensing networks <ref type="bibr" target="#b0">[1]</ref>- <ref type="bibr" target="#b2">[3]</ref>, interactions in social networks <ref type="bibr" target="#b3">[4]</ref>, <ref type="bibr" target="#b4">[5]</ref>, brain connectivity graphs in neuroscience <ref type="bibr" target="#b5">[6]</ref>, <ref type="bibr" target="#b6">[7]</ref>, and pixel-or region-level relations in image analysis <ref type="bibr" target="#b7">[8]</ref>- <ref type="bibr" target="#b10">[11]</ref>. The irregularity of these domains makes it difficult to directly apply classical techniques developed for Euclidean signals. Graph signal processing (GSP) provides a principled extension of traditional methodologies, including Fourier analysis <ref type="bibr" target="#b11">[12]</ref>- <ref type="bibr" target="#b15">[16]</ref>, wavelet transforms <ref type="bibr" target="#b16">[17]</ref>- <ref type="bibr" target="#b19">[20]</ref>, sampling theory <ref type="bibr" target="#b20">[21]</ref>- <ref type="bibr" target="#b22">[23]</ref>, and filtering <ref type="bibr" target="#b11">[12]</ref>, <ref type="bibr" target="#b13">[14]</ref>, <ref type="bibr" target="#b15">[16]</ref>, <ref type="bibr" target="#b23">[24]</ref>- <ref type="bibr" target="#b25">[26]</ref>, to signals defined on graphs, enabling efficient modeling and analysis on irregular topologies.</p><p>In GSP, the graph Fourier transform (GFT) represents signals in a spectral domain induced by the eigendecomposition of a graph operator. Common choices of spectral operators include the graph Laplacian and the adjacency matrix. The Laplacian emphasizes smoothness and is well suited to diffusion-type processes, whereas the adjacency matrix emphasizes connectivity and can better capture nonstationary behavior and localized high-frequency patterns <ref type="bibr" target="#b11">[12]</ref>, <ref type="bibr" target="#b12">[13]</ref>, <ref type="bibr" target="#b15">[16]</ref>, <ref type="bibr" target="#b26">[27]</ref>. In this work, we adopt the adjacency matrix as the spectral operator to model signals with strong local variations. We focus on weighted undirected graphs so that the adjacency matrix admits an orthonormal eigendecomposition, yielding a unitary spectral basis. Despite its effectiveness, the GFT relies on fixed integer-order spectral modes, which limits its ability to adapt spectral representations to multiscale and heterogeneous structures.</p><p>To provide a continuous degree of freedom, the graph fractional Fourier transform (GFRFT) extends the GFT by introducing a fractional order that parameterizes a family of graph spectral transforms. Such representations have been applied to denoising, spectrum sparsification, and graph filtering <ref type="bibr" target="#b27">[28]</ref>- <ref type="bibr" target="#b33">[34]</ref>. In the classical fractional Fourier transform (FRFT), the fractional order is often interpreted via time-frequency rotation. This geometric interpretation does not directly carry over to graph settings because graph frequencies are induced by a chosen graph operator rather than Euclidean geometry. Accordingly, we treat the fractional order as a continuous spectral parameterization in the graph setting. Most existing GFRFT methods, however, focus on single-graph signals and provide limited support for multidimensional or multi-structure graph data.</p><p>Many applications naturally involve multidimensional graph signals, such as time-vertex or space-attribute data. Cartesian product graphs provide a convenient model for such joint structures by combining two factor graphs to represent multiway dependencies. Within this setting, the two-dimensional GFT (2D-GFT) performs spectral decompositions on the factor graphs and combines them through the Kronecker product, yielding a separable joint spectral representation with favorable computational properties <ref type="bibr" target="#b34">[35]</ref>- <ref type="bibr" target="#b36">[37]</ref>. Nonetheless, 2D-GFT remains restricted to integer-order descriptions. The twodimensional GFRFT (2D-GFRFT) alleviates this limitation by applying a shared fractional order to both factor graphs <ref type="bibr" target="#b37">[38]</ref>. This shared-order construction implicitly assumes that a single order can adequately control the two factor spectra. In strongly heterogeneous settings, such as when one dimension is relatively smooth while the other exhibits pronounced local variations, this constraint can significantly reduce expressiveness.</p><p>To address this limitation, we propose the two-dimensional graph bi-fractional Fourier transform (2D-GBFRFT). By assigning two independent fractional orders to the two factor graphs of a Cartesian product, the proposed bi-fractional design enables factor-wise tuning of the joint spectral coordinates. This improves modeling fidelity for heterogeneous two-dimensional graph signals while retaining the separable product-graph structure that supports efficient spectral-domain processing.</p><p>Beyond spatial heterogeneity, analyzing time-varying graph signals also requires selecting an appropriate temporal fractional basis. Joint spectral analysis is central to such signals, as exemplified by the joint time-vertex Fourier transform (JFT) <ref type="bibr" target="#b38">[39]</ref>, <ref type="bibr" target="#b39">[40]</ref> and the joint time-vertex FRFT (JFRFT) <ref type="bibr" target="#b40">[41]</ref>- <ref type="bibr" target="#b42">[43]</ref>. In practical spatiotemporal settings, the temporal dimension can be modeled either by a graph-induced fractional transform associated with a temporal graph, such as a path graph, or by a classical discrete FRFT (DFRFT) basis. Although both choices are typically unitary and thus energy preserving, they can induce different temporal spectral coordinate systems, which in turn affect subsequent filtering and representation. This observation motivates our second contribution: a structure-preserving coupling mechanism for heterogeneous temporal fractional bases. A naive Euclidean interpolation between two unitary operators, such as linear mixing, generally breaks unitarity and can lead to ill-conditioned transforms, which compromise energy preservation and stable reconstruction <ref type="bibr" target="#b43">[44]</ref>, <ref type="bibr" target="#b44">[45]</ref>. Instead of interpolating in the ambient Euclidean space, we regard unitary operators as points on a Riemannian manifold and connect the two temporal endpoints through the principal geodesic <ref type="bibr" target="#b45">[46]</ref>. The resulting oneparameter family, indexed by λ ∈ [0, 1], remains unitary for all λ, and its inverse is given by the Hermitian transpose. This intrinsic construction motivates the term geodesic-coupled, abbreviated as GC, and we refer to the resulting framework as the GC-GFRFT.</p><p>Wiener filtering is a fundamental mean-squared error (MSE) denoising technique <ref type="bibr" target="#b15">[16]</ref>, <ref type="bibr" target="#b18">[19]</ref>, <ref type="bibr" target="#b46">[47]</ref>- <ref type="bibr" target="#b48">[49]</ref>. Its graph counterpart applies spectral attenuation in the GFT domain and acts as a linear minimum-MSE estimator under stochastic priors <ref type="bibr" target="#b49">[50]</ref>, <ref type="bibr" target="#b50">[51]</ref>. To better align signal and noise spectra, GFRFT provides a tunable spectral domain. Early GFRFT-based filters derived their coefficients from prior statistical knowledge while using fixed fractional orders <ref type="bibr" target="#b46">[47]</ref>. For time-varying signals, JFRFTbased filters employed grid search to optimize two hybrid fractional parameters, with a graph-induced basis used in the spatial domain and a discrete FRFT basis used in the temporal domain <ref type="bibr" target="#b40">[41]</ref>, <ref type="bibr" target="#b41">[42]</ref>. However, such discrete parameter sweeps become computationally expensive as the dimensionality increases.</p><p>Recent differentiable GFRFT formulations overcome this by enabling gradient-based learning of fractional orders and filter parameters <ref type="bibr" target="#b30">[31]</ref>. More broadly, learning-based filtering frameworks are actively advancing graph signal processing <ref type="bibr" target="#b51">[52]</ref>, leading to the exploration of learnable JFRFT designs for joint time-vertex spectral control <ref type="bibr" target="#b42">[43]</ref>. These advances demonstrate that fractional-domain designs substantially enhance the expressiveness of spectral denoising and shaping on graphs. Motivated by these advances and the fact that the temporal dimension admits two valid yet generally incompatible unitary fractional bases, we develop a differentiable Wiener-type filtering framework under a unified fractional spectral model. In our approach, the coupling parameter serves as a fixed structural regularizer selected via coarse search, while the fractional orders and diagonal spectral filters are learned end-to-end via gradient descent (GD).</p><p>In summary, we develop a unified fractional spectral framework for Cartesian product graphs and spatiotemporal graph signals. The main contributions are as follows:</p><p>• We propose 2D-GBFRFT, a separable transform on Cartesian product graphs with independent fractional orders on the two factor graphs, enabling dimension-wise adaptivity and clarifying its distinction from JFRFT by using graph-induced bases in both dimensions. • We introduce GC-GFRFT, a unitary geodesic coupling that bridges the graph-induced temporal basis and the DFRFT basis with a closed-form inverse, unifying 2D-GBFRFT (λ = 0) and JFRFT (λ = 1) as endpoint cases.</p><p>• We develop a regularized learnable Wiener-type filtering scheme that learns the fractional orders and diagonal spectral filters by GD while treating λ as a fixed structural hyperparameter, and validate it on real data. The remainder of this paper is organized as follows. Section II reviews the preliminaries, including the fundamentals of GSP, Cartesian product graphs, and existing fractional transforms. Section III proposes the 2D-GBFRFT, detailing its definition and theoretical properties. Section IV introduces the GC-GFRFT, which resolves the temporal basis ambiguity via geodesic coupling on the unitary manifold. Section V develops the differentiable Wiener filtering framework based on a hybrid optimization strategy. Section VI presents applications on realworld data, covering the denoising of time-varying graph signals and dynamic image restoration tasks. Finally, Section VII concludes the paper and outlines future research directions, and technical proofs are provided in the Appendix. Fig. <ref type="figure" target="#fig_0">1</ref> presents an overview of the proposed GC-GFRFT framework and its applications.</p><p>Notation: Bold lowercase letters denote vectors and bold uppercase letters denote matrices. The sets of real and complex numbers are denoted by R and C, respectively. For a set V, |V| denotes its cardinality. The operators (•) * , (•) T , and (•) H represent the complex conjugate, transpose, and Hermitian transpose, respectively. The identity matrix of size N is denoted by I N . The operator diag(h) denotes the diagonal matrix whose diagonal entries are given by h. The operator vec(•) denotes vectorization. The expectation operator is denoted by E{•}. The Euclidean (ℓ 2 ) norm and Frobenius norm are denoted by ∥ • ∥ 2 and ∥ • ∥ F , respectively. The Kronecker product, Kronecker sum, and Hadamard product are denoted by ⊗, ⊕, and •, respectively.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>II. PRELIMINARIES A. Graph Signals</head><p>Let G = (V, A) be a weighted undirected graph, where V = {v 1 , v 2 , . . . , v N } denotes the node set with cardinality |V| = N , and A ∈ R N ×N is the weighted adjacency matrix. An entry A ij &gt; 0 indicates that an edge exists between nodes v i and v j with weight A ij , while A ij = 0 indicates the absence of an edge. A graph signal is a function x : V → R that assigns a scalar value x i to each node v i ∈ V. The values of the signal are collected into the vector x = [x 1 , x 2 , . . . , x N ] T ∈ R N <ref type="bibr" target="#b52">[53]</ref>, which represents the signal in the vertex domain, with structure governed by the connectivity encoded in A.</p><p>To incorporate temporal dynamics, we assume that the graph signal is observed at T successive time instants with a unit sampling interval. Let x t ∈ R N denote the signal at time t. The time-varying graph signal is represented by the matrix X = [x 1 , x 2 , . . . , x T ] ∈ R N ×T . Both X and its vectorized form x = vec(X) ∈ R N T are referred to as the time-vertex signal <ref type="bibr" target="#b53">[54]</ref>, <ref type="bibr" target="#b54">[55]</ref>.</p><p>A Cartesian product G 1 □G 2 of two weighted graphs</p><formula xml:id="formula_0">G 1 = (V 1 , E 1 , A 1 ) and G 2 = (V 2 , E 2 , A 2 ) is a graph with vertex set V 1 × V 2 . Its edge set E is defined by {(i 1 , i 2 ), (j 1 , j 2 )} ∈ E ⇐⇒ [{i 1 , j 1 } ∈ E 1 , i 2 = j 2 ] or [i 1 = j 1 , {i 2 , j 2 } ∈ E 2 ],</formula><p>and the edge weight, corresponding to the entries of the adjacency matrix A of G 1 □G 2 , is given by</p><formula xml:id="formula_1">[A] (i1,i2),(j1,j2) = [A 1 ] i1,j1 δ(i 2 , j 2 ) + δ(i 1 , j 1 ) [A 2 ] i2,j2 .</formula><p>Graphs G 1 and G 2 are referred to as the factor graphs of</p><formula xml:id="formula_2">G 1 □G 2 .</formula><p>Let G n with vertex set V n = {1, 2, . . . , N n } have adjacency, degree, and Laplacian matrices A n , D n , and L n , respectively, for n = 1, 2. When the vertices of the Cartesian product graph V 1 × V 2 are ordered lexicographically, i.e., (1, 1), (1, 2), . . . , (N 1 , N 2 ), the adjacency, degree, and Laplacian matrices of G 1 □G 2 can be written as A 1 ⊕A 2 , D 1 ⊕D 2 , and L 1 ⊕ L 2 , respectively <ref type="bibr" target="#b34">[35]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. 2D-GFRFT</head><p>We consider the adjacency matrix A n of a weighted graph G n . For real symmetric weighted graphs, A n is diagonalizable with eigenvalue decomposition Λ An = V H An A n V An , where V An contains the eigenvectors of A n and Λ An is a diagonal matrix of eigenvalues. The GFT matrix is defined as</p><formula xml:id="formula_3">F Gn = V H</formula><p>An , and the inverse is given by F -1 Gn = V An <ref type="bibr" target="#b12">[13]</ref>. We define the GFRFT as</p><formula xml:id="formula_4">F αn Gn = V Fn J αn Fn V -1 Fn ,<label>(1)</label></formula><p>where J αn Fn represents the fractional matrix in the graph Fourier domain, and V Fn is the eigenvector matrix of</p><formula xml:id="formula_5">F Gn . If F Gn is unitary, then (F αn Gn ) H = F -αn Gn . Given a graph signal X : V 1 × V 2 → R on the Cartesian product graph G 1 □G 2 , let N i ≜ |V i | (i = 1, 2) and let X ∈ R N1×N2 denote the vertex-domain matrix representation of X.</formula><p>Definition 1: The 2D-GFRFT of X is defined as</p><formula xml:id="formula_6">X α f = F α G1 X F α G2 T ,<label>(2)</label></formula><p>where F α Gi (i = 1, 2) are the α-order GFRFT matrices of G i . The inverse transform is</p><formula xml:id="formula_7">X = F -α G1 X α f F -α G2 T .<label>(3)</label></formula><p>Equivalently, in vectorized form, letting x ≜ vec(X) and</p><formula xml:id="formula_8">x α f ≜ vec(X α f ), we have x α f = F α G2 ⊗ F α G1 x ≜ F α 2D x,<label>(4)</label></formula><p>with the corresponding inverse</p><formula xml:id="formula_9">x = F -α G2 ⊗ F -α G1 x α f ≜ F -α 2D x α f .<label>(5)</label></formula><p>The 2D-GFRFT thus provides a joint spectral representation spanned by the fractional eigenmodes of the two factor graphs and reduces to the classical 2D-GFT when α = 1 <ref type="bibr" target="#b37">[38]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. JFRFT</head><p>The FRFT extends the classical Fourier transform by introducing a continuous order parameter α [56]- <ref type="bibr" target="#b57">[58]</ref>. Its discrete version, known as the DFRFT, is represented by a matrix F α ∈ C T ×T , which reduces to the discrete Fourier transform (DFT) when α = 1 <ref type="bibr" target="#b58">[59]</ref>.</p><p>JFRFT generalizes this concept to time-varying graph signals, incorporating both the graph structure and temporal dynamics. Let X ∈ C N ×T denote a signal matrix defined over a graph with N vertices and T time instants, and let x = vec(X) ∈ C N T be its vectorized form.</p><p>Definition 2: The JFRFT of X is defined as</p><formula xml:id="formula_10">X (α,β) J = F β G X F α T ,<label>(6)</label></formula><p>where F α is the α-order DFRFT matrix, F β G is the βorder GFRFT matrix, and X (α,β) J denotes the JFRFT-domain representation of X. The inverse transform is</p><formula xml:id="formula_11">X = F -β G X (α,β) J F -α T .<label>(7)</label></formula><p>Equivalently, in vectorized form, we have</p><formula xml:id="formula_12">x (α,β) J = F α ⊗ F β G x ≜ F (α,β) J x,<label>(8)</label></formula><p>with the corresponding inverse</p><formula xml:id="formula_13">x = F -α ⊗ F -β G x (α,β) J ≜ F (-α,-β) J x (α,β) J .<label>(9)</label></formula><p>The JFRFT thus provides a joint fractional spectral representation of time-varying graph signals and reduces to the classical JFT when α = 1 and β = 1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>III. TWO-DIMENSIONAL GRAPH BI-FRACTIONAL FOURIER TRANSFORM A. Definition</head><p>The conventional 2D-GFRFT applies an identical fractional order to both factor graphs of a Cartesian product graph <ref type="bibr" target="#b37">[38]</ref>. Although this uniform specification simplifies the transform, it may fail to capture structural heterogeneity between the two factors. In particular, when the factors exhibit significantly different characteristics, such as in space-time graph scenarios, a single shared order can introduce spectral aliasing or obscure directional information.</p><p>To overcome these limitations, we propose the 2D-GBFRFT. Unlike the conventional formulation, 2D-GBFRFT assigns two independent fractional orders, α 1 and α 2 , to the factor graphs, enabling adaptivity along each dimension. This bi-fractional design improves both the flexibility and fidelity of spectral representations, particularly when the factor graphs have distinct structural properties.</p><p>Let two graphs be given as</p><formula xml:id="formula_14">G 1 = (V 1 , E 1 , A 1 ) and G 2 = (V 2 , E 2 , A 2 ), with N 1 = |V 1 | and N 2 = |V 2 |.</formula><p>Their adjacency matrices A 1 and A 2 admit the eigendecompositions</p><formula xml:id="formula_15">A 1 = V A1 Λ 1 V T A1 , A 2 = V A2 Λ 2 V T A2 .<label>(10)</label></formula><p>Given two independent fractional orders α 1 , α 2 ∈ R, the bifractional transform matrices are defined as</p><formula xml:id="formula_16">F α1 G1 = V A1 Λ α1 1 V T A1 , F α2 G2 = V A2 Λ α2 2 V T A2 .<label>(11)</label></formula><p>Given a graph signal</p><formula xml:id="formula_17">X : V 1 × V 2 → R on the Cartesian product graph G 1 □G 2 , let N i ≜ |V i | (i = 1, 2) and let X ∈ R N1×N2 denote the vertex-domain matrix representation of X.</formula><p>Definition 3: The 2D-GBFRFT of X is defined as</p><formula xml:id="formula_18">X α1,α2 f = F α1 G1 X F α2 G2 T ,<label>(12)</label></formula><p>where F αi Gi (i = 1, 2) denote the α i -order GFRFT matrices of G i , and X α1,α2 f is the 2D-GBFRFT representation of X. The inverse transform is</p><formula xml:id="formula_19">X = F -α1 G1 X α1,α2 f F -α2 G2 T .<label>(13)</label></formula><p>In vectorized form, letting x ≜ vec(X) and</p><formula xml:id="formula_20">x α1,α2 f ≜ vec(X α1,α2 f ), we have x α1,α2 f = F α2 G2 ⊗ F α1 G1 x ≜ F (α1,α2) 2D x,<label>(14)</label></formula><p>with the corresponding inverse</p><formula xml:id="formula_21">x = F -α2 G2 ⊗ F -α1 G1 x α1,α2 f ≜ F (-α1,-α2) 2D x α1,α2 f .<label>(15)</label></formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Properties</head><p>The proposed 2D-GBFRFT inherits and extends several classical properties of FRFT and GFRFT. We summarize the main theoretical properties that establish its effectiveness in graph signal processing.</p><p>Property 1 (Identity): If α 1 = α 2 = 0, the 2D-GBFRFT reduces to the identity transform, i.e.,</p><formula xml:id="formula_22">F (0,0) 2D = F 0 G2 ⊗ F 0 G1 = I N2 ⊗ I N1 = I N1N2 .<label>(16)</label></formula><p>Property 2 (Reduction to 2D-GFRFT): When α 1 = α 2 = α, the 2D-GBFRFT reduces to the standard 2D-GFRFT:</p><formula xml:id="formula_23">F (α,α) 2D = F α G2 ⊗ F α G1 = F α 2D . (<label>17</label></formula><formula xml:id="formula_24">)</formula><p>Property 3 (Unitarity):</p><formula xml:id="formula_25">If both F α1 G1 and F α2 G2 are unitary, then F (α1,α2) 2D</formula><p>is also unitary. Specifically,</p><formula xml:id="formula_26">F (α1,α2) 2D H F (α1,α2) 2D = F α2 G2 ⊗ F α1 G1 H F α2 G2 ⊗ F α1 G1 = F α2 G2 H F α2 G2 ⊗ F α1 G1 H F α1 G1 = I N1N2 ,<label>(18)</label></formula><p>which establishes unitarity. Property 4 (Index additivity): For any two sets of orders (α 1 , α 2 ) and (β 1 , β 2 ), the additivity property holds:</p><formula xml:id="formula_27">F (α1,α2) 2D F (β1,β2) 2D = (F α2 G2 ⊗ F α1 G1 )(F β2 G2 ⊗ F β1 G1 ) = (F α2 G2 F β2 G2 ) ⊗ (F α1 G1 F β1 G1 ) = F α2+β2 G2 ⊗ F α1+β1 G1 = F (α1+β1, α2+β2) 2D . (<label>19</label></formula><formula xml:id="formula_28">)</formula><p>In particular, setting</p><formula xml:id="formula_29">(β 1 , β 2 ) = (-α 1 , -α 2 ) yields F (α1,α2) 2D F (-α1,-α2) 2D = F (0,0) 2D = I N1N2 ,<label>(20)</label></formula><p>which confirms the invertibility of the 2D-GBFRFT.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>IV. GEODESIC-COUPLED GRAPH FRACTIONAL FOURIER TRANSFORM A. Definition</head><p>Following the Cartesian product setting introduced earlier, we consider a spatiotemporal signal X ∈ C N1×N2 supported on G 1 □G 2 , where G 1 is the spatial factor and G 2 is the temporal factor. Let F α G1 ∈ C N1×N1 denote the spatial GFRFT of order α ∈ R on G 1 . Along the temporal dimension, we consider two unitary fractional transforms of the same order</p><formula xml:id="formula_30">β ∈ R: a graph-induced temporal GFRFT F β G2 ∈ C N2×N2 and a discrete FRFT matrix F β ∈ C N2×N2 , satisfying (F β G2 ) H F β G2 = I N2 , (F β ) H F β = I N2 .<label>(21)</label></formula><p>Although both operators are unitary, they generally yield different temporal spectral coordinates. As discussed in the motivation, a naive Euclidean interpolation between the two endpoints does not preserve unitarity in general. We therefore connect them through a unitary geodesic on the unitary group U (N 2 ), constructed via the principal matrix logarithm and exponential.</p><p>Define the relative change-of-basis operator as</p><formula xml:id="formula_31">W t ≜ F β G2 H F β ∈ C N2×N2 .<label>(22)</label></formula><p>Since both factors are unitary, W t is unitary, and all its eigenvalues lie on the unit circle. Assumption 1 (Principal logarithm well-defined). We assume -1 / ∈ σ(W t ) so that the principal matrix logarithm log(W t ) is well defined and unique.</p><p>Definition 4 (Temporal geodesic coupling).</p><formula xml:id="formula_32">For λ ∈ [0, 1], define F (λ;β) t,GC ≜ F β G2 exp λ log(W t ) . (<label>23</label></formula><formula xml:id="formula_33">)</formula><p>This curve lies on U (N 2 ) for all λ and admits a closed-form inverse.</p><p>Equivalent phase-domain form: Because W t is unitary, it admits an eigendecomposition</p><formula xml:id="formula_34">W t = S t Λ t S H t , Λ t = diag e jθ1 , . . . , e jθ N 2 , θ k ∈ (-π, π),<label>(24)</label></formula><p>where S t is unitary and θ k are principal phases. Substituting (24) into (23) yields</p><formula xml:id="formula_35">F (λ;β) t,GC = F β G2 S t diag e jλθ1 , . . . , e jλθ N 2 S H t ,<label>(25)</label></formula><p>which makes explicit that λ linearly interpolates the eigenphases of W t . For a fixed β, when S t and {θ k } N2 k=1 are computed once, (25) also enables efficient evaluation for multiple values of λ, since varying λ only updates the diagonal phase factors. Definition 5 (GC-GFRFT). For X ∈ C N1×N2 , define the GC-GFRFT as</p><formula xml:id="formula_36">X (λ;α,β) GC = F α G1 X F (λ;β) t,GC T .<label>(26)</label></formula><p>Equivalently, letting x ≜ vec(X) and x</p><formula xml:id="formula_37">(λ;α,β) GC ≜ vec X (λ;α,β) GC</formula><p>, the standard vec-Kronecker identity gives</p><formula xml:id="formula_38">x (λ;α,β) GC = F (λ;β) t,GC ⊗ F α G1 x ≜ F (λ;α,β) GC x.<label>(27)</label></formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Properties</head><p>We next study the global GC operator</p><formula xml:id="formula_39">F (λ;α,β) GC ≜ F (λ;β) t,GC ⊗ F α G1 ∈ C (N1N2)×(N1N2) . (<label>28</label></formula><formula xml:id="formula_40">)</formula><p>Unless otherwise stated, all results hold under Assumption 1 and the unitarity of F α G1 , F β G2 , and F β . Property 5 (Degeneracy to two endpoints). For λ ∈ [0, 1], the GC operator degenerates to</p><formula xml:id="formula_41">F (0;α,β) GC = F β G2 ⊗ F α G1 , F (1;α,β) GC = F β ⊗ F α G1 . (29) Proof: See Appendix A. Property 6 (Unitarity). For any λ ∈ [0, 1], F (λ;α,β) GC H F (λ;α,β) GC = I N1N2 .<label>(30)</label></formula><p>Proof: See Appendix A. Property 7 (Endpoint symmetry). Define the swappedendpoint temporal coupling</p><formula xml:id="formula_42">F (λ;β) t,GC ≜ F β exp λ log (F β ) H F β G2 ,<label>(31)</label></formula><p>and the corresponding global operator F</p><formula xml:id="formula_43">(λ;α,β) GC ≜ F (λ;β) t,GC ⊗ F α G1 .</formula><p>Then, for all λ ∈ [0, 1],</p><formula xml:id="formula_44">F (λ;α,β) GC = F (1-λ;α,β) GC .<label>(32)</label></formula><p>Proof: See Appendix A.</p><p>V. LEARNABLE WIENER FILTERING IN FRACTIONAL SPECTRAL DOMAINS We extend the Wiener filtering principle to spatiotemporal graph signals under the proposed GC-GFRFT framework. Consider the stochastic observation model over a space-time domain</p><formula xml:id="formula_45">Y = G S XG T + N,<label>(33)</label></formula><p>where G S ∈ C N1×N1 and G T ∈ C N2×N2 denote known linear system responses associated with the spatial graph G 1 and the temporal dimension, respectively. The matrix X ∈ C N1×N2 represents the stochastic space-time signal, and N denotes additive noise. Letting x = vec(X) and n = vec(N), the model can be written in vectorized form as</p><formula xml:id="formula_46">y = G T T ⊗ G S x + n.<label>(34)</label></formula><p>When λ = 0, the temporal GC basis reduces to the graphinduced temporal fractional basis, and the resulting transform specializes to the decoupled 2D-GBFRFT with independent spatial and temporal orders.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Learnable Spectral Filtering via Gradient Descent</head><p>A direct grid search over fractional orders incurs exponentially many configurations as the number of tunable parameters increases. To avoid this, we leverage the differentiability of the GC-GFRFT operator and jointly optimize the fractional orders and diagonal spectral filter coefficients via gradientbased learning.</p><p>Specifically, the fractional orders (α, β) are treated as learnable parameters, whereas the coupling parameter λ is treated as a fixed structural hyperparameter that controls the geodesic coupling between the graph-induced temporal basis and the discrete temporal basis. In practice, λ is selected by a coarse search with step size 0.1 and then kept fixed during optimization; hence, λ is excluded from gradient updates.</p><p>Theorem 1 (Differentiability of GC-GFRFT with Respect to Fractional Orders): Let F (λ;α,β) GC denote the GC-GFRFT operator defined in <ref type="bibr" target="#b26">(27)</ref>. For any fixed λ satisfying Assumption 1, F (λ;α,β) GC is differentiable with respect to α and β. This differentiability enables the following risk-minimization formulation:</p><formula xml:id="formula_47">min α,β, h L(α, β, h; λ) = E F (λ;α,β) GC -1 H GC F (λ;α,β) GC y -x 2 2<label>(35)</label></formula><p>where H GC = diag(h) is the diagonal spectral filter in the GC-GFRFT domain. In implementation, the diagonal filtering corresponds to an element-wise multiplication in the matrix spectral domain, and ( <ref type="formula" target="#formula_47">35</ref>) is evaluated via (26) without explicitly forming F (λ;α,β) GC . The corresponding gradient-descent updates are given by</p><formula xml:id="formula_48">α (k+1) β (k+1) = α (k) β (k) -γ ∂L ∂α ∂L ∂β , h (k+1) = h (k) -γ h ∂L ∂h .</formula><p>(36) Here, γ and γ h denote the learning rates. Since the forward map in <ref type="bibr" target="#b34">(35)</ref> consists of differentiable matrix functions and linear operators, the gradients are well-defined.</p><p>Proof: See Appendix B. The overall procedure is summarized in Algorithm 1.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Computational Efficiency and Optimization Analysis</head><p>This subsection analyzes the computational cost and optimization behavior of the proposed learnable Wiener filtering framework. The efficiency primarily stems from the separable implementation of the GC-GFRFT in <ref type="bibr" target="#b25">(26)</ref>, which avoids explicitly forming the (N 1 N 2 )×(N 1 N 2 ) Kronecker matrix. In addition, the phase-domain representation in <ref type="bibr" target="#b24">(25)</ref> clarifies how the fixed coupling parameter λ enters the temporal operator through diagonal phase factors.</p><p>The overall computation consists of an offline spectral preprocessing stage and an online iterative learning stage. In the dense setting, preprocessing computes the eigendecompositions required by the spatial and temporal graph-induced fractional bases, incurring a one-time cost of O(N 3 1 + N 3 2 ) because the underlying graph topologies are fixed. These decompositions provide fixed eigenvector bases; during training, changing α or β only updates the associated diagonal phase Algorithm 1 GC-GFRFT Order and Filter Optimization Require: Observation Y, fixed coupling parameter λ, learning rates γ, γ h , iterations L Ensure: Learned orders (α, β) and diagonal filter H GC 1: Initialize α = 0.5, β = 0.5, and H GC = I 2: for k = 1 to L do 3:</p><p>Construct spatial basis F α G1 and temporal coupling basis F</p><p>(λ;β) t,GC via (23) 4: Compute the GC spectral representation: Y = F α G1 Y F (λ;β) t,GC T 5:</p><p>Apply element-wise spectral filtering:</p><formula xml:id="formula_49">X spec = H mat GC • Y 6: Inverse transform: X = F α G1 H X spec F (λ;β) t,GC * 7:</formula><p>Evaluate the empirical loss corresponding to <ref type="bibr" target="#b34">(35)</ref> 8:</p><p>Update (α, β, h) according to <ref type="bibr" target="#b35">(36)</ref> 9: end for 10: return (α, β) and H GC factors. Hence, the transform application reuses the cached eigenvectors and evaluates the operator via products of the form V diag(•) V H , without recomputing eigendecompositions across epochs.</p><p>During learning, the forward and inverse GC-GFRFT evaluations are computed efficiently through sequential matrix multiplications in <ref type="bibr" target="#b25">(26)</ref>. For X ∈ C N1×N2 , each forward or inverse pass consists of one left multiplication by F α G1 and one right multiplication by F ). The diagonal spectral filter H GC = diag(h) is applied element-wise in the spectral domain and requires only O(N 1 N 2 ) operations. Consequently, the per-epoch complexity is dominated by a constant number of forward/inverse transform evaluations.</p><p>For the temporal coupling operator, <ref type="bibr" target="#b24">(25)</ref> shows that for a fixed β, the dependence on λ is confined to diagonal phase factors. However, since β is learnable, W t (β) changes across epochs. Updating F (λ;β) t,GC via (25) requires recomputing a spectral factorization of the N 2 × N 2 unitary matrix W t (β), which has a dense worst-case cost of O(N 3  2 ). In typical spatiotemporal settings where N 2 ≪ N 1 , this term is substantially smaller than the spatial transform cost O(N 2 1 N 2 ) and therefore does not change the overall scaling. Table <ref type="table">I</ref> summarizes the parameter counts and computational complexities of all considered transforms.</p><p>The learning objective exhibits a hybrid structure. For fixed (α, β, λ), optimizing the diagonal spectral filter coefficients h reduces to a convex quadratic problem. Optimizing the fractional orders (α, β) is generally non-convex because the GC-GFRFT operators depend nonlinearly on these parameters; accordingly, first-order methods converge to stationary points in general. In our experiments, the proposed operator family is differentiable with respect to (α, β), and standard optimizers exhibit stable convergence under the initialization described in Algorithm 1.</p><p>TABLE I COMPARISON OF LEARNABLE PARAMETERS AND COMPUTATIONAL COMPLEXITY AMONG DIFFERENT FRACTIONAL TRANSFORMS Method Learnable Parameters Asymptotic Complexity 2D</p><formula xml:id="formula_50">-GFRFT N1N2 + 1 O(N 3 1 + N 3 2 + L(N 2 1 N2 + N1N 2 2 )) 2D-GBFRFT N1N2 + 2 O(N 3 1 + N 3 2 + L(N 2 1 N2 + N1N 2 2 )) JFRFT N1N2 + 2 O(N 3 1 + N 3 2 + L(N 2 1 N2 + N1N 2 2 )) GC-GFRFT N1N2 + 2 O(N 3 1 + N 3 2 + L(N 2 1 N2 + N1N 2 2 + N 3 2 ))</formula><p>Note: N 1 and N 2 denote the sizes of the spatial and temporal graphs, and L is the number of training epochs. The term O(N 3 1 + N 3 2 ) accounts for one-time offline eigendecompositions for graph-induced bases. For transforms involving a DFRFT temporal basis (e.g., JFRFT), the temporal basis can be precomputed once; we report a dense upper bound for consistency, while faster constructions may reduce this cost. The online cost is dominated by separable transform evaluations. For GC-GFRFT, when β is learnable, updating F (λ;β) t,GC requires recomputing a spectral factorization of Wt(β), introducing an additional O(N 3  2 ) term per epoch. The coupling parameter λ is treated as a fixed structural hyperparameter and is not counted as learnable.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>VI. APPLICATIONS ON REAL-WORLD DATA A. Denoising of Time-Varying Graph Signals</head><p>In <ref type="bibr" target="#b0">[1]</ref>, time-varying graph signals are modeled by representing the temporal dimension as a path graph and the spatial relationships by another graph, thereby forming a Cartesian product graph. This spatiotemporal modeling protocol enables a direct comparison with JFRFT under the same data and graph-construction setting. To evaluate denoising performance, we apply our framework to three real-world spatiotemporal datasets adopted from the benchmark setting in <ref type="bibr" target="#b41">[42]</ref>, namely COVID-19, Sea surface temperature (SST), and PM-25 air quality. For each dataset, the spatial relationships are modeled by k-nearest neighbor graphs, abbreviated as k-NN, with k ∈ {3, 4, 5}, and corrupted observations are generated by injecting additive white Gaussian noise (AWGN) with standard deviation σ ∈ {0.6, 0.9, 1.2} into the clean spatiotemporal signals.</p><p>To ensure a principled comparison within the class of fractional transform-based approaches, we employ the same GD optimization protocol for 2D-GFRFT, 2D-GBFRFT, JFRFT, and the proposed GC-GFRFT. Specifically, the learning rate is set to 0.1 and the number of iterations is fixed to 200. All fractional orders are initialized to 0.5, and the diagonal spectral filter is initialized as the identity matrix. This unified setup isolates the effect of the underlying fractional spectral representations from confounding factors arising from heterogeneous optimization choices.</p><p>For GC-GFRFT, the coupling regularization parameter λ is selected via an outer grid search with step size 0.1 and then kept fixed during optimization. Thus, λ is excluded from the learnable-parameter count and is not updated by gradientbased learning. For each candidate λ, the remaining fractional orders and the diagonal filter are optimized using the same GD protocol described above, and the reported results correspond to the best-performing λ under the adopted validation criterion.</p><p>As reported in Tables II-IV, 2D-GBFRFT improves upon 2D-GFRFT in most settings, which supports the advantage of decoupling fractional orders across spatial and temporal dimensions. A small number of configurations exhibit inferior performance, which is consistent with the nonconvexity induced by fractional spectral parameterization and the sensitivity of first-order optimization to initialization and local stationary points. Moreover, the relative ordering between 2D-GBFRFT and JFRFT varies across datasets and graph constructions, indicating that no single fixed fractional basis is uniformly optimal for real-world time-varying graph signals.</p><p>Relative to classical filtering baselines, including the spectral graph wavelet transform (SGWT) <ref type="bibr" target="#b17">[18]</ref>, median filtering <ref type="bibr" target="#b59">[60]</ref>, and autoregressive moving-average (ARMA) graph filtering <ref type="bibr" target="#b23">[24]</ref>, fractional transform-based methods achieve substantially lower MSE across nearly all noise levels and k-NN settings. These results suggest that adaptive fractional spectral representations provide a stronger denoising prior than handcrafted smoothing operators.</p><p>Finally, GC-GFRFT attains the best or tied-best performance in the majority of configurations, demonstrating robust effectiveness across heterogeneous spatiotemporal characteristics. We further compare GC-GFRFT with representative graph neural network baselines, including the graph convolutional network (GCN) <ref type="bibr" target="#b60">[61]</ref>, the graph attention network (GAT) <ref type="bibr" target="#b61">[62]</ref>, and Chebyshev graph convolution (ChebyNet) <ref type="bibr" target="#b62">[63]</ref>. Since neural models are commonly trained under model-specific practices such as learning-rate schedules, numbers of epochs, and early-stopping criteria, these baselines are reported under their standard training and model-selection protocols rather than being constrained to the GD setup adopted for fractional transforms. Under these typical settings, GC-GFRFT remains highly competitive and often yields lower MSE; however, in a limited number of configurations, a neural baseline can achieve slightly better performance. Overall, the results demonstrate that GC-GFRFT consistently surpasses classical filtering baselines while providing performance that is superior or comparable to representative neural approaches on realworld time-varying graph signals.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Deblurring of Dynamic Images</head><p>We further evaluate the proposed GC-GFRFT on dynamic image deblurring and compare it with fractional transform baselines, including 2D-GFRFT, 2D-GBFRFT, and JFRFT. In addition, we report results of three representative learningbased deblurring methods, DeepDeblur <ref type="bibr" target="#b63">[64]</ref>, Restormer <ref type="bibr" target="#b64">[65]</ref>, and NAFNet <ref type="bibr" target="#b65">[66]</ref>, as external baselines. Experiments are conducted on the REDS dataset. We extract three consecutive frames, resize them to 200 × 200 pixels, and partition each frame into 100 non-overlapping patches of size 20 × 20. Each triplet of corresponding patches across the three frames is modeled as a spatiotemporal graph signal, where grayscale intensities are treated as signal values. The spatial graph is constructed as a 4-nearest neighbor graph based on pixel locations, and the temporal dimension is represented by a 3node path graph.</p><p>Each 20 × 20 patch triplet is treated as an independent instance for optimization. The fractional orders and diagonal filter coefficients are optimized in a patch-wise manner, and the restored patches are reassembled to reconstruct the deblurred sequence. Adaptive filtering is performed under the respective transforms (2D-GFRFT, 2D-GBFRFT, JFRFT, and</p><p>TABLE II DENOISING RESULTS (MSE) ON THE COVID-19 DATASET Method 3-NN 4-NN 5-NN σ=0.6 σ=0.9 σ=1.2 σ=0.6 σ=0.9 σ=1.2 σ=0.6 σ=0.9 σ=1.2 Fractional Transform-Based Methods 2D-GFRFT (α) 0.6424 (0.307) 1.0626 (=0.263) 1.0749 (-0.485) 0.4901 (0.285) 0.8104 (0.298) 1.1075 (0.788) 0.3828 (0.682) 0.5896 (0.860) 0.7687 (1.184) 2D-GBFRFT (α1, α2) 0.1060 (0.033, 0.999) 0.2155 (0.047, 0.998) 0.3459 (0.060, 0.998) 0.4012 (1.358, 0.594) 0.6977 (1.362, 0.566) 1.1212 (2.129, 0.565) 0.1077 (0.008, 1.000) 0.2216 (0.005, 1.000) 0.3593 (-0.002, 1.000) JFRFT (α, β) 0.1051 (0.051, 0.996) 0.2164 (0.072, 0.995) 0.7659 (1.055, 1.082) 0.4095 (1.281, 0.609) 0.7371 (1.274, 0.611) 0.3538 (0.057, 1.000) 0.7058 (0.547, 0.318) 1.1149 (0.553, 0.281) 0.3693 (-0.040, 1.000) GC-GFRFT (α, β, λ) 0.1051 (0.051, 0.996, 1.000) 0.2155 (0.047, 0.998, 0.000) 0.3459 (0.060, 0.998, 0.000) 0.1697 (0.060, 0.715, 0.800) 0.2740 (0.071, 1.019, 0.800) 0.3538 (0.057, 1.000, 1.000) 0.1077 (0.008, 1.000, 0.000) 0.2216 (0.005, 1.000, 0.000) 0.3593 (-0.002, 1.000, 0.000) Traditional Baselines SGWT 3.5500 6.8600 11.5600 3.5200 6.8400 11.5600 3.5000 6.7900 11.5100 Median 4.5300 9.5900 17.2800 5.2500 9.9700 16.5400 4.5700 9.0500 14.9300 ARMA 2.4300 3.3200 4.2100 2.4300 2.9800 3.4900 2.3100 2.7200 3.1000 Graph Neural Network Baselines GCN 1.2613 1.3116 1.3455 1.3972 1.4315 1.4547 1.4741 1.5060 1.5163 GAT 1.3306 1.2610 1.2498 1.3729 1.4338 1.5736 1.4473 1.4668 1.5487 ChebyNet 0.9834 1.1955 1.3489 0.7331 0.9758 1.1557 0.4505 0.5852 0.6853</p><p>TABLE III DENOISING RESULTS (MSE) ON THE SST DATASET Method 3-NN 4-NN 5-NN σ=0.6 σ=0.9 σ=1.2 σ=0.6 σ=0.9 σ=1.2 σ=0.6 σ=0.9 σ=1.2 Fractional Transform-Based Methods 2D-GFRFT (α) 0.7200 (0.698) 1.5089 (0.684) 2.4722 (0.668) 0.7888 (0.262) 1.6653 (0.262) 2.7415 (0.265) 0.6310 (0.783) 1.2809 (0.792) 2.0307 (0.820) 2D-GBFRFT (α1, α2) 0.6534 (0.582, 0.740) 1.3608 (0.561, 0.755) 2.2075 (0.522, 0.774) 0.5552 (0.181, 0.827) 1.0648 (0.163, 1.003) 1.7662 (0.165, 1.000) 0.6064 (0.739, 0.379) 1.2161 (0.753, 0.484) 1.9799 (0.762, 0.517) JFRFT (α, β) 1.1685 (0.752, 0.747) 2.2851 (0.748, 0.779) 3.4158 (0.850, 0.889) 2.1764 (0.430, 0.447) 1.1908 (0.185, 0.994) 2.0045 (0.185, 1.000) 0.4772 (0.740, 0.642) 0.8394 (0.667, 0.759) 1.4031 (0.669, 0.744) GC-GFRFT (α, β, λ) 0.6395 (0.604, 0.717, 0.100) 1.3608 (0.561, 0.755, 0.000) 2.2075 (0.522, 0.774, 0.000) 0.5295 (0.238, 1.238, 0.400) 1.0648 (0.163, 1.003, 0.000) 1.2807 (1.098, 1.289, 0.600) 0.4772 (0.740, 0.642, 1.000) 0.8394 (0.667, 0.759, 1.000) 1.4031 (0.669, 0.744, 1.000) Traditional Baselines SGWT 5.3200 10.7100 18.2900 5.3000 10.6200 18.1200 4.8400 9.7700 16.7800 Median 6.0400 13.7600 24.2800 6.3400 12.6900 21.6500 5.4000 10.0900 16.8300 ARMA 2.9700 4.3900 5.7900 3.2400 4.3500 5.2800 3.7300 4.7800 5.6300 Graph Neural Network Baselines GCN 2.5521 3.6928 4.4128 1.9366 2.6767 3.3740 2.1656 2.9620 3.7989 GAT 2.5520 3.7652 4.9559 3.0085 4.2111 5.4557 3.2268 4.5049 5.9509 ChebyNet 3.4350 4.7864 5.4158 3.0030 4.3172 5.3172 2.6764 4.0671 4.8447</p><p>TABLE IV DENOISING RESULTS (MSE) ON THE PM-25 DATASET Method 3-NN 4-NN 5-NN σ=0.6 σ=0.9 σ=1.2 σ=0.6 σ=0.9 σ=1.2 σ=0.6 σ=0.9 σ=1.2 Fractional Transform-Based Methods 2D-GFRFT (α) 0.6636 (0.813) 1.2474 (0.804) 1.8847 (0.801) 0.9222 (0.584) 1.7594 (0.577) 2.1018 (1.014) 0.6605 (0.315) 1.1877 (0.318) 1.7555 (0.320) 2D-GBFRFT (α1, α2) 0.6398 (0.784, 1.371) 1.1952 (0.723, 0.513) 1.8206 (0.716, 0.507) 0.7653 (0.613, -0.273) 1.5059 (0.618, 0.272) 2.2999 (0.624, 0.275) 0.6008 (0.474, 0.527) 1.1854 (0.322, 0.298) 1.7549 (0.322, 0.311) JFRFT (α, β) 0.4872 (0.785, 0.517) 0.8825 (0.846, 0.573) 1.3697 (0.827, 0.563) 0.4219 (0.965, 0.561) 0.8629 (0.977, 0.567) 1.3931 (0.974, 0.564) 0.4497 (0.480, 0.541) 0.9242 (0.490, 0.538) 1.4784 (0.505, 0.536) GC-GFRFT (α, β, λ) 0.3746 (0.857, 0.868, 0.700) 0.7509 (0.852, 0.855, 0.700) 1.1665 (0.701, 1.398, 0.300) 0.4219 (0.965, 0.561, 1.000) 0.8629 (0.977, 0.567, 1.000) 1.3445 (1.025, 0.944, 0.600) 0.4191 (0.418, 0.656, 0.600) 0.8275 (1.078, 1.475, 0.300) 1.3906 (0.414, 0.686, 0.600) Traditional Baselines SGWT 3.6100 6.6500 10.9800 3.3700 6.1900 10.2300 3.3700 6.2000 10.2400 Median 5.0300 8.9600 14.7000 4.3800 7.4200 11.8700 4.6700 7.7800 12.0500 ARMA 2.6200 3.3000 3.9700 2.5000 3.0300 3.5900 2.4000 2.7500 3.0800 Graph Neural Network Baselines GCN 0.7009 0.7143 0.6977 0.7127 0.7210 0.7150 0.7032 0.7084 0.6992 GAT 0.8098 0.7671 0.7785 0.8110 0.7697 0.7958 0.7495 0.7194 0.7359 ChebyNet 0.6436 0.6625 0.6766 0.5952 0.6204 0.6527 0.6026 0.6215 0.6459 GC-GFRFT), with MSE used as the optimization objective.</p><p>Optimization is carried out using Adam with a learning rate of 2×10 -2 for 100 epochs. The fractional orders are initialized to 0.8, and the diagonal filter is initialized as the identity matrix.</p><p>For GC-GFRFT, the coupling parameter λ is selected by an outer grid search with step size 0.1 and is kept fixed during the subsequent optimization. Gradient-based updates are applied only to the fractional orders and the diagonal spectral filter coefficients; in particular, λ is not updated by backpropagation and is not counted as a learnable parameter.</p><p>For each frame t, we compute MSE, peak signal-to-noise ratio (PSNR), and structural similarity index measure (SSIM) as follows:</p><formula xml:id="formula_51">M SE t = 1 HW i,j I t (i, j) -Ît (i, j) 2 ,<label>(37)</label></formula><formula xml:id="formula_52">P SN R t = 10 log 10 MAX 2 M SE t , (<label>38</label></formula><formula xml:id="formula_53">)</formula><formula xml:id="formula_54">SSIM t = (2µ It µ Ît + C 1 )(2σ It Ît + C 2 ) (µ 2 It + µ 2 Ît + C 1 )(σ 2 It + σ 2 Ît + C 2 ) ,<label>(39)</label></formula><p>where I t and Ît denote the ground-truth and reconstructed frames at time t, respectively, and H and W are the image height and width.</p><p>Quantitative results are reported in Tables V and VI. Among the fractional transform baselines, 2D-GBFRFT consistently improves upon 2D-GFRFT, supporting the benefit of allowing distinct fractional orders along the spatial and temporal dimensions. GC-GFRFT further reduces M SE avg and achieves the best overall performance in terms of M SE avg , P SN R avg , and SSIM avg , indicating that coupling-aware fractional modeling provides a more effective transform-domain representation for dynamic deblurring under patch-wise optimization.</p><p>For the fractional transform-based methods, we adopt an identical patch-wise instance-adaptive optimization protocol, where the fractional orders and diagonal spectral filter are updated by Adam for each patch triplet. In contrast, the learning-based baselines are evaluated in inference mode using their official implementations and publicly released weights, without any test-time parameter adaptation. Therefore, comparisons with learning-based methods primarily reflect the effectiveness of instance-adaptive fractional spectral modeling under short temporal windows, rather than a fully matched training paradigm.</p><p>Fig. <ref type="figure" target="#fig_3">2</ref> provides qualitative comparisons for dynamic image deblurring. For each frame, a representative region is highlighted on the full image, and the corresponding magnified patch is shown beneath it. Compared with the competing methods, GC-GFRFT recovers sharper edges and clearer local textures, while exhibiting fewer residual blur artifacts around object boundaries and fine structures. These visual observations are consistent with the quantitative results and further demonstrate the effectiveness of GC-GFRFT for dynamic image deblurring.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Denoising of Dynamic Images</head><p>To further evaluate robustness beyond dynamic deblurring, we consider a dynamic image denoising task on the REDS dataset. Clean sequences are first converted to floating-point representations and normalized to the range [0, 1]. Additive white Gaussian noise (AWGN) with zero mean and standard deviation σ/255 is then injected into the normalized intensities, where we set σ = 18 on the 8-bit scale. After noise injection, the corrupted frames are clipped to the valid range [0, 1] and re-quantized to 8-bit integers, which follows a standard digital imaging pipeline and ensures valid pixel representations.</p><p>We compare the proposed GC-GFRFT with fractional transform baselines, including 2D-GFRFT, 2D-GBFRFT, and JFRFT. We also include three classical spatial denoisers as reference baselines, namely Gaussian filtering, median filtering, and non-local means (NLM), following the implementation and parameter settings in <ref type="bibr" target="#b42">[43]</ref>. These classical methods are applied frame-wise without any learning or test-time adaptation. Gaussian filtering uses a 5 × 5 kernel with the standard deviation determined by the kernel size. Median filtering uses a</p><p>TABLE V COMPARISON OF DEBLURRING PERFORMANCE (MSE/PSNR/SSIM) ON THE REDS DATASET Dataset Method Frame MSE PSNR SSIM REDS 2D-GFRFT Frame 1 1.0389 47.96 0.9992 Frame 2 0.9281 48.45 0.9992 Frame 3 1.2405 47.20 0.9991 2D-GBFRFT Frame 1 1.0010 48.13 0.9993 Frame 2 0.9137 48.52 0.9993 Frame 3 1.2424 47.19 0.9992 JFRFT Frame 1 0.9406 48.40 0.9994 Frame 2 0.9392 48.40 0.9993 Frame 3 1.2460 47.18 0.9991 GC-GFRFT Frame 1 0.9564 48.32 0.9994 Frame 2 0.9308 48.44 0.9993 Frame 3 1.2107 47.30 0.9992 DeepDeblur Frame 1 204.6643 25.02 0.8140 Frame 2 214.1956 24.82 0.8054 Frame 3 229.0492 24.53 0.8028 Restormer Frame 1 253.9732 24.08 0.7949 Frame 2 245.9362 24.22 0.7961 Frame 3 262.5448 23.94 0.7934 NAFNet Frame 1 245.4231 24.23 0.7994 Frame 2 238.4010 24.36 0.7997 Frame 3 266.5690 23.87 0.7901</p><p>TABLE VI DEBLURRING PERFORMANCE IN TERMS OF M SEAVG , P SN RAVG , AND SSIMAVG ON THE REDS DATASET Dataset Method M SE avg P SN R avg SSIM avg REDS 2D-GFRFT 1.0692 47.87 0.9992 2D-GBFRFT 1.0524 47.95 0.9992 JFRFT 1.0419 47.99 0.9993 GC-GFRFT 1.0326 48.02 0.9993 DeepDeblur 215.9697 24.79 0.8074 Restormer 254.1514 24.08 0.7948 NAFNet 250.1310 24.15 0.7964 5×5 neighborhood. NLM denoising uses filter strength h = 20 with a 7 × 7 template window and a 21 × 21 search window.</p><p>For the fractional transform-based methods, all experimental settings-including the patch-wise spatiotemporal graph construction, initialization strategy, optimization hyperparameters, and stopping criterion-are kept identical to those used in the preceding dynamic deblurring experiments unless otherwise specified, thereby ensuring a consistent and fair comparison within the fractional transform family.</p><p>Quantitative results are reported in Tables VII and VIII. Overall, the fractional transform-based methods consistently outperform classical spatial filters across the evaluated frames. This indicates that exploiting spatiotemporal structure through graph-based spectral representations provides a stronger denoising prior than purely spatial neighborhood smoothing. Within the fractional transform family, decoupling the fractional orders along the spatial and temporal dimensions generally improves over using a single shared order, consistent with the benefit of increased modeling flexibility. The proposed GC-GFRFT achieves the best overall average performance and remains highly competitive at the per-frame level, supporting the effectiveness of coupling-aware fractional modeling for dynamic denoising. Fig. <ref type="figure">3</ref> provides qualitative comparisons for dynamic image denoising. For each frame, a representative region is highlighted on the full image, and the corresponding magnified patch is shown beneath it. Compared with classical spatial filters, the fractional transform-based methods preserve more meaningful local structures while suppressing noise more effectively. Among them, GC-GFRFT produces cleaner textures and fewer residual noise artifacts, while avoiding the oversmoothing effects observed in Gaussian filtering, median filtering, and NLM. These observations are consistent with the quantitative results in Tables VII and VIII, further supporting the effectiveness of GC-GFRFT for dynamic image denoising.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>VII. CONCLUSION AND FUTURE WORK</head><p>In this paper, we developed a unified fractional spectral framework for graph signals on Cartesian product graphs, extending conventional integer-order and single-parameter fractional transforms. We first proposed the 2D-GBFRFT, which assigns independent fractional orders to the factor graphs and relaxes the shared-order constraint of the standard 2D-GFRFT, thereby improving modeling flexibility for spatiotemporal signals. To bridge the graph-induced temporal basis and the discrete temporal basis, we further introduced the GC-GFRFT by constructing a coupling path on the unitary manifold. This construction preserves unitarity and admits a closedform inverse, providing a principled link between connectivityinduced graph spectra and classical temporal spectral representations.</p><p>Building upon these transforms, we formulated a differentiable Wiener filtering approach in which the fractional orders are optimized end-to-end via gradient-based learning, while the coupling parameter serves as a fixed structural regularizer. Experiments on real-world tasks, including timevarying graph-signal denoising and dynamic image restoration, demonstrate consistent gains over existing fractional transforms and remain competitive with representative learningbased baselines.</p><p>Despite these promising results, the current framework still has several limitations. In particular, the proposed GC-GFRFT is presently restricted to interpolation between two endpoint unitary bases and therefore does not yet support more general spectral extrapolation. In addition, the coupling parameter λ is treated as a fixed structural hyperparameter rather than being jointly learned with the remaining model parameters.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Fig. 1 .</head><label>1</label><figDesc>Fig. 1. Overview of the proposed GC-GFRFT framework and its applications.</figDesc><graphic coords="2,48.96,56.06,514.07,217.77" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><figDesc>T . With dense arithmetic, eachtransform evaluation costs O(N 2 1 N 2 + N 1 N 2 2</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Fig. 2 .</head><label>2</label><figDesc>Fig. 2. Visual comparison on the REDS sequence for dynamic image deblurring. For each frame, the first row shows the selected region on the full, and the second row shows the corresponding magnified patch.</figDesc><graphic coords="10,50.16,349.91,55.00,55.00" type="bitmap" /></figure>
+		</body>
+		<back>
+
+			<div type="funding">
+<div><p>This work was supported in part by the <rs type="funder">Open Foundation of Hubei Key Laboratory of Applied Mathematics (Hubei University)</rs> under Grant <rs type="grantNumber">HBAM202404</rs>; in part by the <rs type="funder">Foundation of Key Laboratory of System Control and Information Processing, Ministry of Education</rs> under Grant Scip20240121; and in part by the <rs type="funder">Startup Foundation for Introducing Talent of Nanjing Institute of Technology</rs> under Grant <rs type="grantNumber">YKJ202214</rs>.</p></div>
+			</div>
+			<listOrg type="funding">
+				<org type="funding" xml:id="_8x88fyp">
+					<idno type="grant-number">HBAM202404</idno>
+				</org>
+				<org type="funding" xml:id="_32h3RtK">
+					<idno type="grant-number">YKJ202214</idno>
+				</org>
+			</listOrg>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Original</head><p>Noisy 2D-GFRFT 2D-GBFRFT JFRFT GC-GFRFT Gaussian Median NLM Fig. <ref type="figure">3</ref>. Visual comparison on the REDS sequence for dynamic image denoising. For each frame, the first row shows the selected region on the full image, and the second row shows the corresponding magnified patch.</p><p>Future work will therefore focus on extending the geodesic coupling mechanism beyond the current interpolation range to support spectral extrapolation. Another important direction is to integrate differentiable GC-GFRFT modules into deep graph neural networks as lightweight spectral layers, thereby enhancing spectral expressiveness with modest parameter overhead.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>APPENDIX A PROOF OF PROPERTIES 5-7</head><p>Proof of Property 5: From (23),</p><p>Substituting into (28) yields <ref type="bibr" target="#b28">(29)</ref>.</p><p>Proof of Property 6: Let A ≜ log(W t ). Under Assumption 1, A H = -A, so exp(λA) is unitary for any real λ, and in particular for λ ∈ [0, 1]. Thus F <ref type="formula">28</ref>) gives <ref type="bibr" target="#b29">(30)</ref>.</p><p>Proof of Property 7:</p><p>.</p><p>Tensoring with F α G1 yields <ref type="bibr" target="#b31">(32)</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>APPENDIX B PROOF OF THEOREM 1</head><p>For clarity, we reuse the notation in Section IV and write the learnable spatial order as α. Throughout this proof, the coupling parameter λ is regarded as a fixed hyperparameter and is not updated by GD.</p><p>Recall from <ref type="bibr" target="#b26">(27)</ref> that the global GC operator admits the Kronecker form</p><p>where the temporal GC basis is given in <ref type="bibr" target="#b22">(23)</ref> by</p><p>(41) By Assumption 1, -1 / ∈ σ(W t (β)), hence the principal matrix logarithm log(W t (β)) is well-defined and Fréchet differentiable, and so is exp(λ log(W t (β))).</p><p>Differentiability w.r.t. α. Since F α G1 is a differentiable fractional operator with respect to its order, ∂F α G1 /∂α exists.  Using <ref type="bibr" target="#b39">(40)</ref> and the Kronecker-product rule (with</p><p>Therefore, F</p><p>G2 and exp(λ log(W t (β))). Applying the product rule and the chain rule for Fréchet derivatives yields</p><p>where L exp (•; •) and L log (•; •) denote the Fréchet derivatives of the matrix exponential and principal logarithm, respectively.</p><p>and ∂F β /∂β exists since F β is also a differentiable fractional transform with respect to β. Hence ∂F (λ;β) t,GC /∂β exists. Finally, by <ref type="bibr" target="#b39">(40)</ref>,</p><p>which establishes differentiability with respect to β. Differentiability of the objective. By Property 6 in Section IV, F (λ;α,β) GC is unitary for λ ∈ [0, 1], so its inverse exists and satisfies (F (λ;α,β) GC</p><p>) -1 = (F (λ;α,β) GC ) H . Therefore, the mapping y → (F (λ;α,β) GC</p><p>) -1 H GC F (λ;α,β) GC y is a composition of differentiable matrix functions and linear operators in (α, β, h). Consequently, the loss in ( <ref type="formula">35</ref>) is differentiable with respect to (α, β, h) for fixed admissible λ. ■</p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">SVD-based graph Fourier transforms on directed product graphs</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Cheng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><forename type="middle">J</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Inf. Process. Netw</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="page" from="531" to="541" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Graph signal reconstruction techniques for iot air pollution monitoring platforms</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Ferrer-Cid</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">M</forename><surname>Barcelo-Ordinas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Garcia-Vidal</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Internet Things J</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="issue">24</biblScope>
+			<biblScope unit="page">362</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Data-reuse adaptive algorithms for graph signal estimation over sensor network</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Xiang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Sens. J</title>
+		<imprint>
+			<biblScope unit="volume">24</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="5086" to="5096" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Graph scattering beyond wavelet shackles</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Koke</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Kutyniok</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc</title>
+		<meeting>null</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page">232</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Theory and design of joint time-vertex nonsubsampled filter banks</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">B</forename><surname>Tay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Xu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">69</biblScope>
+			<biblScope unit="page" from="1968" to="1982" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Estimating and analyzing neural information flow using signal processing on graphs</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Schwock</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Bloch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Atlas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Abadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Yazdan-Shahmorad</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. IEEE Int. Conf. Acoust., Speech, Signal Process</title>
+		<meeting>IEEE Int. Conf. Acoust., Speech, Signal ess</meeting>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page" from="1" to="5" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Graph neural networks in brain connectivity studies: Methods, challenges, and future directions</title>
+		<author>
+			<persName><forename type="first">H</forename><surname>Mohammadi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Karwowski</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Brain Sci</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">17</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Graph signal processing for geometric data and beyond: Theory and applications</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Pang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Tian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C.-W</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Vetro</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Multimedia</title>
+		<imprint>
+			<biblScope unit="volume">24</biblScope>
+			<biblScope unit="page" from="3961" to="3977" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Topological signal processing over generalized cell complexes</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Sardellitti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Barbarossa</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">72</biblScope>
+			<biblScope unit="page" from="687" to="700" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Fractional Fourier transforms meet Riesz potentials and image processing</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Imaging Sci</title>
+		<imprint>
+			<biblScope unit="volume">17</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="476" to="500" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Refining image edge detection via linear canonical Riesz transforms</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Fu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Li</surname></persName>
+		</author>
+		<idno type="DOI">10.1137/25M1752225</idno>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Imaging Sci</title>
+		<imprint>
+			<date type="published" when="2026">2026</date>
+			<pubPlace>Early Access</pubPlace>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">The emerging field of signal processing on graphs: Extending high-dimensional data analysis to networks and other irregular domains</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">I</forename><surname>Shuman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">K</forename><surname>Narang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Frossard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ortega</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Vandergheynst</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Signal Process. Mag</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="83" to="98" />
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Discrete signal processing on graphs</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sandryhaila</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">M F</forename><surname>Moura</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">61</biblScope>
+			<biblScope unit="issue">7</biblScope>
+			<biblScope unit="page" from="1644" to="1656" />
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Discrete signal processing on graphs: Frequency analysis</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sandryhaila</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">M F</forename><surname>Moura</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">62</biblScope>
+			<biblScope unit="issue">12</biblScope>
+			<biblScope unit="page" from="3042" to="3054" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Vertex-frequency graph signal processing: A comprehensive review</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Stanković</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Mandic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Daković</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Scalzo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Brajović</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Sejdić</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">G</forename><surname>Constantinides</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Digit. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">107</biblScope>
+			<biblScope unit="page">102802</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">On the shift operator, graph frequency, and optimal filtering in graph signal processing</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gavili</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X.-P</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">65</biblScope>
+			<biblScope unit="issue">23</biblScope>
+			<biblScope unit="page" from="6303" to="6318" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Diffusion wavelets</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">R</forename><surname>Coifman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Maggioni</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Appl. Comput. Harmon. Anal</title>
+		<imprint>
+			<biblScope unit="volume">21</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="53" to="94" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Wavelets on graphs via spectral graph theory</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">K</forename><surname>Hammond</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Vandergheynst</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Gribonval</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Appl. Comput. Harmon. Anal</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="129" to="150" />
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">Perfect reconstruction two-channel wavelet filter banks for graph structured data</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">K</forename><surname>Narang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ortega</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">60</biblScope>
+			<biblScope unit="issue">6</biblScope>
+			<biblScope unit="page" from="2786" to="2799" />
+			<date type="published" when="2012">2012</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Manifold denoising based on spectral graph wavelets</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Deutsch</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ortega</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Medioni</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. IEEE Int. Conf. Acoust., Speech, Signal Process</title>
+		<meeting>IEEE Int. Conf. Acoust., Speech, Signal ess</meeting>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="4673" to="4677" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Discrete signal processing on graphs: Sampling theory</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Varma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sandryhaila</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kovačević</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">63</biblScope>
+			<biblScope unit="issue">24</biblScope>
+			<biblScope unit="page" from="6510" to="6523" />
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Generalized sampling on graphs with subspace and smoothness priors</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Tanaka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><forename type="middle">C</forename><surname>Eldar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">68</biblScope>
+			<biblScope unit="page" from="2272" to="2286" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Graph signal processing: Dualizing gsp sampling in the vertex and spectral domains</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">M F</forename><surname>Moura</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">70</biblScope>
+			<biblScope unit="page" from="2883" to="2898" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Autoregressive moving average graph filtering</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Isufi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Loukas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Simonetto</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Leus</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">65</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="274" to="288" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Time-varying graph signal denoising via median filters</title>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">B</forename><surname>Tay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Jiang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Circuits Syst. II, Exp. Briefs</title>
+		<imprint>
+			<biblScope unit="volume">68</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="1053" to="1057" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Analysis of airborne LiDAR point clouds with spectral graph filtering</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Bayram</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Frossard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Vural</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Alatan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Geosci. Remote Sens. Lett</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="issue">8</biblScope>
+			<biblScope unit="page" from="1284" to="1288" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<monogr>
+		<title level="m" type="main">Introduction to Graph Signal Processing</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ortega</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<publisher>Cambridge Univ. Press</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">The fractional Fourier transform on graphs: Sampling and recovery</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Li</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. IEEE Int. Conf. Signal Process</title>
+		<meeting>IEEE Int. Conf. Signal ess</meeting>
+		<imprint>
+			<publisher>ICSP</publisher>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="1103" to="1108" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">The fractional Fourier transform on graphs</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Cheng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. Asia-Pacific Signal Inf. Process. Assoc. Annu. Summit Conf. (APSIPA ASC</title>
+		<meeting>Asia-Pacific Signal Inf. ess. Assoc. Annu. Summit Conf. (APSIPA ASC</meeting>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page" from="105" to="110" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">The fractional Fourier transform and time-frequency representations</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">B</forename><surname>Almeida</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">42</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page" from="3084" to="3091" />
+			<date type="published" when="2002">2002</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Graph fractional Fourier transform: A unified theory</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Alikas ¸ifoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Kartal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Koc</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">¸</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">72</biblScope>
+			<biblScope unit="page" from="3834" to="3850" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Generalized sampling of graph signals with the prior information based on graph fractional Fourier transform</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Yan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">214</biblScope>
+			<biblScope unit="page">109263</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Trainable fractional Fourier transform</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Koc</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">¸</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Alikas ¸ifoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">C</forename><surname>Aras</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Koc</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">¸</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Signal Process. Lett</title>
+		<imprint>
+			<biblScope unit="volume">31</biblScope>
+			<biblScope unit="page" from="751" to="755" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Fractional Fourier transform meets transformer encoder</title>
+		<author>
+			<persName><forename type="first">F</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Koc</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">¸</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Signal Process. Lett</title>
+		<imprint>
+			<biblScope unit="volume">29</biblScope>
+			<biblScope unit="page" from="2258" to="2262" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<monogr>
+		<title level="m" type="main">Multi-dimensional graph Fourier transform</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Kurokawa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Oki</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Nagao</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1712.07811</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Forecasting multi-dimensional processes over graphs</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Natali</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Isufi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Leus</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. IEEE Int. Conf. Acoust., Speech, Signal Process. (ICASSP)</title>
+		<meeting>IEEE Int. Conf. Acoust., Speech, Signal ess. (ICASSP)</meeting>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page" from="5575" to="5579" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Sampling theory for graph signals on product graphs</title>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">A</forename><surname>Varma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Kovačević</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. IEEE Global Conf. Signal Inf. Process. (GlobalSIP)</title>
+		<meeting>IEEE Global Conf. Signal Inf. ess. (GlobalSIP)</meeting>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="768" to="772" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Multi-dimensional graph fractional Fourier transform and its application to data compression</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Li</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Digit. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">129</biblScope>
+			<biblScope unit="page">103683</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">Frequency analysis of time-varying graph signals</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Loukas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Foucard</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. IEEE Global Conf. Signal Inf. Process. (GlobalSIP)</title>
+		<meeting>IEEE Global Conf. Signal Inf. ess. (GlobalSIP)</meeting>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="346" to="350" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Time-vertex signal processing: Framework, analytical extensions, and applications</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Grassi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Loukas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Perraudin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Ricaud</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">66</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="817" to="831" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Joint time-vertex fractional Fourier transform</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Alikas ¸ifoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Kartal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Özgünay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Koc</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">¸</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">233</biblScope>
+			<biblScope unit="page">109944</biblScope>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">Wiener filtering in joint timevertex fractional Fourier domains</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Alikas ¸ifoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Kartal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Koc</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">¸</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Signal Process. Lett</title>
+		<imprint>
+			<biblScope unit="volume">31</biblScope>
+			<biblScope unit="page" from="1319" to="1323" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">Trainable joint time-vertex fractional Fourier transform</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Digit. Signal Process</title>
+		<imprint>
+			<biblScope unit="page">105909</biblScope>
+			<date type="published" when="2026">2026</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">Flag manifold-based precoder interpolation techniques for MIMO-OFDM systems</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Nijhawan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Gupta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Appaiah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Vaze</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Karamchandani</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Commun</title>
+		<imprint>
+			<biblScope unit="volume">69</biblScope>
+			<biblScope unit="issue">7</biblScope>
+			<biblScope unit="page" from="4347" to="4359" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">Matrix unimodular precoder interpolation for MIMO-OFDM wireless communication systems</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Mehta</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Kumar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">R B</forename><surname>Pillai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Appaiah</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Commun. Lett</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page" from="3038" to="3042" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">Precoder design for massive MIMO downlink with matrix manifold optimization</title>
+		<author>
+			<persName><forename type="first">R</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A.-A</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X.-G</forename><surname>Xia</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">72</biblScope>
+			<biblScope unit="page" from="1065" to="1080" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">Optimal fractional Fourier filtering for graph signals</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Ozturk</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">M</forename><surname>Ozaktas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Gezici</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Koc</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">¸</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">69</biblScope>
+			<biblScope unit="page" from="2902" to="2912" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">Survey of hyperspectral image denoising methods based on tensor decompositions</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Lin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Bourennane</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">EURASIP J. Adv. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">2013</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">186</biblScope>
+			<date type="published" when="2013">2013</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Adaptive beamforming and postfiltering</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Gannot</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Cohen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Springer Handbook of Speech Process</title>
+		<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2008">2008</date>
+			<biblScope unit="page" from="945" to="978" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">Graph signal sampling under stochastic priors</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Hara</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Tanaka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><forename type="middle">C</forename><surname>Eldar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">71</biblScope>
+			<biblScope unit="page" from="1421" to="1434" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Spectral graph based vertex-frequency Wiener filtering for image and graph signal denoising</title>
+		<author>
+			<persName><forename type="first">A</forename><forename type="middle">C</forename><surname>Yagan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">T</forename><surname>Özgen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Inf. Process. Netw</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="page" from="584" to="598" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Graph filters for signal processing and machine learning</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Isufi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Loukas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Perlmutter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Ribeiro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Leus</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">72</biblScope>
+			<biblScope unit="page" from="4745" to="4781" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">Graph signal processing in a nutshell</title>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">B</forename><surname>Ribeiro</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">B</forename><surname>Lima</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Commun. Inf. Syst</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<analytic>
+		<title level="a" type="main">Time-varying graph signal reconstruction</title>
+		<author>
+			<persName><forename type="first">K</forename><surname>Qiu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Mao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Shen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Gu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE J. Sel. Topics Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="issue">6</biblScope>
+			<biblScope unit="page" from="870" to="883" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<analytic>
+		<title level="a" type="main">Time-varying graph signals reconstruction</title>
+		<author>
+			<persName><forename type="first">X</forename><surname>Mao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Gu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Vertex-Frequency Analysis of Graph Signals</title>
+		<imprint>
+			<publisher>Springer</publisher>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="293" to="316" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Fourier transforms of fractional order and their optical interpretation</title>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">M</forename><surname>Ozaktas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Mendlovic</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Opt. Commun</title>
+		<imprint>
+			<biblScope unit="volume">101</biblScope>
+			<biblScope unit="issue">3-4</biblScope>
+			<biblScope unit="page" from="163" to="169" />
+			<date type="published" when="1993">1993</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<analytic>
+		<title level="a" type="main">Fractional Fourier transforms and their optical implementation: I</title>
+		<author>
+			<persName><forename type="first">D</forename><surname>Mendlovic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">M</forename><surname>Ozaktas</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Opt. Soc. Amer. A</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="issue">9</biblScope>
+			<biblScope unit="page" from="1875" to="1881" />
+			<date type="published" when="1993">1993</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">The fractional Fourier transform</title>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">M</forename><surname>Ozaktas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Kutay</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. Eur. Control Conf. (ECC)</title>
+		<meeting>Eur. Control Conf. (ECC)</meeting>
+		<imprint>
+			<date type="published" when="2001">2001</date>
+			<biblScope unit="page" from="1477" to="1483" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<analytic>
+		<title level="a" type="main">The discrete fractional Fourier transform</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Candan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><forename type="middle">A</forename><surname>Kutay</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">M</forename><surname>Ozaktas</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">48</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page" from="1329" to="1337" />
+			<date type="published" when="2000">2000</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">A fast two-dimensional median filtering algorithm</title>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">S</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">J</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">Y</forename><surname>Tang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Acoust., Speech, Signal Process</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="13" to="18" />
+			<date type="published" when="1979">1979</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<analytic>
+		<title level="a" type="main">Semi-supervised classification with graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">N</forename><surname>Kipf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Welling</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. Int. Conf. Learn. Represent. (ICLR)</title>
+		<meeting>Int. Conf. Learn. Represent. (ICLR)</meeting>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<analytic>
+		<title level="a" type="main">Graph attention networks</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Veličković</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Cucurull</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Casanova</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Romero</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Liò</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bengio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. Int. Conf. Learn. Represent. (ICLR)</title>
+		<meeting>Int. Conf. Learn. Represent. (ICLR)</meeting>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<analytic>
+		<title level="a" type="main">Convolutional neural networks on graphs with fast localized spectral filtering</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Defferrard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Bresson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Vandergheynst</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc</title>
+		<meeting>null</meeting>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="3844" to="3852" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<analytic>
+		<title level="a" type="main">Deep multi-scale convolutional neural network for dynamic scene deblurring</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Nah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">H</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><forename type="middle">M</forename><surname>Lee</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. IEEE Conf. Comput. Vis. Pattern Recognit</title>
+		<meeting>IEEE Conf. Comput. Vis. Pattern Recognit</meeting>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="page" from="3803" to="3814" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<analytic>
+		<title level="a" type="main">Restormer: Efficient transformer for high-resolution image restoration</title>
+		<author>
+			<persName><forename type="first">S</forename><forename type="middle">W</forename><surname>Zamir</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Arora</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Khan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Hayat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">S</forename><surname>Khan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M.-H</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Shao</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit</title>
+		<meeting>IEEE/CVF Conf. Comput. Vis. Pattern Recognit</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="5728" to="5739" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<analytic>
+		<title level="a" type="main">Simple baselines for image restoration</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Chu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proc. Eur. Conf. Comput. Vis. (ECCV)</title>
+		<meeting>Eur. Conf. Comput. Vis. (ECCV)</meeting>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="48" to="63" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

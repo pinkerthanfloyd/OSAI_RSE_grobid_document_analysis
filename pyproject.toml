@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "osai-rse-grobid-document-analysis"
+version = "0.1.0"
+description = "Practical task proposed on the Open Science and AI subject for academic paper analysis"
+authors = ["pinkerthanfloyd <ig.diaz@alumnos.upm.es>"]
+license = "Apache-2.0"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.32.5"
+lxml = "^6.0.2"
+pandas = "^3.0.1"
+matplotlib = "^3.10.8"
+wordcloud = "^1.9.6"
+pypdf = "^6.8.0"
+tqdm = "^4.67.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

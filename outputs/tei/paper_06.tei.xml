@@ -1,0 +1,1930 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Semi-Supervised Learning on Graphs using Graph Neural Networks</title>
+				<funder ref="#_p8JVbEb">
+					<orgName type="full">National Science Foundation</orgName>
+				</funder>
+				<funder>
+					<orgName type="full">Simons Institute for the Theory of Computing</orgName>
+				</funder>
+				<funder ref="#_YCbSHJf">
+					<orgName type="full">unknown</orgName>
+				</funder>
+				<funder ref="#_JhvX5rx">
+					<orgName type="full">Labex MME-DII</orgName>
+				</funder>
+				<funder ref="#_9GTrhTH">
+					<orgName type="full">European Research Council</orgName>
+					<orgName type="abbreviated">ERC</orgName>
+				</funder>
+				<funder ref="#_SgQNfQ3">
+					<orgName type="full">Agence Nationale de la Recherche</orgName>
+					<orgName type="abbreviated">ANR</orgName>
+				</funder>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability  status="unknown">
+					<licence/>
+				</availability>
+				<date type="published" when="2026-02-19">19 Feb 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Juntong</forename><surname>Chen</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">School of Mathematical Sciences</orgName>
+								<orgName type="institution">Xiamen University</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Claire</forename><surname>Donnat</surname></persName>
+							<affiliation key="aff1">
+								<orgName type="department" key="dep1">Department of Statistics</orgName>
+								<orgName type="department" key="dep2">Department of Applied Mathematics</orgName>
+								<orgName type="institution" key="instit1">University of Chicago ‡ ESSEC Business School §</orgName>
+								<orgName type="institution" key="instit2">University of Twente</orgName>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Olga</forename><surname>Klopp</surname></persName>
+						</author>
+						<author>
+							<persName><forename type="first">Johannes</forename><surname>Schmidt-Hieber</surname></persName>
+						</author>
+						<title level="a" type="main">Semi-Supervised Learning on Graphs using Graph Neural Networks</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-02-19">19 Feb 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">FD6A2609F2E34C68CB218C5E21A705B5</idno>
+					<idno type="arXiv">arXiv:2602.17115v1[stat.ML]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.8.2" ident="GROBID" when="2026-03-11T18:22+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<label type="revision">a91ee48</label>
+					<label type="parameters">startPage=-1, endPage=-1, consolidateCitations=0, consolidateHeader=0, consolidateFunders=0, includeRawAffiliations=false, includeRawCitations=false, includeRawCopyrights=false, generateTeiIds=false, generateTeiCoordinates=[], sentenceSegmentation=false, flavor=null</label>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>Graph neural networks (GNNs) work remarkably well in semi-supervised node regression, yet a rigorous theory explaining when and why they succeed remains lacking. To address this gap, we study an aggregate-and-readout model that encompasses several common message passing architectures: node features are first propagated over the graph then mapped to responses via a nonlinear function. For least-squares estimation over GNNs with linear graph convolutions and a deep ReLU readout, we prove a sharp non-asymptotic risk bound that separates approximation, stochastic, and optimization errors. The bound makes explicit how performance scales with the fraction of labeled nodes and graph-induced dependence. Approximation guarantees are further derived for graph-smoothing followed by smooth nonlinear readouts, yielding convergence rates that recover classical nonparametric behavior under full supervision while characterizing performance when labels are scarce. Numerical experiments validate our theory, providing a systematic framework for understanding GNN performance and limitations.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="1">Introduction</head><p>Graph Neural Networks (GNNs) have become the default tool for semi-supervised prediction on graphs: given a graph G = (V, E) on n = |V| nodes with features X i , we observe a response variable Y i on a subset of nodes, and aim to predict the rest <ref type="bibr" target="#b34">[35,</ref><ref type="bibr" target="#b48">49,</ref><ref type="bibr" target="#b51">52,</ref><ref type="bibr" target="#b65">66]</ref>. A central assumption in this setting is that the graph specifies how information propagates across nodes, which, if efficiently leveraged, can substantially boost prediction. GNNs have achieved strong performance for node-level prediction on interaction graphs such as social or hyperlink networks where they predict outcomes like website traffic, future engagement, or satisfaction from partial labels <ref type="bibr" target="#b3">[4,</ref><ref type="bibr" target="#b11">12,</ref><ref type="bibr" target="#b33">34]</ref>. They are also increasingly used in spatially resolved omics, where nodes are spots or cells connected by spatial neighborhoods and the goal is to predict expensive assays (e.g., gene or protein measurements) from observed modalities by propagating local context through the graph <ref type="bibr" target="#b20">[21,</ref><ref type="bibr" target="#b23">24]</ref>; we present real-data case studies in Section 4.</p><p>Semi-supervised learning on graphs has a rich and long history in the statistics literature. Classical graph semi-supervised learning is dominated by (i) Laplacian-based regularization <ref type="bibr" target="#b2">[3]</ref> and (ii) label propagation <ref type="bibr" target="#b69">[70,</ref><ref type="bibr" target="#b64">65]</ref>. While both of these approaches have been extensively studied and benefit from solid theoretical guarantees, they focus on spatial regularization, often ignoring node features.</p><p>By contrast, modern GNNs inject node features into propagation and deliver strong empirical performance across domains. One of the key ingredients of their success lies in the use of message-passing layers that perform a localized averaging of features, effectively acting as a learnable low-pass filter on the graph signal <ref type="bibr" target="#b10">[11]</ref>. The propagation rule enables the model to learn representations that are smooth across the graph and discriminative in their features. <ref type="bibr" target="#b27">[28]</ref> empirically showed that graph convolutional networks (GCNs), one of the earliest types of GNNs, significantly outperform manifold regularization and transductive SVMs, establishing GNNs as the dominant paradigm for graph semi-supervised learning. While a variety of GNN architectures have been proposed (e.g. <ref type="bibr" target="#b59">[60,</ref><ref type="bibr" target="#b68">69]</ref>), they largely share the same spirit: all involve an initial aggregation of node information through a message-passing algorithm before its synthesis into an output via a readout step (see Appendix A for an extended discussion of related works). a graph-induced propagation step and a Hölder-smooth synthesizing (readout) function (Lemma 4).</p><p>(iii) Rates that expose label-scarcity and graph effects. Combining (i) and (ii), we derive explicit convergence rates for the least-squares GNN estimator (Theorem 2). With a properly chosen architecture (depth and width scaling with graph size), the estimator achieves a convergence rate governed by the smoothness of the underlying regression function and its intrinsic input dimension.</p><p>Our analysis builds on the oracle-inequality and approximation-theoretic framework developed for sparse deep ReLU networks in classical nonparametric regression, most notably <ref type="bibr" target="#b45">[46]</ref>. The semi-supervised graph setting, however, introduces two core challenges that require novel analytical tools. First, responses are observed only on a random subset of nodes; we incorporate this missingness mechanism directly into the risk decomposition to quantify the effect of limited supervision. Second, graph propagation induces nontrivial statistical dependencies because predictions at each node rely on overlapping neighborhoods; we introduce a bounded receptive field assumption to model this graph-structured dependency and, via graph coloring, develop concentration arguments tailored to localized interactions. Combined with new metric entropy bounds for the graph-convolutional component and approximation guarantees for compositions of graph filters and Hölder-smooth functions, this framework yields explicit non-asymptotic risk bounds and convergence rates for least-squares estimation over GNN classes. Notably, this general rate recovers the optimal minimax rate for standard (non-graph) regression in the special case of full supervision and purely local node responses.</p><p>This article is structured as follows. In Section 2, we introduce the semi-supervised regression setting with graph-structured data. We analyze GNN-based estimation in Section 3, where, under a locality condition, we establish an oracle inequality for any given estimator and explicitly characterize the convergence rate of the least squares estimator in terms of the proportion of labeled nodes and the graph's receptive field. Numerical experiments on both synthetic and real-world datasets are presented in Section 4. We conclude in Section 5 and all the related proofs are provided in the Appendix.</p><p>Notation: We set N 0 = {0, 1, 2, . . .}, N = {1, 2, . . .}, R + = (0, ∞), and [m] = {1, . . . , m}. In this paper, vectors and matrices are denoted by bold lowercase and uppercase letters, respectively. In specific contexts, we may use bold lowercase letters for fixed matrices to distinguish them from their random counterparts. For a d 1 × d 2 matrix M, define the entry-wise maximum norm</p><formula xml:id="formula_0">∥M∥ ∞ = max i∈[d 1 ],j∈[d 2 ]</formula><p>|M i,j |, the row-sum norm</p><formula xml:id="formula_1">∥M∥ 1,∞ = max i∈[d 1 ] j∈[d 2 ]</formula><p>|M i,j |, and the Frobenius norm</p><formula xml:id="formula_2">∥M∥ F = i∈[d 1 ],j∈[d 2 ]</formula><p>M 2 i,j .</p><p>We denote the i-th row of M by M i,• . For p-dimensional row or column vectors v = (v 1 , . . . , v p ), we define |v| ∞ = max 1≤i≤p |v i | and |v| 1 = p i=1 |v i |. For any a ∈ R, ⌊a⌋ denotes the largest integer strictly less than a and ⌈a⌉ the smallest integer greater than or equal to a. We use log 2 for the binary logarithm and log for the natural logarithm. For a set C, we denote its cardinality by |C|. For two nonnegative sequences (α n ) n and (β n ) n , we write α n ≲ β n if there exists a constant c such that α n ≤ cβ n holds for all n, and we write α n ≍ β n when α n ≲ β n ≲ α n . If the function value h(x) is a matrix, we denote the i-th row of h(x) by (h(x)) i or, if no ambiguity arises, by h i (x). For any two real-valued functions f, g : X → R, their sup-norm distance is defined as ∥f -g∥ L ∞ (X ) = sup x∈X |f (x) -g(x)|. For any two vector-valued functions f = (f 1 , . . . , f m ) ⊤ , g = (g 1 , . . . , g m ) ⊤ where each component function satisfies f i , g i : X → R, the sup-norm distance between f and g is defined as</p><formula xml:id="formula_3">∥f -g∥ L ∞ (X ) = max 1≤i≤m sup x∈X f i (x) -g i (x) .</formula><p>When the domain X is clear from context, we simply write ∥ • ∥ ∞ .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="2">Statistical setting</head><p>Consider a graph G = (V, E) with vertex set V and edge set E. Let n = |V| denote the number of vertices. We encode the graph structure through its adjacency matrix A = (A i,j ) ∈ {0, 1} n×n , defined by</p><formula xml:id="formula_4">A i,j = ® 1, if j ∈ N (i), 0, otherwise,</formula><p>where N (i) ⊆ V denotes the set of neighbors of node i. We define A = A + I n as the adjacency matrix with self-loops, and let D and D be the corresponding diagonal degree matrices of A and A, respectively. Each node i ∈ {1, . . . , n} is assumed to have a feature vector X i ∈ X , where X is a compact subset of R d . For simplicity, we assume X = [0, 1] d throughout the paper. We assume that the feature vectors X 1 , . . . , X n are independent draws from distributions P X i on [0, 1] d . The feature matrix X ∈ [0, 1] n×d contains X ⊤ i in its i-th row. In the semi-supervised framework, we observe a random subset of nodes Ω ⊆ V. For each node i ∈ Ω, both the feature vector X i and the response Y i ∈ R are observed. For nodes in the complement Ω c = V \ Ω, only the features are available. We assume nodes are included in Ω independently with probability π ∈ (0, 1], and denote by</p><formula xml:id="formula_5">ω i ∼ Bernoulli(π)</formula><p>the corresponding Bernoulli indicator. The objective is to predict the response values for all nodes in Ω c . This means that the (training) dataset is X 1 , . . . , X n ∪ {Y i } i∈Ω .</p><p>(</p><formula xml:id="formula_6">)<label>1</label></formula><p>We consider a node-level regression problem on a graph, where responses associated with individual nodes depend not only on their own features but also on the features of neighboring nodes through the graph structure. To capture such structural dependencies, we adopt a compositional modeling framework that separates feature propagation from local prediction.</p><p>Formally, for each node i ∈ {1, . . . , n}, the response Y i is assumed to follow the statistical model</p><formula xml:id="formula_7">Y i = φ * ψ * A,i (X) + ε i ,<label>(2)</label></formula><p>for independent ε i ∼ N (0, 1) that are also independent of X. The resulting (overall) regression function is given by</p><formula xml:id="formula_8">f * = (f * 1 , . . . , f * n ) ⊤ with f * i = φ * • ψ * A,i ,<label>(3)</label></formula><p>and is assumed to admit a two-stage structure: the response is obtained by applying a shared nonlinear map φ * : R d → R to the propagated features. The high-dimensional inner (regression) function</p><formula xml:id="formula_9">ψ * A : [0, 1] n×d → [-M, M</formula><p>] n×d , maps to matrices with entries bounded in absolute value by a chosen constant M ≥ 1; the subscript A indicates the dependence on the graph adjacency matrix. This function aggregates information across the graph to produce propagated node features. Here, ψ * A,i : [0, 1] n×d → [-M, M ] 1×d denotes the restriction of ψ * A to its i-th row. In many GNN architectures, feature propagation is implemented by applying a linear graph filter to node features. Common filters are polynomials in a graph operator, such as the Laplacian L = D -A, the adjacency matrix or normalized variants like D -1/2 A D -1/2 and D -1 A <ref type="bibr" target="#b9">[10,</ref><ref type="bibr" target="#b27">28,</ref><ref type="bibr" target="#b31">32]</ref>. Further examples are discussed in <ref type="bibr" target="#b27">[28,</ref><ref type="bibr">Section 6</ref>] and the survey <ref type="bibr" target="#b60">[61]</ref>. Motivated by these constructions, we assume that the inner regression function ψ * A is close to a matrix polynomial with respect to a chosen graph propagation operator S A . More precisely, let P k (β, S A ) denote the set of functions</p><formula xml:id="formula_10">ψ : [0, 1] n×d → [-M, M ] n×d of the form ψ(x) = k j=1 θ j S j A x, (<label>4</label></formula><formula xml:id="formula_11">)</formula><p>where S A is an n × n graph propagation operator that leverages the connectivity encoded in A, and the coefficients θ j satisfy |θ j | ≤ β for some constant β &gt; 0. Typically, S A exhibits a low-dimensional structure, such as row-wise sparsity <ref type="bibr" target="#b21">[22,</ref><ref type="bibr" target="#b63">64]</ref>. The j-th power of S A characterizes feature propagation over j hops, while the coefficients θ j quantify the influence of j-hop neighborhoods. To accommodate settings where the propagation may only be approximately polynomial, due to nonlinearities or model mismatch, we introduce the ρ-neighborhood</p><formula xml:id="formula_12">F ρ (β, k, S A ) = ß f : [0, 1] n×d → [-M ρ , M ρ ] n×d inf g∈P k (β,S A ) sup x∈X n ∥f (x) -g(x)∥ ∞ ≤ ρ ™ ,<label>(5)</label></formula><p>with M ρ = M + ρ. We then assume that the inner (regression) function satisfies</p><formula xml:id="formula_13">ψ * A ∈ F ρ (β, k, S A</formula><p>). In the special case where S A is symmetric with eigendecomposition S A = U ⊤ ΛU, any f ∈ P k (β, S A ) can be expressed as</p><formula xml:id="formula_14">f (x) = U ⊤ k j=1 θ j Λ j Ux. Consequently, a function g(x) = U ⊤ QUx lies within distance ρ (in sup-norm) of some f ∈ P k (β, S A ) provided that the spectral filter Q satisfies ∥Q -P (Λ)∥ F ≤ ρ/ √ n, where P (Λ) = k j=1 θ j Λ j .</formula><p>In particular, when ρ = 0, the inner regression function simplifies to the exact polynomial form. Consequently, model (2) resembles a multi-index model, a class of functions extensively studied in recent theoretical deep learning literature <ref type="bibr" target="#b18">[19,</ref><ref type="bibr" target="#b37">38,</ref><ref type="bibr" target="#b6">7,</ref><ref type="bibr" target="#b42">43]</ref>. Let vec(X) ∈ R nd denote the vectorized feature matrix X, and let V i ∈ R nd×d denote the linear map induced by S A . We can then rewrite the model as</p><formula xml:id="formula_15">Y i = φ * V ⊤ i vec(X) + ε i .</formula><p>This formulation reveals that each response depends on a low-dimensional projection of the global feature matrix, passed through a shared nonlinearity φ * . However, unlike the classical multi-index model where the projection is typically fixed or unstructured, here the index maps {V i } n i=1 are node-specific and structurally constrained by the graph topology, reflecting the aggregation of local neighborhood information.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3">Estimation using GNNs</head><p>In this section, we employ graph neural networks to approximate the target function and derive a generalization bound for the resulting estimator. The architecture of the considered GNNs consists of two main components: graph convolutional layers followed by deep feedforward neural networks. The precise architecture is specified in detail as follows.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Graph convolutional networks (GCNs) provide a natural approach for approximating the target function ψ *</head><p>A that propagates node feature information. A GCN typically takes the feature matrix x ∈ [0, 1] n×d and a prespecified propagation matrix T as the input and produces a transformed version of the input feature matrix <ref type="bibr" target="#b27">[28]</ref>. Specifically, let L represent the number of GCN layers. For each ℓ ∈ {0, . . . , L -1}, the output of the layers can be defined recursively via</p><formula xml:id="formula_16">H (ℓ+1) T (x) = σ GCN TH (ℓ) T (x)W ℓ+1 , (<label>6</label></formula><formula xml:id="formula_17">)</formula><p>where H</p><p>(0) T = x, σ GCN denotes the activation function, applied element-wise, and W ℓ+1 are d×d weight matrices, whose entries are learnable parameters. Empirical studies demonstrate that linear GCNs, that is, σ GCN = id, achieve accuracy comparable to their nonlinear counterparts in various downstream tasks <ref type="bibr" target="#b59">[60,</ref><ref type="bibr" target="#b57">58]</ref>. Theoretically, <ref type="bibr" target="#b40">[41]</ref> shows that nonlinearity does not enhance GCN expressivity. The linear setting has been further explored under the name poly-GNN in <ref type="bibr" target="#b56">[57]</ref> and compared to standard GCNs in <ref type="bibr" target="#b38">[39,</ref><ref type="bibr" target="#b39">40]</ref>. In particular, for the linear feature propagation defined in (4), the identity function is a well-motivated choice for the activation; we therefore set σ GCN = id. Drawing inspiration from residual connections, we aggregate the outputs of all convolutional layers through a weighted sum rather than using only the last layer. This approach of incorporating connections from previous layers preserves multi-scale representations from different neighborhood levels, thus mitigating the over-smoothing phenomenon <ref type="bibr" target="#b8">[9,</ref><ref type="bibr" target="#b30">31,</ref><ref type="bibr" target="#b67">68]</ref>. Accordingly, G(L, T) is defined as the class of functions of the form</p><formula xml:id="formula_18">L ℓ=1 γ ℓ H (ℓ)</formula><p>T , that is</p><formula xml:id="formula_19">G(L, T) = x → L ℓ=1 γ ℓ T ℓ xW 1 • • • W ℓ W ℓ ∈ [-1, 1] d×d and γ ℓ ∈ [-1, 1] , (<label>7</label></formula><formula xml:id="formula_20">)</formula><p>where the coefficients γ ℓ are reweighting parameters.</p><p>Deep feedforward neural networks are commonly applied after graph convolutional layers to synthesize the propagated feature vectors and produce final node-level outputs <ref type="bibr" target="#b66">[67,</ref><ref type="bibr" target="#b60">61,</ref><ref type="bibr" target="#b61">62]</ref>.</p><p>Here we follow the same paradigm and refer to this component as deep neural networks (DNNs). Let the width vector p = (p 0 , p 1 , . . . , p L+1 ) ∈ N L+2 satisfy p 0 = d and p L+1 = 1, and let ReLU(u) = max{0, u} denote the ReLU activation function. We define F (L, p) as the class of deep ReLU neural networks of depth L ∈ N 0 and width vector p, comprising all functions f : R d → R of the form</p><formula xml:id="formula_21">f (x) = Θ L • ReLU • Θ L-1 • • • • • ReLU • Θ 0 (x),<label>(8)</label></formula><p>where, for ℓ = 0, . . . , L,</p><formula xml:id="formula_22">Θ ℓ (y) = M ℓ y + b ℓ .</formula><p>Here, M ℓ is a p ℓ × p ℓ+1 weight matrix, b ℓ is a bias vector of size p ℓ+1 , and the ReLU activation function is applied component-wise to any given vector. Again, we assume that all entries of the weight matrices and bias vectors lie within [-1, 1]. In practice, sparsity in neural networks is often encouraged through techniques such as regularization or specialized architectures <ref type="bibr" target="#b16">[17]</ref>. A notable example is dropout, which promotes sparse activation patterns by randomly deactivating units during training, thereby ensuring that each neuron is active only for a small subset of the training data <ref type="bibr" target="#b50">[51]</ref>. In line with the framework introduced by <ref type="bibr" target="#b45">[46]</ref>, we explicitly enforce parameter sparsity by restricting the network to utilize only a limited number of non-zero parameters. More precisely, let ∥M ℓ ∥ 0 and |b ℓ | 0 denote the number of non-zero entries in the weight matrix M ℓ and bias vector b ℓ , respectively. For any s ≥ 1 and F &gt; 0, we define the class of s-sparse DNNs, truncated to the range [-F, F ], as</p><formula xml:id="formula_23">F(L, p, s, F ) = (f ∨ -F ) ∧ F : f ∈ F(L, p), L ℓ=0 ∥M ℓ ∥ 0 + |b ℓ | 0 ≤ s . (<label>9</label></formula><formula xml:id="formula_24">) (X3, Y3) (X1, Y1) X2 X4 X5 X6 X7 (X ′ 1 , Y 1 ) GCN Component (Feature Propagation) Y 1 X ′ 11 X ′ 1d . . .</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>DNN Component (Prediction)</head><p>Input Vector X ′ 1 Figure 1: Graph feature propagation followed by a nonlinear readout: a linear message-passing block generates propagated features, which are then mapped to node-level predictions via a ReLU DNN.</p><p>In conclusion, the considered graph neural networks class is given by</p><formula xml:id="formula_25">F(T, L 1 , L 2 , p, s, F ) = f : f i (x) = h g i (x) , h ∈ F (L 2 , p, s, F ), g ∈ G(L 1 , T) ,<label>(10)</label></formula><p>where L 1 , L 2 ∈ N 0 are the respective depths of the convolutional and feedforward layers, and T is a pre-specified convolutional operator. Figure <ref type="figure">1</ref> provides a schematic explanation of the constituent blocks.</p><p>Any estimator of the regression function is based on the training data {X 1 , . . . , X n }∪{Y i } i∈Ω with Ω the random set of unmasked response variables. The statistical performance of an</p><formula xml:id="formula_26">estimator f = ( f 1 , . . . , f n ) ⊤ : [0, 1] n×d → R n is measured by the prediction error R Ä f , f * ä = E ñ 1 n n i=1 Ä f i (X ′ ) -φ * ψ * A,i (X ′ ) ä 2 ô , (<label>11</label></formula><formula xml:id="formula_27">)</formula><p>where X ′ is an independent copy of X and the expectation is taken over all the randomness in the model, that is, the randomness induced by Ω ∪ {(X i , X ′ i , ε i )} n i=1 . Among various estimators, we are primarily interested in analyzing the performance of the least-squares estimator over the class F(T, L 1 , L 2 , p, s, F ) constructed from the unmasked nodes in Ω ⊆ {1, . . . , n}, that is,</p><formula xml:id="formula_28">f ∈ argmin f ∈F (T,L 1 ,L 2 ,p,s,F ) 1 n i∈Ω Y i -f i (X) 2 . (<label>12</label></formula><formula xml:id="formula_29">)</formula><p>By the definition of F(T, L 1 , L 2 , p, s, F ), this estimator admits a decomposition satisfying for all i ∈ Ω,</p><formula xml:id="formula_30">f i (X) = φ • ψ i (X),</formula><p>where φ ∈ F (L 2 , p, s, F ) and ψ ∈ G(L 1 , T).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.1">Oracle-type inequality</head><p>We begin by introducing the prerequisites. Let ε = (ε 1 , . . . , ε n ) ⊤ and ω = (ω 1 , . . . , ω n ) ⊤ . For any estimator f returning a network in F with output f i at the i-th node, the optimization error is defined as</p><formula xml:id="formula_31">∆ F n Ä f , f * ä = E ε,ω,X 1 n i∈Ω Y i -f i (X) 2 -inf f ∈F 1 n i∈Ω Y i -f i (X) 2 . (<label>13</label></formula><formula xml:id="formula_32">)</formula><p>It measures the expected difference between the training loss of f and the training loss of the global minimum over all network fits in the class F , where the data {(X i , Y i )} are generated according to the true regression function f * in (3). The optimization error is nonnegative and vanishes if f is an empirical risk minimizer over F.</p><p>The complexity of the vector-valued function class F is measured by its metric entropy. Recall that for any two functions f, g : X n → R n , with f = (f 1 , . . . , f n ) ⊤ and g = (g 1 , . . . , g n ) ⊤ , their sup-norm distance is given by ∥f -g∥ ∞ = max 1≤i≤n ∥f i -g i ∥ ∞ . For any δ &gt; 0, we say a class of functions F ′ is a δ-cover of F with respect to the sup-norm, if for any f ∈ F, there exists a function g ∈ F ′ such that ∥f -g∥ ∞ ≤ δ. We denote the smallest δ-cover of F by F δ . The δ-covering number N (δ, F , ∥ • ∥ ∞ ) is the cardinality of F δ . If no finite δ-cover exists, the covering number is defined to be infinite. The metric entropy (or simply entropy) of F at scale δ &gt; 0 is log N (δ, F , ∥ • ∥ ∞ ). For brevity, we simplify this notation in some contexts to log N δ . A key insight from statistical learning theory is that the stochastic error depends critically on this measure of model complexity <ref type="bibr" target="#b54">[55,</ref><ref type="bibr" target="#b1">2,</ref><ref type="bibr" target="#b45">46]</ref>.</p><p>A key technical difference with standard nonparametric regression is that, even if the node features {X i } n i=1 are sampled independently and the noises {ε i } n i=1 are independent, the empirical loss is not a sum of independent terms once prediction uses graph propagation. Indeed, for a general graph-based predictor f ∈ F, each nodal output f i (X) may depend on the features of many nodes through message passing, so the squared error contributions from each node i,</p><formula xml:id="formula_33">s (f ) i (X) = f i (X) -f * i (X)</formula><p>2 can be statistically coupled through shared coordinates of X. To quantify this dependence in the analysis, we formalize a bounded-influence property: each nodal loss s (f ) i (X) depends on features from only a limited number of nodes, while the features from any given node affect at most a bounded number of loss terms. The following assumption captures this via a single parameter m, which will appear as a multiplicative factor in the oracle inequality and can be interpreted as an upper bound on the effective receptive-field size under graph propagation.</p><p>We now state this locality condition formally as an assumption on the true regression function f * and the base class F .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Assumption 1. Let m be a positive integer. For any</head><formula xml:id="formula_34">f = (f 1 , . . . , f n ) ⊤ ∈ F ⊂ {g : R n×d → R n }, f * = (f * 1 , . . . , f * n ) ⊤ , and any argument x ∈ R n×d , assume that (i) each function x → s (f ) i (x) = f i (x)-f * i (x) 2 with i ∈ [n] depends on at most m coordinates of x = (x 1 , . . . , x n ) ⊤ ; (ii) each coordinate x j influences at most m functions s (f ) i .</formula><p>This assumption naturally arises from common graph propagation mechanisms and GNN architectures. For instance, consider a k-step polynomial filter f (x) = k j=1 θ j S j x, where the propagation matrix S is symmetric and corresponds to an undirected graph of maximum degree ∆ (with self-loops). In this case, each output f i (x) depends only on features within k hops of node i, and one may choose m = ∆ k . Similarly, for a depth-L 1 linear GCN with propagation matrix T (unit diagonal) and with at most m T non-zero entries per row and per column, each nodal output depends on at most m L 1 T input feature vectors; hence we may take m = m L 1 T . Building upon the existing node graph, Assumption 1 allows us to define a new dependency graph for {s</p><formula xml:id="formula_35">(f ) i } n</formula><p>i=1 . An edge between nodes i and j in this dependency graph exists when s (f ) i and s</p><p>(f ) j share a common input coordinate. Under Assumption 1, this graph has maximum degree at most m(m -1). A direct implication of this bounded degree is the existence of a (disjoint) partition P 1 ∪ • • • ∪ P r = {1, . . . , n} with r ≤ m(m -1) + 1. Here, each part P ℓ comprises indices such that for any distinct i, j ∈ P ℓ , the losses s (f ) i (X) and s (f ) j (X) share no covariate vector. This key insight makes it possible to derive tight concentration bounds for functions exhibiting this type of sparse local dependence.</p><p>The following theorem states an oracle-type inequality that holds for any estimator f constructed from a general model class F. Theorem 1. Assume Assumption 1 holds with m ≥ 1. For 0 &lt; δ ≤ 1, let F δ be a δ-cover of F whose entropy satisfies log N δ ≥ 1. Suppose that there exists a constant F ≥ 1 such that ∥f i ∥ ∞ ≤ F for all i ∈ [n] and all f ∈ F ∪ F δ ∪ {f * }. Then, for any ε ∈ (0, 1],</p><formula xml:id="formula_36">(1 -ε) 2 ∆ F n ( f , f * ) -E 1 (ε, n, δ) ≤ R( f , f * ) ≤ 2(1 + ε) 2 Ç inf f ∈F E ñ 1 n n i=1 f i (X) -f * i (X) 2 ô + ∆ F n ( f , f * ) π + E 2 (ε, n, π, δ) å ,</formula><p>where</p><formula xml:id="formula_37">E 1 (ε, n, δ) = C 1 Å m 2 F 2 log N δ εn + δF ã , E 2 (ε, n, π, δ) = C 2 ï (1 + ε)m 2 F 2 log N δ εnπ + F δ √ π + F 2 N δ ò , with C 1 , C 2 &gt; 0 universal constants.</formula><p>The proof of Theorem 1 is postponed to Section D. The result indicates that the upper bound for the prediction error of an arbitrary estimator f based on model F can be decomposed into three main terms: the approximation error between F and the target f * , the stochastic error E 2 (ε, n, π, δ) governed by the complexity of F, and the optimization error ∆ F n ( f , f * ), which quantifies the training error discrepancy between the chosen estimator and the empirical risk minimizer. When π = 1 (full supervision) and provided the covering number N δ is not too small, our result recovers the same dependence on n as in standard regression <ref type="bibr" target="#b45">[46]</ref> (Theorem 2). The bounds differ by a multiplicative factor of m 2 , which accounts for the graph-induced dependency.</p><p>The distinct roles of m and π in Theorem 1 shed light on the seemingly contradictory phenomena observed in practice. On one hand, the upper bound is scaled by the expected proportion of observed sample pairs π; when π remains constant, even if small, the prediction error increases only by a constant multiplicative factor. This explains why GNNs can achieve satisfactory generalization with limited supervision <ref type="bibr" target="#b31">[32,</ref><ref type="bibr" target="#b27">28]</ref>. On the other hand, structural perturbations such as edge rewiring or dropping can fundamentally alter the graph geometry, resulting in performance instability <ref type="bibr" target="#b14">[15,</ref><ref type="bibr" target="#b70">71]</ref>. In our bound, this sensitivity is quantified by the receptive field size m, which depends intricately on the network's expansion properties. For instance, in a ring lattice, m grows only linearly with the number of propagation steps. However, adding a few "shortcut" edges triggers a phase transition to a small-world regime, where the neighborhood size m may shift from linear to exponential expansion <ref type="bibr" target="#b58">[59]</ref>. Such structural shifts significantly relax the generalization bounds, thereby accounting for the high sensitivity of GNNs to topological perturbations that bridge distant clusters.</p><p>In what follows, we provide a more precise analysis focusing on the proposed GNN class F(T, L 1 , L 2 , p, s, F ). The result below establishes an upper bound for the metric entropy of F(T, L 1 , L 2 , p, s, ∞). Because the inequality</p><formula xml:id="formula_38">(f ∨ -F ) ∧ F -(g ∨ -F ) ∧ F ∞ ≤ ∥f -g∥ ∞</formula><p>holds, the same entropy bound immediately extends to the bounded class F(T, L 1 , L 2 , p, s, F ).</p><p>Recall that for a matrix M = (M i,j ), the row-sum norm is ∥M∥ 1,∞ = max i j |M i,j |.</p><formula xml:id="formula_39">Proposition 1. Let L 1 ≥ 1. For any 0 &lt; δ ≤ 1, log N δ, F(T, L 1 , L 2 , p, s, ∞), ∥ • ∥ ∞ ≤ d 2 L 1 + L 1 + s + 1 log L(L 1 , L 2 ) δ L 2 +1 k=0 (p k + 1) 2 ,</formula><p>where</p><formula xml:id="formula_40">L(L 1 , L 2 ) = 2L 1 (L 1 + L 2 + 2)(∥T∥ 1,∞ ∨ 1) L 1 d L 1 .</formula><p>The proof of Proposition 1 is deferred to Section E. Observe that the considered GNNs have a total of (d 2 + 1)L 1 + s trainable parameters. In practice, GCNs employ few layers, so L 1 is typically independent of n, and the feature dimension d is also commonly assumed to be finite <ref type="bibr" target="#b47">[48,</ref><ref type="bibr" target="#b44">45]</ref>. When the widths p k of the deep ReLU networks are bounded by order n γ and n is sufficiently large, the logarithmic term simplifies to ≲ L 2 log[(n γ ∨ L 2 )/δ] for any δ ≤ 1. Consequently, up to a constant factor depending on ∥T∥ 1,∞ , d, and L 1 , the metric entropy of</p><formula xml:id="formula_41">F(T, L 1 , L 2 , p, s, F ) at scale δ ≤ 1 can be bounded by ≲ sL 2 log[(n γ ∨ L 2 )/δ].</formula><p>Therefore, the depth and sparsity of the DNN component play an essential role in determining the entropy. Based on Theorem 1 and Proposition 1, we obtain the following result.</p><p>Corollary 2. Suppose Assumption 1 holds with m ≥ 1, and the true regression function f * satisfies ∥f * i ∥ ∞ ≤ F for all i ∈ [n] and some F ≥ 1. Let f be any estimator in the class</p><formula xml:id="formula_42">F = F(T, L 1 , L 2 , p, s, F ), where s ≥ 2 and L 1 , L 2 ≥ 1. Assume N 1/n, F, ∥•∥ ∞ ≳ n. Define κ n = (d 2 L 1 + s) log nL 1 (L 1 + L 2 ) + (L 1 + 1) log ∥T∥ 1,∞ ∨ d + L 2 log s .</formula><p>Then, for any ε ∈ (0, 1], there exists C ε &gt; 0 depending only on ε such that</p><formula xml:id="formula_43">(1 -ε) 2 ∆ F n ( f , f * ) -C ε m 2 F 2 κ n n ≤ R( f , f * ) ≤ 2(1 + ε) 2 ñ inf f ∈F (T,L 1 ,L 2 ,p,s,F ) ∥f -f * ∥ 2 ∞ + ∆ F n ( f , f * ) π ô + C ε m 2 F 2 π κ n n .</formula><p>The proof of Corollary 2 is postponed to Section D. Theorem 1 and Corollary 2 provide not only an upper bound but also a lower bound on the prediction error in terms of the optimization error ∆ F n ( f , f * ). In particular, Corollary 2 implies that for any ε ∈ (0, 1],</p><formula xml:id="formula_44">R( f , f * ) ≥ (1 -ε) 2 ∆ F n ( f , f * ) -C ε m 2 F 2 κ n n ,</formula><p>for a positive constant C ε . Consequently, the optimization error acts as a floor for the achievable prediction accuracy: unless the training algorithm returns an approximate empirical risk minimizer with ∆ F n ( f , f * ) ≲ m 2 F 2 κ n /n, the prediction risk cannot achieve the statistical rate implied by the model complexity. This highlights an explicit computational-statistical trade-off in our setting: to benefit from the statistical guarantees, the optimization error must be driven below the intrinsic "statistical resolution" of the function class.</p><p>When f = f is the empirical minimizer defined as in <ref type="bibr" target="#b11">(12)</ref>, the optimization error ∆ F n ( f , f * ) is zero and the error upper bound reveals a bias-variance trade-off between the approximation error of f * based on model F(T, L 1 , L 2 , p, s, F ) and the variance terms depending on the complexity of F(T, L 1 , L 2 , p, s, F ). For both GCN and DNN components, stacking too many layers worsens the upper bound, as this is reflected in the term κ n .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.2">Approximation with GNNs</head><p>This section analyzes the approximation capability of the class F (T, L 1 , L 2 , p, s, F ) defined in <ref type="bibr" target="#b9">(10)</ref>, which ultimately provides the approximation error inf</p><formula xml:id="formula_45">f ∈F (T,L 1 ,L 2 ,p,s,F ) ∥f -f * ∥ ∞ in Corollary 2.</formula><p>We first consider the approximation of the target class F 0 (β, k, T) by the GCN class G(L 1 , T). Lemma 3. Let F 0 (β, k, T) be the function class defined in <ref type="bibr" target="#b4">(5)</ref></p><formula xml:id="formula_46">. If L 1 ≥ k, and β ≤ 1, then F 0 (β, k, T) ⊆ G(L 1 , T).</formula><p>The proof of Lemma 3 is deferred to Section F. The above result demonstrates that, when the propagation operators coincide, GCNs with sufficient depth and parameters constrained to [-1, 1] contain the function class F 0 (β, k, T) with normalized coefficients. Additionally, for any function f ∈ F ρ (β, k, T) with ρ &gt; 0, Lemma 3 implies that there exists g ∈ G(L 1 , T) satisfying ∥f -g∥ ∞ ≤ ρ. In the case where β &gt; 1, any f ∈ F 0 (β, k, T) can be expressed as f = βh, where h ∈ F 0 (1, k, T). Thus, the original approximation problem reduces to approximating the normalized function class F 0 (1, k, T), while the scaling factor β will be handled separately by the DNN component.</p><p>A key feature of the GNN class defined in <ref type="bibr" target="#b9">(10)</ref> is that it produces predictions through successive nonlinear transformations applied to the propagated features: the DNN "readout" is itself a composition of simple maps (affine transformations and pointwise nonlinearities). Motivated by this architectural structure, we model φ * as a finite composition of smooth, low-dimensional building blocks, allowing complex dependencies in d variables to be assembled hierarchically from simpler interactions. Beyond matching the network structure, this assumption is also statistically meaningful: if each intermediate component depends only on a small number of variables, then approximation and estimation rates are governed by the corresponding intrinsic dimensions rather than the ambient dimension d. This helps mitigate the curse of dimensionality, as shown e.g. in <ref type="bibr" target="#b45">[46,</ref><ref type="bibr" target="#b25">26,</ref><ref type="bibr" target="#b0">1]</ref>.</p><p>Concretely, we assume that φ * admits the representation</p><formula xml:id="formula_47">φ * = g * q • g * q-1 • • • • • g * 0 ,</formula><p>where each</p><formula xml:id="formula_48">g * i = (g * i,1 , . . . , g * i,d i+1 ) ⊤ maps [a i , b i ] d i to [a i+1 , b i+1 ] d i+1 .</formula><p>Furthermore, for every j ∈ {1, . . . , d i+1 }, we assume that g * i,j is α i -Hölder smooth and depends on at most t i variables. We now formalize this notion by recalling Hölder balls and then defining the resulting compositional function class.</p><p>For any α &gt; 0, we say a function f is of α-Hölder smoothness if all its partial derivatives up to order ⌊α⌋ exist and are bounded, and the partial derivatives of order ⌊α⌋ are (α -⌊α⌋)-Hölder continuous. Given t ∈ N and α &gt; 0, define the α-Hölder ball with radius K ≥ 0, denoted by</p><formula xml:id="formula_49">H α t (D, K), as the collection of functions f : D ⊂ R t → R such that β=(β 1 ,...,βt)∈N t 0 t j=1 β j &lt;α ∥∂ β f ∥ ∞ + β∈N t 0 t j=1 β j =⌊α⌋ sup x,y∈D x̸ =y ∂ β f (x) -∂ β f (y) |x -y| α-⌊α⌋ ∞ ≤ K,</formula><p>where for any</p><formula xml:id="formula_50">β = (β 1 , . . . , β t ) ∈ N t 0 , ∂ β = ∂ β 1 • • • ∂ βt . Within the framework, we assume that each constituent function g * i,j ∈ H α i t i ([a i , b i ] t i , K).</formula><p>Consequently, the underlying compositional function class is given by</p><formula xml:id="formula_51">G(q, d, t, α, K) = ¶ g q • • • • • g 0 : g i = (g i,j ) j : [a i , b i ] d i → [a i+1 , b i+1 ] d i+1 , g i,j ∈ H α i t i ([a i , b i ] t i , K), for some |a i |, |b i | ≤ K © , (<label>14</label></formula><formula xml:id="formula_52">)</formula><p>where q ∈ N 0 , d = (d 0 , . . . , d q+1 ) ∈ N q+2 with d 0 = 1 and d q+1 = 1, t = (t 0 , . . . , t q ) ∈ N q+1 , α = (α 0 , . . . , α q ) ∈ R q+1 + , and K ≥ 0. The i-th entry t i of the vector t indicates the effective input dimension for every g i,j , with j = 1, . . . , d i+1 . , <ref type="figure">d</ref>, <ref type="figure">t</ref>, <ref type="figure">α</ref>, <ref type="figure">K</ref>), where each component g i possesses certain smoothness properties, the overall composition f exhibits a specific level of smoothness determined by its constituents. The classical d-variate Hölder class corresponds to the special case where q = 0 and t 0 = d. In contrast, for the case q = 1 with α 0 , α 1 ≤ 1 and <ref type="bibr" target="#b43">[44,</ref><ref type="bibr" target="#b25">26,</ref><ref type="bibr" target="#b0">1]</ref>. For general compositions, the effective smoothness parameters are defined for i = 0, . . . , q -1 by</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>For any function</head><formula xml:id="formula_53">f = g q • • • • • g 0 ∈ G(q</formula><formula xml:id="formula_54">d 0 = d 1 = t 0 = t 1 = 1, the composite function f = g 1 • g 0 achieves a smoothness of order α 0 α 1 , as established in</formula><formula xml:id="formula_55">α * i = α i q ℓ=i+1 (α ℓ ∧ 1),<label>(15)</label></formula><p>with α * q = α q . These parameters influence the convergence rate of the network estimator. Previous studies have established that deep ReLU networks are capable of effectively approximating compositional smooth function classes <ref type="bibr" target="#b45">[46,</ref><ref type="bibr" target="#b7">8]</ref>. Combined with Lemma 3, this leads to the following approximation error bound, proving that the target regression function class F ρ (β, k, S A ) can be well approximated by F (S A , L 1 , L 2 , p, s, F ) with appropriate architecture. Lemma 4. Let φ * ∈ G(q, d, t, α, K) with K ≥ 1 be defined in <ref type="bibr" target="#b13">(14)</ref>, and let ψ * A ∈ F ρ (β, k, S A ) with ρ &lt; 1 be defined in <ref type="bibr" target="#b4">(5)</ref>.</p><formula xml:id="formula_56">Set Q 0 = 1, Q i = (2K) α i for i ∈ [q -1], and Q q = K(2K) αq . For any N i ∈ N such that N i ≥ (α i + 1) t i ∨ (Q i + 1)e t i , there exists f ∈ F(S A , L 1 , L 2 , p, s, F ) satisfying L 1 ≥ k, L 2 ≤ C 3 log 2 n, N = max i=0,...,q N i , s ≤ C 4 N log 2 n p = Å d, 3 °β M § d, C 5 N, . . . , C 5 N, 1 ã , and F ≥ K, such that for every f * j = φ * • ψ * A,j , j = 1, . . . , n, ∥f j -f * j ∥ ∞ ≤ C 6 q i=0 Å N - α i t i i + N i n - α i +t i 2α * i +t i ã q ℓ=i+1 (α ℓ ∧1) + ρ q i=0 (α i ∧1) ,</formula><p>where C 3 , C 4 , C 5 , C 6 are numerical constants that do not depend on n.</p><p>The proof is postponed to Section F. Lemma 4 decomposes the approximation error into two terms associated with approximating F ρ (β, k, S A ) and G(q, d, t, α, K). The effective smoothness α * i quantify the approximation rate. In particular, when N i ≍ n t i /(2α * i +t i ) holds for all i, the first term in the bracket becomes</p><formula xml:id="formula_57">q i=0 Å N - α i t i i + N i n - α i +t i 2α * i +t i ã q ℓ=i+1 (α ℓ ∧1) ≲ q max i=0,...,q n - α * i 2α * i +t i .</formula><p>This scenario arises when we later incorporate the model complexity from Proposition 1 to determine an appropriate network architecture for estimation.</p><p>The preceding analysis characterizes the approximation error associated with using the true propagation operator S A . For practical situations where the implemented operator T deviates from S A , the next result shows that this deviation introduces an additional error term beyond ρ.</p><p>Lemma 5. Let T and S A be n × n matrices with respective row sparsity at most d T and d S A . If ∥T -S A ∥ F ≤ τ , then for any positive integer L 1 , any row index j ∈ {1, . . . , n}, and any x ∈ [0, 1] n×d , we have</p><formula xml:id="formula_58">L 1 i=1 θ i (T i -S i A )x j,• ∞ ≤ τ d T + d S A L 1 i=1 i|θ i | ∥T∥ 1,∞ ∨ ∥S A ∥ 1,∞ i-1 .</formula><p>The proof is given in Section F. Lemma 5 shows that the additional approximation error induced by using an implemented propagation operator T instead of the target operator S A is controlled by three factors: (i) their Euclidean distance τ = ∥T -S A ∥ F , (ii) the local sparsity levels d T , d S (number of nonzeros per row), and (iii) an amplification term 1 arising from repeated propagation. In particular, if L 1 and {|θ i |} L 1 i=1 are treated as constants, the mismatch contribution scales as ≲ τ d T + d S A .</p><formula xml:id="formula_59">L 1 i=1 i|θ i |(∥T∥ 1,∞ ∨ ∥S A ∥ 1,∞ ) i-</formula><p>For sparse "real-life" networks, it is natural to assume that the number of connections per node grows slowly with n; a common regime, as shown in <ref type="bibr" target="#b4">[5,</ref><ref type="bibr" target="#b62">63]</ref>, is</p><formula xml:id="formula_60">d T , d S A ≲ log n.</formula><p>Under this logarithmic-degree scaling, Lemma 5 yields a mismatch term of order τ <ref type="formula" target="#formula_6">1</ref>), a condition satisfied by commonly used normalized propagation operators such as row stochastic matrices. If instead T is an unnormalized adjacencytype operator with O(1) weights, then ∥T∥ 1,∞ typically scales like the maximum degree and hence also ≲ log n in this regime, yielding an at-most polylogarithmic dependence on n through</p><formula xml:id="formula_61">√ log n pro- vided ∥T∥ 1,∞ ∨∥S A ∥ 1,∞ remains O(</formula><formula xml:id="formula_62">L 1 i=1 |θ i | i (log n) i-1 (and therefore ≲ τ (log n) L 1 -1/2 when L 1 is fixed).</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="3.3">Convergence rate of the least-squares estimator</head><p>Throughout this section, we assume that the propagation function ψ * A ∈ F 0 (β, k, S A ) and the outer function φ * ∈ G(q, d, t, α, K). The aim is to examine the rate of convergence of the least-squares estimator f defined in <ref type="bibr" target="#b11">(12)</ref> over the class F(S A , L 1 , L 2 , p, s, F ). By definition <ref type="bibr" target="#b12">(13)</ref>, the optimization error ∆</p><formula xml:id="formula_63">F (S A ,L 1 ,L 2 ,p,s,F ) n ( f , f * ) vanishes if f</formula><p>is the empirical risk minimizer. Therefore, Corollary 2 shows that the prediction error of f admits a bias-variance decomposition consisting of a bias term plus a variance term that depends on the network class. Proposition 1 and Lemma 4 demonstrate that using network models with more parameters increases the variance while typically reducing the bias. In the next result, we show that when the network architecture is well-chosen, the least-squares estimator f converges to the true regression function.</p><p>Theorem 2. Suppose Assumption 1 holds for some m ≥ 1 and that the unknown regression function f * has i-th component of the form</p><formula xml:id="formula_64">f * i = φ * • ψ * A,i , where φ * ∈ G(q, d, t, α, K) with K ≥ 1 and ψ * A ∈ F 0 (β, k, S A ). Set N i = ⌈n t i /(t i +2α * i ) ⌉, N = max i=0,.</formula><p>..,q N i , and let f be the least-squares estimator over the network class F (S A , L 1 , L 2 , p n , s n , F ), where the network architecture satisfies</p><formula xml:id="formula_65">(i) L 1 ≥ k; (ii) 1 ≤ L 2 ≤ C 7 log 2 n; (iii) p n = Ä d, 3⌈ β M ⌉d, C 8 N, . . . , C 8 N, 1 ä ; (iv) 2 ≤ s n ≤ C 9 N log 2 n; (v) F ≥ K.</formula><p>Then, for all sufficiently large n,</p><formula xml:id="formula_66">R( f , f * ) ≤ C 10 m 2 log 3 n π max i=0,...,q n - 2α * i 2α * i +t i .</formula><p>Here, C 7 , C 8 , C 9 , C 10 are numerical constants independent of n.</p><p>The proof follows from a consequence of Lemma 4 and Corollary 2, and is deferred to Section D. Theorem 2 provides an explicit non-asymptotic convergence rate for the least-squares estimator over the GNN class</p><formula xml:id="formula_67">F (S A , L 1 , L 2 , p n , s n , F ) under the compositional model f * i = φ * • ψ * A,i .</formula><p>The bound exhibits the following salient features. The convergence rate is governed by the intrinsic regularity of φ * , specifically by its effective smoothness parameters α * i defined in <ref type="bibr" target="#b14">(15)</ref> and the associated intrinsic dimensions t i . Ultimately, the overall rate is determined by the bottleneck max i=0,...,q n -2α * i /(2α * i +t i ) . In particular, in the classical Hölder case (q = 0, t 0 = d), Theorem 2 recovers the minimax-optimal rate n -2α/(2α+d) in terms of the sample size n, up to logarithmic factors. For target functions φ * with a genuinely compositional structure, however, the convergence rate depends only on the smaller intrinsic dimensions t i , thereby mitigating the curse of dimensionality.</p><p>While matching the minimax rate with respect to the sample size n, as noted below Theorem 1, the factor m 2 /π characterizes a key departure from standard regression, explicitly quantifying the interaction between graph-induced dependence and semi-supervised learning. For graphs of bounded degree with fixed propagation depth, m is essentially constant (up to polylog factors). When m grows rapidly with n (for instance, due to large depth L 1 or the presence of high-degree hubs), the combined term m 2 /π may dominate. This reveals an explicit bias-variance trade-off in message passing: while increasing L 1 (or employing less localized propagation) reduces approximation bias for ψ * A , it simultaneously increases the dependence penalty through m. Thus, L 1 should be kept near the target filter order k, and normalized propagation operators (with bounded ∥S A ∥ 1,∞ ) are recommended to control constants.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4">Numerical experiments</head><p>In this section, we empirically validate our theoretical findings through synthetic and real world experiments. Specifically, we seek to (i) confirm the convergence rate of the prediction error as a function of the sample size n (as provided by Theorem 2), and (ii) evaluate how the graph topology, as captured by the average and maximum degree ∆, affects the decay rate of the MSE. To this end, we compare four neural network architectures:</p><p>• MLP (no propagation). Set Z = X and predict Y = f (Z) with a ReLU MLP f ∈ DNN L D , where L D denotes the depth of the neural network.</p><p>• GCN (no skip connections). Propagate features with</p><formula xml:id="formula_68">L G ∈ {1, 2, 3} linear GCN layers g ∈ GCN L G to obtain Z = g(X) , then predict with an MLP head Y = f (Z), f ∈ DNN L D .</formula><p>• GCN (skip connections). Compute layerwise representations H (ℓ)</p><formula xml:id="formula_69">S A (X) and form a convex combination Z = L ℓ=1 w ℓ H (ℓ) S A (X) with w ℓ = exp(α ℓ )/ L k=1 exp(α k ), then predict Y = f (Z) with f ∈ DNN L D .</formula><p>• MaGNet-inspired multi-scale model. We adapt MaGNet to node regression by aggregating multi-hop linear convolutions</p><formula xml:id="formula_70">H (ℓ) S (X) = S ℓ XW with S = D -1/2 AD -1/2 (no self-loops), forming Z = L ℓ=1 w ℓ H (ℓ)</formula><p>S (X), and applying an MLP head node-wise. The fusion weights w ℓ are either learned end-to-end or set via the critic mode of <ref type="bibr" target="#b67">[68]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.1">Evaluating convergence rate</head><p>To evaluate the results established in Theorem 2, we consider a cycle (ring) graph with n nodes and a bounded degree of ∆ = 3 (including self-loops). We generate node features as</p><formula xml:id="formula_71">X i i.i.d.</formula><p>∼ Unif[0, 1] and construct propagated features as where S A is taken as a neighborhood average and the coefficients θ j are bounded. The responses are generated as</p><formula xml:id="formula_72">Z = k j=1 θ j S j A X,</formula><formula xml:id="formula_73">Y i = φ * (Z i,• ) + ε i with ε i i.i.d.</formula><p>∼ N (0, 1).</p><p>We set</p><formula xml:id="formula_74">φ * (z) = BM Sigmoid z scale ,</formula><p>where BM denotes a sample path of a Brownian motion, obtained by discretizing the interval [0, 1] into 2 12 equal-length subintervals. This ensures that φ * has Hölder regularity α ≈ 1/2 <ref type="bibr" target="#b29">[30]</ref>. Node responses Y i are observed on a random subset (inclusion probability π). Models are trained and evaluated on an independent copy of the features X ′ .</p><p>Results are compared across methods and for different values of π in Figure <ref type="figure" target="#fig_0">2</ref>. Recall that Theorem 2 points to a learning rate of order n -2α/(2α+t) . For the considered simulation setup, t = 1 and α is close to 1/2. Theorem 2 thus postulates a convergence rate of approximately n -1/2 in this setting.</p><p>As shown in Figure <ref type="figure" target="#fig_0">2</ref>, for large training sets (high π), the fitted slope is approximately -1/2, in good agreement with the theoretical prediction. We also note, however, that for very low π, the slope deviates from its expected value; This is particularly salient in Figure <ref type="figure" target="#fig_1">3</ref>, where we plot the fitted slope as a function of the proportion of training data π, and observe significantly lower slopes for extremely small values of π (for instance, around -0.95 for π = 0.01). This effect could be explained by an increase in the relative contribution of the optimization error in low-data regimes (consistent with Corollary 2, which posits that optimization error imposes a lower bound on prediction accuracy). The right subplot of Figure <ref type="figure" target="#fig_1">3</ref>, which shows performance (as measured by the test MSE) against the effective number of training samples, highlights indeed a low-sample regime (n eff &lt; 100), characterized by higher MSE and a stagnation phase before improvement (n eff ≥ 100).</p><p>Figure <ref type="figure" target="#fig_2">4</ref> is a log-log plot of the MSE as a function of the inverse of the labeled nodes proportion 1/π. Interestingly, for smaller datasets, the results seem to be in agreement with theory, with a linear increase for small values of π (large values of log(1/π)). As n increases, the fitted slope decreases (e.g., to 0.67 at n = 3, 200), which is consistent with a regime in which π-independent components of the error (e.g. optimization effects) become non-negligible relative to the 1/π stochastic term. This suggests that the worst-case 1/π dependence in the bound can be conservative in large-n settings.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.2">Assessing the impact of graph topology</head><p>To validate the dependency of Theorem 2 on the receptive field size m, we generate synthetic graphs (n = 3000) with a fixed average degree δ across four distinct topologies:</p><p>(i) Erdős-Rényi graphs with π = δ/n;</p><p>(ii) stochastic block models on 2 blocks of equal size, with intra-class probability π within = 0.55 δ/n and inter-class probability π between = 0.055 δ/n; (iii) random geometric graphs with radius τ = » δ/(πn)); (iv) Barabási-Albert graphs with parameter m = ⌊ δ/2⌋. Node features are sampled as X i i.i.d.</p><p>∼ N (0, σ 2 I d ), with σ 2 = 1 by default. Propagated features are generated as Z = k j=1 θ j S j A X for various choices of the graph convolution operator S A . Each coefficient θ j is sampled uniformly at random, followed by row-normalization of θ = (θ 1 , . . . , θ k ). To ensure comparability across topologies, we standardize Z and control for Laplacian energy (a measure of signal smoothness). Let φ * be a fixed-architecture DNN of depth L 2 = 2 (default) with random parameters, ReLU activations, and residual connections. We define the raw targets as y i = φ * (Z i,• ), which are then standardized to ỹi = y i -y/s y . The final responses are generated as</p><formula xml:id="formula_75">Y i = ỹi + ε i , ε i ∼ N (0, σ 2 ).</formula><p>Figure <ref type="figure" target="#fig_3">5</ref> illustrates the impact of the maximum degree in Barabási-Albert graphs across different propagation operators S A (with matched data generation): the GCN convolution (S A = D -1/2 A D -1/2 ), Sage (S A = D -1 A), and a GINE-style sum operator <ref type="bibr" target="#b61">[62]</ref> (S A = A). The sum convolution is particularly sensitive to the maximal degree -as predicted by Theorem 2, higher maximal degrees yield considerably worse MSE. This effect is however substantially mitigated for degree-averaging filters. Our discussion of Theorem 2 highlights the importance of choosing degree-averaging operators -particularly to control constants in the rate. This experiment demonstrates that the bound in Theorem 2 is accurate for the sum operator but remains conservative for degree-averaging operators.</p><p>Figure <ref type="figure" target="#fig_4">6</ref> exhibits the performance of various methods versus label fraction π across topologies, using convolution with a fixed average degree δ = 2. Notably, the performance of the GCN with skipped connections is stable across graph topologies. This confirms the fact that, with the effect of the maximal degree mitigated, as predicted by Theorem 2, the primary driver of the error bounds lies in the size of the receptive field, rather than the connectedness of the graph (or other spectral properties), as is the case in other graph-regularization-based approaches <ref type="bibr" target="#b22">[23,</ref><ref type="bibr" target="#b53">54]</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="4.3">Performance on real-world data</head><p>We evaluate the performance of GNNs on two different datasets:</p><p>(i) The California Housing Dataset <ref type="bibr" target="#b41">[42]</ref> <ref type="foot" target="#foot_0">foot_0</ref> , a dataset of 20,640 observations of property attributes from the 1990 U.S. Census, grouped at the block group level (small geographical unit). The goal is to predict the median house value based on 9 attributes (median income, house age, average number of rooms, number of bedrooms per household, as well as size of the household, group population, and latitude and longitude). Data points are embedded within a k-NN graph based on their spatial coordinates. (ii) The Wikipedia Chameleon dataset<ref type="foot" target="#foot_1">foot_1</ref> , a graph of 2,277 Wikipedia pages about chameleons connected by 31,421 mutual hyperlinks; each node has sparse text-derived features indi- cating which "informative nouns" appear in the article, and the regression target is the page's average monthly traffic (Oct 2017-Nov 2018). In contrast to the California Housing dataset, this dataset is much denser and higher dimensional.</p><p>We further compare the graph neural networks and MLP baselines to Tikhonov and Laplacian smoothing. The optimal parameters (i.e. the number of GNN convolutions and the depth of the neural network head) were selected based on the performance of each method on held-out nodes in a calibration set.</p><p>Figure <ref type="figure" target="#fig_5">7</ref> reports test performance across architectures. Importantly, this figure measures transductive generalization-error on previously unseen nodes in the same graph-whereas our theory focuses on the inductive risk. Despite this mismatch, the same qualitative picture emerges: the GNN model (with GCN diffusion) performs best overall, with one notable exception on California Housing, where Tikhonov regularization improves substantially as π increases and becomes highly competitive. On the less homophilic Wikipedia dataset, neural architectures dominate the classical baselines. Overall, these examples reinforce the practical relevance of our function class: relative to a plain MLP, the GNN class consistently reduces error both in the transductive evaluation shown here and in the inductive regime studied throughout the paper.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head n="5">Conclusion</head><p>In this work, we addressed the problem of semi-supervised regression on graph-structured data. Inspired by the "aggregate and readout" mechanism, we introduced a natural statistical model where node responses are generated by a smooth graph-propagation operator followed by a multivariate nonlinear mapping. Under locality conditions on the receptive fields, we derived a general oracle inequality that decomposes the prediction error into optimization, approximation, and stochastic components. This bound explicitly quantifies the influence of critical factors such as the proportion of unmasked nodes and the underlying graph topology. Building upon this result, we further provided an analysis of the stochastic and approximation error, establishing a non-asymptotic convergence rate for the least-squares estimator when the outer function belongs to a composition of Hölder smoothness classes. These theoretical findings help explain the seemingly contradictory phenomenon observed in practice, whereby GNNs excel with limited labels yet may remain vulnerable to graph perturbations, and offer insights into the design of future GNN architectures.</p><p>We believe this work opens several promising avenues for future research. First, while our results provide explicit bounds on the statistical risk of the least-squares estimator, the optimization error ∆ F n , which is governed by the training dynamics, remains to be analyzed. In practice, GNNs are trained via stochastic gradient descent (SGD) rather than global risk minimization. While some progress has been made in characterizing the implicit regularization of SGD in standard i.i.d. regression and classification settings <ref type="bibr" target="#b17">[18,</ref><ref type="bibr" target="#b49">50]</ref>, understanding these dynamics in the presence of graph-induced dependencies remains an open challenge. Investigating how the graph structure influences the optimization landscape and whether SGD induces an implicit regularization that controls the effective capacity of the network, thereby keeping ∆ F n small, is a problem of significant value in its own right.</p><p>Second, the present analysis relies on the locality parameter m, as specified in Assumption 1, to quantify graph-induced dependence. While this effectively captures the behavior of message-passing architectures on bounded-degree graphs, it yields conservative bounds for dense graphs or architectures with global readouts. It is, therefore, interesting to explore in future work how spectral properties of the graph, such as the spectral gap or conductance, could be utilized to derive tighter concentration inequalities that do not rely solely on worst-case receptive field sizes. Notably, <ref type="bibr" target="#b28">[29]</ref> has preliminarily investigated this direction within a Bayesian approach for graph denoising without node features.</p><p>Finally, the current framework assumes the graph structure is fixed and known; however, in many real-world applications, the observed graph may be noisy or incomplete. Extending the risk analysis to settings where the graph topology is learned jointly with the regression function (latent graph learning) or analyzing the minimax rates under adversarial edge perturbations would be a significant step towards understanding and improving the stability of GNNs.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A Related works</head><p>Semi-supervised learning on graphs has a rich and long history in statistics and machine learning. Earlier work focused on spatial regularization, often ignoring the node features. Notably, building on the notion of smooth functionals on graphs, Belkin et al. <ref type="bibr" target="#b2">[3]</ref> developed a regularization framework for semi-supervised learning. They proposed to minimize the squared error loss function augmented by a ridge-type graph smoothness penalty and provide bounds on the empirical and generalization errors. Crucially, these results suggest that performance is driven by the graph's geometry (typically, through the second eigenvalue of the graph Laplacian), rather than its size n. Follow-up work considered the extension of this approach leveraging the ℓ 1penalty (also referred to as graph trend filtering), highlighting the strong influence of the graph in driving the error rate <ref type="bibr" target="#b22">[23]</ref>.</p><p>Parallel to regularization approaches, label propagation algorithms were introduced to explicitly exploit graph structure. <ref type="bibr" target="#b69">[70]</ref> and <ref type="bibr" target="#b64">[65]</ref> proposed iterative algorithms where node labels are propagated to neighboring nodes based on edge weights. Theoretically, these methods can be viewed as computing a harmonic function on the graph that is constrained by the boundary conditions induced by the labeled data; specifically, the solution minimizes a quadratic energy function induced by the graph Laplacian. While computationally efficient and theoretically grounded in harmonic analysis, standard label propagation is inherently transductive and typically fails to incorporate the node features X i , relying solely on the graph topology and observed labels.</p><p>More recently, Graph Convolutional Networks (GCN) <ref type="bibr" target="#b27">[28]</ref> bridged the gap between featurebased learning and graph regularization. Unlike traditional label propagation, which operates solely on graph topology, GCNs integrate node features X i directly into the propagation mechanism. By approximating spectral graph convolutions to the first order <ref type="bibr" target="#b19">[20,</ref><ref type="bibr" target="#b10">11]</ref>, the GCN layer performs a localized feature averaging that functions as a learnable low-pass filter. This approach resolves a key limitation of traditional label propagation: it allows for inductive learning on unseen nodes and exploits feature correlations. A variety of GNN architectures continue to be proposed <ref type="bibr" target="#b59">[60,</ref><ref type="bibr" target="#b68">69]</ref>; they largely share a foundational spirit with GCNs, involving first the aggregation of node information and then its synthesis into an output via a readout step.</p><p>Existing theory on GNNs has progressed along several complementary axes. A first line of work studies expressivity, relating message-passing GNNs to the Weisfeiler-Lehman (WL) hierarchy: standard neighborhood-aggregation architectures are at most as powerful as the 1-WL test in distinguishing graph structures, which motivates more expressive higher-order or invariant/equivariant constructions <ref type="bibr" target="#b61">[62,</ref><ref type="bibr" target="#b36">37,</ref><ref type="bibr" target="#b35">36]</ref>. A second line develops generalization guarantees for node-level prediction in the transductive/semi-supervised regime, using stability, transductive Rademacher complexity, and PAC-Bayesian tools, and makes explicit how quantities such as graph filters, degree/spectrum, or diffusion operators control the generalization gap <ref type="bibr" target="#b55">[56,</ref><ref type="bibr" target="#b13">14,</ref><ref type="bibr" target="#b12">13,</ref><ref type="bibr" target="#b32">33,</ref><ref type="bibr" target="#b24">25]</ref>. A third line clarifies the algorithmic role of propagation through spectral/graph-signal and dynamical-systems lenses: GCN-style layers act as low-pass (Laplacian-smoothing) operators, while repeated propagation can provably induce over-smoothing and loss of discriminative power as depth grows <ref type="bibr" target="#b40">[41,</ref><ref type="bibr" target="#b26">27]</ref>. Despite this progress, existing results often analyze either approximation/expressivity or statistical generalization in isolation, and frequently rely on linearized models or specific graph generative assumptions. This leaves open the need for a nonparametric, finite-sample theory that jointly accounts for message-passing approximation error and statistical complexity under partial labeling and graph-induced dependence.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B Scope of the work</head><p>Table 1 compares existing mainstream architectures with our compositional framework.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C Key supporting lemmas and proofs</head><p>This section introduces the key technical results to establish the main theorem.</p><p>Recall from the main text that for any matrix-valued function evaluation f (x) ∈ R n×d ,</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Architecture</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Covered?</head><p>Notes / Why (not) GCN <ref type="bibr" target="#b27">[28]</ref> / SGC ✓ Linear propagation with a fixed graph operator (e.g., Laplacian) followed by a learned readout.</p><p>Polynomial GNNs ✓ Propagation is a polynomial in a fixed operator; fits ℓ γ ℓ T ℓ XW ℓ and related forms.</p><p>APPNP / Diffusion ✓ Personalized PageRank-style diffusion is linear in features (fixed operator), followed by an MLP readout.</p><p>Skip-connected GCN ✓ Directly covered by weighted sums of multiple propagation depths.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>GraphSAGE (mean) partial</head><p>Mean aggregation is linear if aggregator weights are fixed; feature-dependent gating falls outside the scope.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>GAT (Attention) ✗</head><p>Attention makes the propagation operator datadependent, violating the fixed-operator assumption.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>MPNN variants ✗</head><p>Message-passing functions depend on (h i , h j , e ij ); propagation is no longer a fixed linear operator.</p><p>Table <ref type="table">1</ref>: Coverage of common GNN architectures by our theoretical framework.</p><p>both f i (x) and (f (x)) i denote the i-th row of f (x). For a function f : R n×d → R n , a matrix X ∈ R n×d , and a binary vector ω = (ω 1 , . . . , ω n ) ⊤ ∈ {0, 1} n , we define the (semi)-norms</p><formula xml:id="formula_76">∥f ∥ 2 n,ω = 1 n n i=1 ω i f i (X) 2 and ∥f ∥ 2 n = 1 n n i=1 f i (X) 2 .</formula><p>To set the stage for the established results, we first provide some necessary preliminary inequalities.</p><p>Lemma 6 (Bernstein's inequality, see e.g. Corollary 2.11 of <ref type="bibr" target="#b5">[6]</ref>). Let U 1 , . . . , U n be independent random variables with E[U i ] = 0 and |U i | ≤ M almost surely for all i. Then, for any t &gt; 0,</p><formula xml:id="formula_77">P Ç n i=1 U i ≥ t å ≤ 2 exp Å - t 2 /2 n i=1 Var(U i ) + M t/3 ã .</formula><p>The next result is a variant of Talagrand's concentration inequality <ref type="bibr" target="#b52">[53]</ref>. It follows from inversion of the tail bound in Theorem 3.3.16 of <ref type="bibr" target="#b15">[16]</ref>. Theorem 7. Let (S, S) be a measurable space. Let X 1 , . . . , X n be independent S-valued random variables and let G be a countable set of functions f</p><formula xml:id="formula_78">= (f 1 , ..., f n ) : S → [-K, K] n such that E[f k (X k )] = 0 for all f ∈ G and k = 1, ..., n. Set Z = sup f ∈G n k=1 f k (X k )</formula><p>and define the variance proxy</p><formula xml:id="formula_79">V n = 2KE[Z] + sup f ∈G n k=1 E î f k (X k ) 2 ó .</formula><p>Then, for all t ≥ 0,</p><formula xml:id="formula_80">P (Z -E[Z] ≥ t) ≤ exp -t 2 4V n + (9/2)Kt .</formula><p>We now establish the following two lemmas, which bridge the semi-supervised empirical loss and the overall nodal prediction performance. Lemma 8. Let f * be a function and G a countable class of functions with log |G| ≥ 1, all mapping R n×d to R n and having the form</p><formula xml:id="formula_81">f (x) = f 1 (x), . . . , f n (x) ⊤ with ∥f i ∥ ∞ ≤ F for all i and some constant F ≥ 1. With probability at least 1 -2/|G|, for all f ∈ G such that πn ∥f -f * ∥ 2 n &gt; 3600F 2 log |G|, we have ∥f -f * ∥ 2 n,ω ≥ π ∥f -f * ∥ 2 n 2 . (<label>16</label></formula><formula xml:id="formula_82">)</formula><p>Proof. We apply the peeling argument. Let ν = 3600F 2 log |G|/π and set α = 6/5. The event</p><formula xml:id="formula_83">B = ® ∃ f ∈ F such that n ∥f -f * ∥ 2 n &gt; ν, ∥f -f * ∥ 2 n,ω &lt; π ∥f -f * ∥ 2 n 2 ís</formula><p>the complement of the event that we wish to analyze. For ℓ ∈ N, we define the sets</p><formula xml:id="formula_84">S ℓ = ¶ f : α ℓ-1 ν &lt; n ∥f -f * ∥ 2 n ≤ α ℓ ν ©</formula><p>and the corresponding events</p><formula xml:id="formula_85">B ℓ = ® ∃ f ∈ S ℓ such that π ∥f -f * ∥ 2 n -∥f -f * ∥ 2 n,ω &gt; πνα ℓ-1 2n</formula><p>´.</p><p>In fact, we can restrict the consideration to a finite ℓ since ∥f -f * ∥ 2 n ≤ 4F 2 . If the event B holds for some f , then f belongs to some S ℓ and B ⊂ ∞ ℓ=1 B ℓ . Lemma 9 implies that</p><formula xml:id="formula_86">P (B ℓ ) ≤ exp Ä -5.6α ℓ log |G| ä .</formula><p>Applying the union bound, we obtain that</p><formula xml:id="formula_87">P (B) ≤ ∞ ℓ=1 P (B ℓ ) ≤ ∞ ℓ=1 exp(-5.6α ℓ log |G|) ≤ ∞ ℓ=1 exp (-5.6ℓ log |G| log α) ≤ exp (-5.6 log |G| log α) 1 -exp (-5.6 log |G| log α) ≤ exp (-log |G|) 1 -exp (-log |G|)</formula><p>.</p><p>Given that log |G| ≥ 1, the proof is complete.</p><formula xml:id="formula_88">Lemma 9. Suppose f * = (f * 1 , . . . , f * n ) ⊤ with ∥f * i ∥ ∞ ≤ F . Let G be a countable class of functions f : R n×d → R n of the form f (x) = f 1 (x), . . . , f n (x)</formula><p>⊤ , where each component</p><formula xml:id="formula_89">function f i : R n×d → R satisfies ∥f i ∥ ∞ ≤ F for some constant F &gt; 0. Let α = 6/5 and let ν = 3600F 2 log |G|/π with log |G| ≥ 1. For ℓ ∈ N, define S ℓ = ¶ f ∈ G : α ℓ-1 ν &lt; n ∥f -f * ∥ 2 n ≤ α ℓ ν © ,</formula><p>and</p><formula xml:id="formula_90">Z ℓ = sup f ∈S ℓ Ä π ∥f -f * ∥ 2 n -∥f -f * ∥ 2 n,ω ä .</formula><p>Then, for each ℓ ∈ N,</p><formula xml:id="formula_91">P Ç Z ℓ &gt; πνα ℓ-1 2n å ≤ exp Ä -5.6α ℓ log |G| ä .</formula><p>Proof. We first provide an upper bound on E[Z ℓ ] and then show that Z ℓ concentrates around its expectation. Let</p><formula xml:id="formula_92">η f = n i=1 (π -ω i ) (f i (x) -f * i (x)) 2</formula><p>. By definition of Z ℓ , we have</p><formula xml:id="formula_93">Z ℓ = sup f ∈S ℓ 1 n n i=1 (π -ω i ) (f i (x) -f * i (x)) 2 = sup f ∈S ℓ η f n . Observe that (π -ω i ) f i (x) -f * i (x) 2 ≤ 4F 2 ,</formula><p>and for f ∈ S ℓ ,</p><formula xml:id="formula_94">n i=1 Var î (ω i -π) (f i (x) -f * i (x)) 2 ó ≤ 4F 2 π(1 -π) n i=1 (f i (x) -f * i (x)) 2 ≤ 4F 2 πνα ℓ . (<label>17</label></formula><formula xml:id="formula_95">)</formula><p>Applying Bernstein's inequality (Lemma 6), we derive that for all f ∈ S ℓ ,</p><formula xml:id="formula_96">P (η f ≥ t) ≤ exp Å -t 2 /2 4F 2 πνα ℓ + 4F 2 t/3 ã .</formula><p>For any T ≥ πνα ℓ /5, the union bound gives</p><formula xml:id="formula_97">E[nZ ℓ ] ≤ ∞ 0 P(nZ ℓ ≥ t) dt ≤ T + ∞ T P(nZ ℓ ≥ t) dt ≤ T + |G| ∞ T exp Å -t 2 /2 4F 2 πνα ℓ + 4F 2 t/3 ã dt ≤ T + |G| ∞ T exp Å -t 44F 2 ã dt = T + 44|G|F 2 e -T /(44F 2 ) .</formula><p>Taking T = πνα ℓ /5 and using the facts that ν = 3600F 2 log |G|/π and log |G| ≥ 1, we can deduce that</p><formula xml:id="formula_98">E[Z ℓ ] ≤ 5πνα ℓ 24n , for any ℓ ∈ N.<label>(18)</label></formula><p>Next, we show that Z ℓ concentrates around its expectation by applying Talagrand's concentration inequality (Theorem 7). For each ℓ, we apply Theorem 7 with <ref type="formula" target="#formula_94">17</ref>) and ( <ref type="formula" target="#formula_98">18</ref>), we also know that</p><formula xml:id="formula_99">Z = sup f ∈S ℓ η f = nZ ℓ , which implies K = 4F 2 . Combining (</formula><formula xml:id="formula_100">V n = 8F 2 E [Z] + 4F 2 πνα ℓ ≤ 5F 2 πνα ℓ 3 + 4F 2 πνα ℓ ≤ 6F 2 πνα ℓ .</formula><p>Hence, applying Theorem 7 with t = 5πνα ℓ 24 , we obtain</p><formula xml:id="formula_101">P Ç nZ ℓ &gt; πνα ℓ-1 2 å ≤ P Ç nZ ℓ -nE[Z ℓ ] &gt; 5πνα ℓ 24 å ≤ exp Å - 25πνα ℓ 24(24 2 + 90)F 2 ã ≤ exp Ä -5.6α ℓ log |G| ä ,</formula><p>which completes the proof.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D Proof of main theorems D.1 Auxiliary results</head><p>To prepare for the proof of Theorem 1, we first state two preliminary lemmas.</p><p>Lemma 10. Let U 1 , . . . , U r be nonnegative random variables. Then,</p><formula xml:id="formula_102">E ñ r k=1 U k ô ≤ r k=1 (E[U r k ]) 1/r .</formula><p>Proof. The statement is a consequence of the extension of Hölder's inequality to several functions. To verify this, one should choose the indices in Hölder's inequality to be p 1 = . . . = p r = r which then gives 1/p 1 + . . . + 1/p r = 1.</p><formula xml:id="formula_103">Lemma 11. Let V 1 , . . . , V k be independent, real-valued random variables with E[V i ] = 0 and |V i | ≤ M almost surely for each i. Then, for 0 ≤ λ &lt; 3/M , E exp λ k i=1 V i ≤ exp λ 2 2(1 -λM/3) k i=1 E[V 2 i ] . Proof. Using j! ≥ 2 • 3 j-2 for j ≥ 2, we have for |t| &lt; 3, e t ≤ 1 + t + t 2 [2(1 -|t|/3)].</formula><p>This implies that for any λ satisfying 0 ≤ λ &lt; 3/M ,</p><formula xml:id="formula_104">e λV i ≤ 1 + λV i + λ 2 V 2 i 2(1 -λM/3) .</formula><p>Taking expectations on both sides and using</p><formula xml:id="formula_105">E[V i ] = 0 gives E î e λV i ó ≤ 1 + λ 2 2(1 -λM/3) E[V 2 i ] ≤ exp ß λ 2 2(1 -λM/3) E[V 2 i ] ™ ,</formula><p>where the last inequality uses 1 + u ≤ e u for all u ∈ R. By independence, this bound extends to the sum k i=1 V i .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D.2 Proof of Theorem 1</head><p>For any estimator f ∈ F, define</p><formula xml:id="formula_106">∆ F n Ä f , f * X ä = E ε,ω ï 1 n i∈Ω Y i -f i (X) 2 -inf f ∈F 1 n i∈Ω Y i -f i (X) 2 X ò , (<label>19</label></formula><formula xml:id="formula_107">)</formula><p>and consequently, ∆</p><formula xml:id="formula_108">F n Ä f , f * ä = E X î ∆ F n Ä f , f * X äó .</formula><p>Proof of Theorem 1. We may restrict to the case log N δ ≤ n. Since R( f , f * ) ≤ 4F 2 , the upper bound holds trivially when log N δ ≥ n. To verify that the lower bound is also valid in this case, let f ∈ argmin</p><formula xml:id="formula_109">f ∈F 1 n n i=1 ω i Y i -f i (X)</formula><p>2 be an empirical risk minimizer over F. Observe that</p><formula xml:id="formula_110">E ε,ω î ∥ f -f * ∥ 2 n,ω ó -E ε,ω ∥ f -f * ∥ 2 n,ω = ∆ F n Ä f , f * X ä + E ε,ω ñ 2 n n i=1 ε i ω i f i (X) ô -E ε,ω ñ 2 n n i=1 ε i ω i fi (X) ô , (<label>20</label></formula><formula xml:id="formula_111">)</formula><p>which implies that almost surely</p><formula xml:id="formula_112">∆ F n Ä f , f * X ä ≤ E ε,ω î ∥ f -f * ∥ 2 n,ω ó + E ε,ω ñ 2 n n i=1 ε i ω i f i (X) ô + E ε,ω ñ 2 n n i=1 ε i ω i fi (X) ô ≤ 4F 2 + 4F E ε Ç 1 n n i=1 |ε i | å ≤ 8F 2 . Thus ∆ F n ( f , f * ) ≤ 8F 2 .</formula><p>Since m, F ≥ 1, the lower bound also holds for log N δ ≥ n. In the following, we consider the case when 1 ≤ log N δ ≤ n. The proof proceeds in five steps that are denoted by (I)-(V).</p><p>• Step (I): Conditionally on X, for any estimator f ∈ F, we bound</p><formula xml:id="formula_113">E ε,ω ñ 2 n n i=1 ε i ω i f i (X) ô ≤ 6 √ πδ + 4 E ε,ω î ∥ f -f * ∥ 2 n,ω ó log N δ n .</formula><p>• Step (II): Conditionally on X, we show for any ε ∈ (0, 1],</p><formula xml:id="formula_114">E ε,ω î ∥ f -f * ∥ 2 n,ω ó ≤(1 + ε) ï inf f ∈F π∥f -f * ∥ 2 n + 6δ √ π + 4(1 + ε) log N δ nε + ∆ F n Ä f , f * X ä ò . • Step (III): Conditionally on X, we relate E ε,ω [∥ f -f * ∥ 2 n,ω ] to E ε,ω [∥ f -f * ∥ 2 n ].</formula><p>Via isometry, we prove that for any ε &gt; 0,</p><formula xml:id="formula_115">E ε,ω î ∥ f -f * ∥ 2 n ó ≤ 2(1 + ε) inf f ∈F ∥f -f * ∥ 2 n + 1 + ε ε 1804F 2 log N δ nπ + 4F 2 N δ + 6δ √ π +12F δ + ∆ F n Ä f , f * X ä π . • Step (IV): We connect R( f , f * ) and E ε,ω,X [∥ f -f * ∥ 2 n ] via (1 -ε)E ε,ω,X î ∥ f -f * ∥ 2 n ó - 13m 2 F 2 log N δ nε -16δF ≤ R Ä f , f * ä ≤ (1 + ε) Å E ε,ω,X î ∥ f -f * ∥ 2 n ó + 10(1 + ε)m 2 F 2 ε log N δ n + 12δF</formula><p>ã .</p><p>• Step (V): For any ε ∈ (0, 1], we prove the lower bound</p><formula xml:id="formula_116">E ε,ω î ∥ f -f * ∥ 2 n ó ≥ (1 -ε) Å ∆ F n Ä f , f * X ä - 4 log N δ nε -12δ √ π ã .</formula><p>We then obtain the asserted lower bound of the theorem by taking E X of Step (V) and combining this with Step (IV), and the corresponding upper bound by taking E X of Step (III) and combining this with Step (IV).</p><p>Step (I): Bounding the expectation of noise terms. For any estimator f ∈ F whose i-th component is denoted by f i , we first show that</p><formula xml:id="formula_117">E ε,ω ñ 2 n n i=1 ε i ω i f i (X) ô ≤ 6 √ πδ + 4 E ε,ω î ∥ f -f * ∥ 2 n,ω ó log N δ n . (<label>21</label></formula><formula xml:id="formula_118">)</formula><p>Step 1.1: Using a covering argument. By the definition of F δ as a δ-covering of F, for any (random) estimator f ∈ F , there exists a (random) function f ′ ∈ F δ such that for every index i ∈ {1, . . . , n},</p><formula xml:id="formula_119">∥ f i -f ′ i ∥ ∞ ≤ δ. (<label>22</label></formula><formula xml:id="formula_120">)</formula><p>This implies that</p><formula xml:id="formula_121">E ε,ω ñ n i=1 ε i ω i Ä f i (X) -f ′ i (X) ä ô ≤ δE ε,ω ñ n i=1 ω i |ε i | ô . Since E ε,ω (ω i |ε i |) ≤ π, for each i, we obtain E ε,ω ñ n i=1 ε i ω i Ä f i (X) -f ′ i (X) ä ô ≤ nπδ. (<label>23</label></formula><formula xml:id="formula_122">)</formula><p>Step 1.2: Using Gaussian concentration. Recall that ω = (ω 1 , . . . , ω n ) ⊤ . For any fixed f ∈ F δ , we define the random variable</p><formula xml:id="formula_123">ξ f = n i=1 ε i ω i [f i (X) -f * i (X)] √ n∥f * -f ∥ n,ω .</formula><p>Conditionally on ω and with X fixed, since the ε i ∼ N (0, 1) are mutually independent, it follows that ξ f ∼ N (0, 1). Applying Lemma C.1 in <ref type="bibr" target="#b45">[46]</ref> to the second inequality, we can derive that</p><formula xml:id="formula_124">E ε,ω ξ 2 f ′ = E ω E ε ξ 2 f ′ | ω ≤ E ω ï E ε Å max f ∈F δ ξ 2 f | ω ãò ≤ 3 log N δ + 1.<label>(24)</label></formula><p>Using the Cauchy-Schwarz inequality and ( <ref type="formula" target="#formula_124">24</ref>) yields</p><formula xml:id="formula_125">E ε,ω ∥f ′ -f * ∥ n,ω |ξ f ′ | ≤ » E ε,ω ∥f ′ -f * ∥ 2 n,ω E ε,ω î ξ 2 f ′ ó ≤ » E ε,ω ∥f ′ -f * ∥ 2 n,ω 3 log N δ + 1 ≤ Å E ε,ω î ∥ f -f * ∥ 2 n,ω ó + √ πδ ã 3 log N δ + 1.<label>(25)</label></formula><p>Observe that since f * is fixed, then for each i = 1, . . . , n,</p><formula xml:id="formula_126">E ε,ω [ε i ω i f * i (X)] = πE ε [ε i f * i (X)] = 0.<label>(26)</label></formula><p>Thus, following from ( <ref type="formula" target="#formula_121">23</ref>) and ( <ref type="formula" target="#formula_126">26</ref>), we have for any estimator f ,</p><formula xml:id="formula_127">E ε,ω ñ 2 n n i=1 ε i ω i f i (X) ô = E ε,ω ñ 2 n n i=1 ε i ω i î f i (X) -f * i (X) ó ô ≤ 2πδ + E ε,ω ñ 2 n n i=1 ε i ω i f ′ i (X) -f * i (X) ô ≤ 2πδ + 2 √ n E ε,ω ∥f ′ -f * ∥ n,ω |ξ f ′ | . (<label>27</label></formula><formula xml:id="formula_128">)</formula><p>Plugging ( <ref type="formula" target="#formula_125">25</ref>) into ( <ref type="formula" target="#formula_127">27</ref>) yields</p><formula xml:id="formula_129">E ε,ω ñ 2 n n i=1 ε i ω i f i (X) ô ≤ 2πδ + 2 Å E ε,ω î ∥ f -f * ∥ 2 n,ω ó + √ πδ ã … 3 log N δ + 1 n ≤ 2πδ + 4 E ε,ω î ∥ f -f * ∥ 2 n,ω ó log N δ n + 4 √ πδ ≤ 6 √ πδ + 4 E ε,ω î ∥ f -f * ∥ 2 n,ω ó log N δ n ,</formula><p>where the second inequality follows from 1 ≤ log N δ ≤ n, and the last from 0 &lt; π ≤ 1. This completes Step (I).</p><p>Step (II): Bounding the term</p><formula xml:id="formula_130">E ε,ω [∥ f -f * ∥ 2 n,ω ]</formula><p>. The goal of this step is to show that for any (random) estimator f ∈ F and any ε ∈ (0, 1],</p><formula xml:id="formula_131">E ε,ω î ∥ f -f * ∥ 2 n,ω ó ≤ (1 + ε) ï inf f ∈F π∥f -f * ∥ 2 n + 6δ √ π + 4(1 + ε) log N δ nε + ∆ F n Ä f , f * X ä ò .</formula><p>Step 2.1: Decomposing the empirical risk difference. By the definition of ∆ F n ( f , f * |X) in <ref type="bibr" target="#b18">(19)</ref>, for any deterministic function f ∈ F, we have</p><formula xml:id="formula_132">E ε,ω ñ 1 n n i=1 ω i Y i -f i (X) 2 ô ≤ E ε,ω ñ 1 n n i=1 ω i Y i -f i (X) 2 ô + ∆ F n Ä f , f * X ä</formula><p>and therefore</p><formula xml:id="formula_133">E ε,ω î ∥ f -f * ∥ 2 n,ω ó = E ε,ω ñ 1 n n i=1 ω i f i (X) -f * i (X) 2 ô = E ε,ω ñ 1 n n i=1 ω i f i (X) -Y i + ε i 2 ô = E ε,ω ñ 1 n n i=1 ω i Ä f i (X) -Y i 2 + 2ε i f i (X) -Y i + ε 2 i ä ô ≤ E ε,ω ñ 1 n n i=1 ω i Ä f i (X) -Y i 2 + 2ε i f i (X) -Y i + ε 2 i ä ô + ∆ F n Ä f , f * X ä ≤ E ε,ω ñ 1 n n i=1 ω i Ä (f i (X) -f * i (X) -ε i ) 2 + 2ε i f i (X) -ε 2 i ä ô + ∆ F n Ä f , f * X ä ≤ π∥f -f * ∥ 2 n + E ε,ω ñ 2 n n i=1 ε i ω i f i (X) ô + ∆ F n Ä f , f * X ä . (<label>28</label></formula><formula xml:id="formula_134">)</formula><p>Step 2.2: Applying noise expectation bound. For any real numbers a, b ≥ 0 and any parameter</p><formula xml:id="formula_135">ε &gt; 0, 2 √ ab ≤ ε 1 + ε a + 1 + ε ε b, which implies that 4 E ε,ω î ∥ f -f * ∥ 2 n,ω ó log N δ n ≤ ε 1 + ε E ε,ω î ∥ f -f * ∥ 2 n,ω ó + 1 + ε ε 4 log N δ n .</formula><p>Using the result (21) from Step (I), we derive for any ε &gt; 0,</p><formula xml:id="formula_136">E ω,ε ñ 2 n n i=1 ε i ω i f i (X) ô ≤ ε 1 + ε E ε,ω î ∥ f -f * ∥ 2 n,ω ó + 1 + ε ε 4 log N δ n + 6 √ πδ.</formula><p>It therefore follows from (28) that for any ε &gt; 0,</p><formula xml:id="formula_137">E ε,ω î ∥ f -f * ∥ 2 n,ω ó ≤ (1 + ε) ï inf f ∈F π∥f -f * ∥ 2 n + 1 + ε ε 4 log N δ n + 6 √ πδ + ∆ F n Ä f , f * X ä ò .</formula><p>Step (III): Bounding the estimation risk via isometry. In this step, we relate</p><formula xml:id="formula_138">E ε,ω [∥ f -f * ∥ 2 n,ω ] to E ε,ω [∥ f -f * ∥ 2 n</formula><p>] and show for any ε &gt; 0,</p><formula xml:id="formula_139">E ε,ω î ∥ f -f * ∥ 2 n ó ≤ 2(1 + ε) inf f ∈F ∥f -f * ∥ 2 n + 1804 (1 + ε)F 2 log N δ εnπ + 4F 2 N δ + 6δ √ π + 12F δ + ∆ F n Ä f , f * X ä π .</formula><p>Define C 1 as the event that</p><formula xml:id="formula_140">πn∥ f -f * ∥ 2 n &gt; 3600F 2 log N δ + 6F πnδ.</formula><p>Observe that</p><formula xml:id="formula_141">E ε,ω î ∥ f -f * ∥ 2 n ó = E ε,ω î ∥ f -f * ∥ 2 n 1l(C 1 ) ó + E ε,ω î ∥ f -f * ∥ 2 n 1l (C c 1 ) ó<label>(29)</label></formula><p>and</p><formula xml:id="formula_142">E ε,ω î ∥ f -f * ∥ 2 n 1l (C c 1 ) ó ≤ 3600F 2 log N δ πn + 6F δ. (<label>30</label></formula><formula xml:id="formula_143">)</formula><p>To bound</p><formula xml:id="formula_144">E ε,ω î ∥ f -f * ∥ 2 n 1l(C 1 ) ó , we apply Lemma 8. Recall that f ′ ∈ F δ is the (random)</formula><p>function closest to f , meaning that for all i = 1, . . . , n,</p><formula xml:id="formula_145">∥f ′ i -f i ∥ ∞ ≤ δ.</formula><p>This yields</p><formula xml:id="formula_146">∥ f -f * ∥ 2 n = 1 n n i=1 f i (X) -f * i (X) 2 = 1 n n i=1 f i (X) -f ′ i (X) + f ′ i (X) -f * i (X) 2 ≤ ∥f ′ -f * ∥ 2 n + 6F δ. (<label>31</label></formula><formula xml:id="formula_147">)</formula><p>Let C 2 denote the event that</p><formula xml:id="formula_148">πn∥f ′ -f * ∥ 2 n &gt; 3600F 2 log N δ .</formula><p>By <ref type="bibr" target="#b30">(31)</ref>, event C 1 implies C 2 . Combining this with (31), we deduce</p><formula xml:id="formula_149">E ε,ω î ∥ f -f * ∥ 2 n 1l(C 1 ) ó ≤ E ε,ω ∥f ′ -f * ∥ 2 n 1l(C 1 ) + 6F δ ≤ E ε,ω ∥f ′ -f * ∥ 2 n 1l(C 2 ) + 6F δ. (<label>32</label></formula><formula xml:id="formula_150">) Next, we bound E ε,ω ∥f ′ -f * ∥ 2 n 1l(C 2 )</formula><p>. Defining E as the event that</p><formula xml:id="formula_151">∥f ′ -f * ∥ 2 n,ω ≥ π∥f ′ -f * ∥ 2 n 2 ,</formula><p>we can rewrite</p><formula xml:id="formula_152">E ε,ω ∥f ′ -f * ∥ 2 n 1l(C 2 ) = E ε,ω ∥f ′ -f * ∥ 2 n 1l(E ∩ C 2 ) + E ε,ω ∥f ′ -f * ∥ 2 n 1l(E c ∩ C 2 )</formula><p>. Applying Lemma 8 with G = F δ , we know that</p><formula xml:id="formula_153">P(E c ∩ C 2 ) ≤ 2 N δ ,</formula><p>which further implies that</p><formula xml:id="formula_154">E ε,ω ∥f ′ -f * ∥ 2 n 1l(C 2 ) ≤ 2 π E ε,ω ∥f ′ -f * ∥ 2 n,ω + 8F 2 N δ . (<label>33</label></formula><formula xml:id="formula_155">)</formula><p>Combining ( <ref type="formula" target="#formula_149">32</ref>) and ( <ref type="formula" target="#formula_154">33</ref>), we obtain</p><formula xml:id="formula_156">E ε,ω î ∥ f -f * ∥ 2 n 1l(C 1 ) ó ≤ 2 π E ε,ω ∥f ′ -f * ∥ 2 n,ω + 8F 2 N δ + 6F δ. (<label>34</label></formula><formula xml:id="formula_157">)</formula><p>Substituting equations ( <ref type="formula" target="#formula_142">30</ref>) and ( <ref type="formula" target="#formula_156">34</ref>) into ( <ref type="formula" target="#formula_141">29</ref>) gives</p><formula xml:id="formula_158">E ε,ω î ∥ f -f * ∥ 2 n ó ≤ 2 π E ε,ω ∥f ′ -f * ∥ 2 n,ω + 8F 2 N δ + 3600F 2 log N δ πn + 12F δ. (<label>35</label></formula><formula xml:id="formula_159">)</formula><p>Moreover, observe that with F ≥ 1,</p><formula xml:id="formula_160">∆ F n f ′ , f * X -∆ F n Ä f , f * X ä = E ε,ω ñ 1 n n i=1 ω i Y i -f ′ i (X) 2 -Y i -f i (X) 2 ô = E ε,ω ñ 1 n n i=1 ω i 2Y i f i (X) -f ′ i (X) + f ′ i (X) 2 -f i (X) 2 ô = E ε,ω ñ 1 n n i=1 ω i 2 f * i (X) + ε i f i (X) -f ′ i (X) + f ′ i (X) 2 -f i (X) 2 ô ≤ 4πF δ + 2δE ε,ω ñ 1 n n i=1 ω i |ε i | ô ≤ 6πF δ. (<label>36</label></formula><formula xml:id="formula_161">)</formula><p>By applying the result from Step (II) with f = f ′ and using <ref type="bibr" target="#b35">(36)</ref>, we obtain from ( <ref type="formula" target="#formula_158">35</ref>) that</p><formula xml:id="formula_162">E ε,ω î ∥ f -f * ∥ 2 n ó ≤ 2(1 + ε) ñ inf f ∈F ∥f -f * ∥ 2 n + 1 + ε ε 4 log N δ nπ + 6δ √ π + ∆ F n ( f , f * X) π + 6F δ ô + 8F 2 N δ + 3600F 2 log N δ πn + 12F δ ≤ 2(1 + ε) ñ inf f ∈F ∥f -f * ∥ 2 n + 1 + ε ε 1804F 2 log N δ nπ + 4F 2 N δ + 6δ √ π + 12F δ + ∆ F n ( f , f * X) π ô .</formula><p>Step (IV): Relating the prediction error to the population risk. This step yields the following two-sided bound for the prediction error of any (random) estimator f . More precisely, we show that for any ε ∈ (0, 1],</p><formula xml:id="formula_163">(1-ε)E ε,ω,X î ∥ f -f * ∥ 2 n ó - 20F 2 m log N δ nε - 15m 2 F 2 (log N δ ) 3/4 n 3/4 -16δF ≤ R Ä f , f * ä ≤ (1 + ε) Ç E ε,ω,X î ∥ f -f * ∥ 2 n ó + 15(1 + ε)mF 2 ε log N δ n + 15m 2 F 2 (log N δ ) 3/4 n 3/4 + 12δF å .</formula><p>Recall that all results from the previous three steps are established conditionally on the fixed design points X 1 , . . . , X n .</p><p>Step 4.1: Generate random vectors X ′ 1 , . . . , X ′ n that have the same joint distribution as X 1 , . . . , X n and are independent of the original sample. We denote the resulting feature matrix by X ′ , with rows (X ′ 1 ) ⊤ , . . . , (X ′ n ) ⊤ . For any f ∈ F ∪ F δ and all i = 1, . . . , n, define</p><formula xml:id="formula_164">s (f ) i (X) = f i (X) -f * i (X) 2 ∈ 0, 4F 2 , (since ∥f i ∥ ∞ , ∥f * i ∥ ∞ ≤ F ) and Z (f ) i = E X ′ [s (f ) i (X ′ )] -s (f ) i (X) ∈ -4F 2 , 4F 2 , D f = 1 n n i=1 Z (f ) i .</formula><p>For an estimator f , recall that the prediction error was defined as</p><formula xml:id="formula_165">R Ä f , f * ä = E ε,ω,X,X ′ ñ 1 n n i=1 s ( f ) i (X ′ ) ô .</formula><p>Define the deviation term</p><formula xml:id="formula_166">D = E ε,ω,X [D f ] = R( f , f * ) -E ε,ω,X [∥ f -f * ∥ 2 n ].</formula><p>Step 4.2: Bounding |D|. We claim that for any given f , under Assumption 1, there exists an integer r ≤ m(m -1) + 1 and a (disjoint) partition</p><formula xml:id="formula_167">P 1 ∪ • • • ∪ P r = {1, . . . , n} such that i, j ∈ P ℓ if s (f )</formula><p>i (X) and s (f ) j (X) depend on different rows of X, that is, they do not share a single covariate vector.</p><p>To prove the claim, we build a new graph with vertices 1, . . . , n, where vertex i and j are connected by an edge if and only if s (f ) i (X) and s (f ) j (X) depend on at least one shared covariate vector.</p><p>Every vertex in this new graph has edge degree bounded by ≤ m(m -1). To see this, we consider node i corresponding to s (f ) i (X). By condition (i) of Assumption 1, s (f ) i (X) can depend on at most m covariate vectors in X. According to condition (ii), each of those m covariate vectors can itself depend on at most m -1 of s (f ) j (X) with j ̸ = i. Therefore, the degree of any node i in the new graph is at most m(m -1). Since node i was chosen arbitrarily, this bound holds for every node.</p><p>We now examine a vertex coloring of the new graph. This is an assignment of a color to each vertex with the constraint that neighboring vertices must receive different colors. Using a greedy sequential coloring scheme guarantees that at most r ≤ ∆ max + 1 colors are sufficient, where ∆ max denotes the maximum vertex degree. In our case, this yields the bound r ≤ m(m -1) + 1. Grouping all vertices of the same color into one set yields the disjoint partition P 1 ∪ • • • ∪ P r of {1, . . . , n} with the properties stated above, thereby proving the claim.</p><p>In particular, the claim implies that D f can be rewritten as</p><formula xml:id="formula_168">D f = 1 n r ℓ=1 V (f ) ℓ where V (f ) ℓ = i∈P ℓ Z (f ) i , (<label>37</label></formula><formula xml:id="formula_169">)</formula><p>and each V (f ) ℓ is a sum of independent random variables.</p><p>For each block ℓ = 1, . . . , r, the random variables</p><formula xml:id="formula_170">{Z (f ) i : i ∈ P ℓ } satisfy |Z (f ) i | ≤ 4F 2 almost surely. Applying Lemma 11 to the sum V (f ) ℓ = i∈P ℓ Z (f ) i yields, for any λ such that 0 ≤ 4F 2 λr &lt; 3, E î exp Ä λrV (f ) ℓ äó ≤ exp λ 2 r 2 2(1 -4F 2 λr/3) i∈P ℓ E î (Z (f ) i ) 2 ó . (<label>38</label></formula><formula xml:id="formula_171">)</formula><p>Substituting the blockwise bound <ref type="bibr" target="#b37">(38)</ref> into Lemma 10, we bound, for any λ satisfying 0 ≤ 4F 2 λr &lt; 3,</p><formula xml:id="formula_172">E ñ exp Ç λ r ℓ=1 V (f ) ℓ åô ≤ r ℓ=1 Ä E î exp Ä λrV (f ) ℓ äóä 1 r ≤ r ℓ=1 exp λ 2 r 2(1 -4F 2 λr/3) i∈P ℓ E î (Z (f ) i ) 2 ó ≤ exp ñ λ 2 r 2(1 -4F 2 λr/3) n i=1 E î (Z (f ) i ) 2 ó ô . (<label>39</label></formula><formula xml:id="formula_173">)</formula><p>Observe that</p><formula xml:id="formula_174">n i=1 E î (Z (f ) i ) 2 ó ≤ n i=1 E Ä s (f ) i (X) ä 2 ≤ 4F 2 nR (f, f * ) . (<label>40</label></formula><formula xml:id="formula_175">)</formula><p>Plugging ( <ref type="formula" target="#formula_174">40</ref>) into (39) and using Markov's Inequality, we deduce that for any t &gt; 0 and any λ satisfying 0 ≤ λ &lt; 3/(4rF 2 ),</p><formula xml:id="formula_176">P (nD f ≥ t) ≤ e -λt E ñ exp Ç λ r ℓ=1 V (f ) ℓ åô ≤ exp ï -λt + 4F 2 λ 2 rnR (f, f * ) 2(1 -4rF 2 λ/3) ò . (<label>41</label></formula><formula xml:id="formula_177">)</formula><p>Taking</p><formula xml:id="formula_178">λ = t 4F 2 rnR (f, f * ) + 4rF 2 t/3</formula><p>in the right-hand side of (41) yields the one-sided tail bound</p><formula xml:id="formula_179">P (nD f ≥ t) ≤ exp ï - t 2 8F 2 rnR (f, f * ) + 8F 2 rt/3 ò . (<label>42</label></formula><formula xml:id="formula_180">)</formula><p>Since the same argument applies to -D f , substituting t → nt yields the two-sided inequality</p><formula xml:id="formula_181">P (|D f | ≥ t) ≤ 2 exp ï - nt 2 8F 2 rR(f, f * ) + 8F 2 rt/3 ò . (<label>43</label></formula><formula xml:id="formula_182">) Using √ a + b ≤ √ a + √ b</formula><p>, for all a, b ≥ 0, we deduce from ( <ref type="formula" target="#formula_181">43</ref>) that for all u &gt; 0,</p><formula xml:id="formula_183">P |D f | ≥ 8F 2 ruR(f, f * ) n + 8F 2 ru 3n ≤ 2e -u . (<label>44</label></formula><formula xml:id="formula_184">)</formula><p>Taking a union bound over F δ and using the fact that f ′ ∈ F δ , we obtain from ( <ref type="formula" target="#formula_183">44</ref>) that for all u &gt; 0,</p><formula xml:id="formula_185">P |D f ′ | ≥ 8F 2 ruR(f ′ , f * ) n + 8F 2 ru 3n ≤ 2N δ e -u .</formula><p>Set</p><formula xml:id="formula_186">B 1 = 8rF 2 R (f ′ , f * ) n and B 2 = 8F 2 r 3n ,</formula><p>and define</p><formula xml:id="formula_187">G(u) = B 1 u 1/2 + B 2 u.</formula><p>Taking u 0 = log(2N δ ), it then follows from the integration that</p><formula xml:id="formula_188">E |D f ′ | = ∞ 0 P |D f ′ | &gt; t dt = ∞ 0 P |D f ′ | &gt; G(u) G ′ (u) du ≤ u 0 0 G ′ (u) du + ∞ u 0 2N δ e -u G ′ (u) du ≤ G(u 0 ) + 2N δ ∞ u 0 e -u Å B 1 2 √ u + B 2 ã du ≤ 1.7B 1 log N δ + 2.7B 2 log N δ , (<label>45</label></formula><formula xml:id="formula_189">)</formula><p>where we use 1 ≤ log N δ ≤ n in the last inequality. Using the fact that ∥f ′ i -f i ∥ ∞ ≤ δ for all i, we obtain from <ref type="bibr" target="#b44">(45)</ref> that</p><formula xml:id="formula_190">|D| ≤ E î |D f | ó ≤ E |D f ′ | + 8δF ≤ 1.7B 1 log N δ + 2.7B 2 log N δ + 8δF ≤ 7.2rF 2 log N δ n + 4.81F rR(f ′ , f * ) log N δ n + 8δF ≤ 7.2rF 2 log N δ n + 4.81F r î R( f , f * ) + 4δF ó log N δ n + 8δF. (<label>46</label></formula><formula xml:id="formula_191">)</formula><p>Step 4.3: Applying a quadratic bound. Let a, b, c, d be positive real numbers satisfying |a -b| ≤ 2c √ a + d. Then, for any ε ∈ (0, 1], the following inequality holds</p><formula xml:id="formula_192">(1 -ε)b -d - c 2 ε ≤ a ≤ (1 + ε)(b + d) + (1 + ε) 2 ε c 2 . (<label>47</label></formula><formula xml:id="formula_193">)</formula><p>Applying <ref type="bibr" target="#b46">(47)</ref> with</p><formula xml:id="formula_194">a = R Ä f , f * ä + 4δF, b = E ε,ω,X î ∥ f -f * ∥ 2 n ó , c = 4.81F √ r log N δ 2 √ n , d = 7.2rF 2 log N δ n + 12δF,</formula><p>using the fact that r ≤ m 2 , we derive from ( <ref type="formula" target="#formula_190">46</ref>) that</p><formula xml:id="formula_195">(1 -ε)E ε,ω,X î ∥ f -f * ∥ 2 n ó - 13m 2 F 2 log N δ nε -16δF ≤ R Ä f , f * ä ≤ (1 + ε) Å E ε,ω,X î ∥ f -f * ∥ 2 n ó + 10(1 + ε)m 2 F 2 ε log N δ n + 12δF ã ,</formula><p>where the upper bound employs the inequality 2 ≤ (1 + ε)/ε.</p><p>Step (V): Lower bound for</p><formula xml:id="formula_196">E ε,ω [∥ f -f * ∥ 2 n ]</formula><p>. In this step, we will show that for any ε ∈ (0, 1],</p><formula xml:id="formula_197">E ε,ω î ∥ f -f * ∥ 2 n ó ≥ (1 -ε) Å ∆ F n Ä f , f * X ä - 4 log N δ nε -12δ √ π ã .</formula><p>Let f = ( f1 , . . . , fn ) ⊤ be any global empirical risk minimizer over F ; that is,</p><formula xml:id="formula_198">f ∈ argmin f ∈F n i=1 ω i Y i -f i (X) 2 .</formula><p>Using <ref type="bibr" target="#b19">(20)</ref> and the result from Step (I), we can deduce that</p><formula xml:id="formula_199">E ε,ω î ∥ f -f * ∥ 2 n,ω ó -E ε,ω ∥ f -f * ∥ 2 n,ω ≥ ∆ F n Ä f , f * X ä -4 Ä E ε,ω î ∥ f -f * ∥ 2 n,ω ó + E ε,ω ∥ f -f * ∥ 2 n,ω ä log N δ n -12 √ πδ. (<label>48</label></formula><formula xml:id="formula_200">)</formula><p>For any ε ∈ (0, 1) and a, b ≥ 0, using the inequality</p><formula xml:id="formula_201">2 √ ab ≤ ε 1 -ε a + 1 -ε ε b, (<label>49</label></formula><formula xml:id="formula_202">)</formula><p>we bound</p><formula xml:id="formula_203">4 E ε,ω î ∥ f -f * ∥ 2 n,ω ó log N δ n ≤ ε 1 -ε E ε,ω î ∥ f -f * ∥ 2 n,ω ó + 4(1 -ε) log N δ nε . (<label>50</label></formula><formula xml:id="formula_204">)</formula><p>Moreover, taking ε = 1/2 in (49) yields the bound</p><formula xml:id="formula_205">4 E ε,ω ∥ f -f * ∥ 2 n,ω log N δ n ≤ E ε,ω ∥ f -f * ∥ 2 n,ω + 4 log N δ n . (<label>51</label></formula><formula xml:id="formula_206">)</formula><p>By definition, <ref type="formula" target="#formula_203">50</ref>) and ( <ref type="formula" target="#formula_205">51</ref>) into <ref type="bibr" target="#b47">(48)</ref>, we obtain</p><formula xml:id="formula_207">E ε,ω [∥ f -f * ∥ 2 n ] ≥ E ε,ω [∥ f -f * ∥ 2 n,ω ]. Substituting (</formula><formula xml:id="formula_208">E ε,ω [∥ f -f * ∥ 2 n ] ≥ E ε,ω î ∥ f -f * ∥ 2 n,ω ó ≥ (1 -ε) Å ∆ F n Ä f , f * X ä - 4 log N δ nε -12 √ πδ ã .<label>(52)</label></formula><p>When ε = 1, the lower bound holds trivially.</p><p>In conclusion, the lower bound follows by combining Step (IV) with the expectation over X of Step (V)'s result, and the upper bound follows by combining Step (IV) with the expectation over X of Step (III)'s result.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D.3 Proof of Corollary 2</head><p>Proof. Consider the feedforward part of the network class that is denoted by F(L 2 , p, s, ∞). Using the identity <ref type="bibr" target="#b18">(19)</ref> in <ref type="bibr" target="#b45">[46]</ref> to remove inactive nodes, we deduce that</p><formula xml:id="formula_209">F(L 2 , p, s, ∞) = F L 2 , (p 0 , p 1 ∧ s, p 2 ∧ s, . . . , p L 2 ∧ s, p L 2 +1 ), s, ∞ . (<label>53</label></formula><formula xml:id="formula_210">)</formula><p>Using this identity and choosing δ = 1/n in Proposition 1 yields a metric entropy bound for the whole class</p><formula xml:id="formula_211">log N 1/n, F(T, L 1 , L 2 , p, s, F ), ∥ • ∥ ∞ ≤ log N 1/n, F(T, L 1 , L 2 , p, s, ∞), ∥ • ∥ ∞ = log N 1/n, F(T, L 1 , L 2 , (p 0 , p 1 ∧ s, p 2 ∧ s, . . . , p L 2 ∧ s, p L 2 +1 ), s, ∞ , ∥ • ∥ ∞ ) ≤ (d 2 L 1 + L 1 + s + 1) log î 2 2L 2 +5 nL 1 (L 1 + L 2 + 2)(∥T∥ 1,∞ ∨ 1) L 1 d L 1 +2 s 2L 2 ó ≤ 18(d 2 L 1 + s) log î nL 1 (L 1 + L 2 + 2)(∥T∥ 1,∞ ∨ d) L 1 +1 s L 2 ó , (<label>54</label></formula><formula xml:id="formula_212">)</formula><p>where the last inequality is due to s ≥ 2 and L 2 ≥ 1. Under the condition</p><formula xml:id="formula_213">N 1/n, F(T, L 1 , L 2 , p, s, F ), ∥ • ∥ ∞ ≥ Cn,</formula><p>with some numerical constant C &gt; 0, and setting δ = 1/n, it follows from F ≥ 1 and π</p><formula xml:id="formula_214">∈ (0, 1] that 24F δ √ π + 4F 2 N δ ≤ 24F nπ + 4F 2 Cn ≤ Å 24 + 4 C ã F 2 nπ .</formula><p>Together with <ref type="bibr" target="#b53">(54)</ref> and Theorem 1 (and the conditions m, F ≥ 1 and 0 &lt; π ≤ 1), this proves the assertion.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>D.4 Proof of Theorem 2</head><p>Proof. The proof is based on applying Corollary 2. We first verify that</p><formula xml:id="formula_215">N 1 n , F(S A , L 1 , L 2 , p n , s n , F ), ∥ • ∥ ∞ ≳ n. (<label>55</label></formula><formula xml:id="formula_216">)</formula><p>Observe that the function class includes constant functions; that is, for any fixed v ∈ [0, 1], there exists a function in F(S A , L 1 , L 2 , p n , s n , F ) that outputs v at all nodes, given any input. This can be realized by setting all parameters except the bias in the final layer of the ReLU network to zero and taking b L 2 = v. In particular, let Γ = ⌈n/3⌉ and define the set of functions M = {f (0) , . . . , f (Γ-1) } by f (j) ≡ 3j n , for all j = 0, . . . , Γ -1.</p><p>With F ≥ 1 and s n ≥ 2, we have M ⊆ F(S A , L 1 , L 2 , p n , s n , F ) and the functions satisfy</p><formula xml:id="formula_217">f (i) -f (j) ∞ ≥ 3 n &gt; 2 n</formula><p>, for all i ̸ = j.</p><p>Then any sup-norm ball of radius 1/n can contain at most one function from M. We obtain</p><formula xml:id="formula_218">N 1 n , F(S A , L 1 , L 2 , p n , s n , F ), ∥ • ∥ ∞ ≥ n 3 ,</formula><p>which verifies <ref type="bibr" target="#b54">(55)</ref>.</p><p>Taking</p><formula xml:id="formula_219">N i = °n t i 2α * i +t i § , N = max i=0,...,q N i</formula><p>and the network parameters L 1 , L 2 , p n , s n , F satisfying Theorem 2, for sufficiently large n, Lemma 4 yields</p><formula xml:id="formula_220">inf f ∈F (S A ,L 1 ,L 2 ,pn,sn,F ) ∥f -f * ∥ ∞ ≤ C q,β,d,t,α,M,F max i=0,...,q n - α * i 2α * i +t i . (<label>56</label></formula><formula xml:id="formula_221">)</formula><p>Additionally, under the given conditions, for all sufficiently large n, we can bound</p><formula xml:id="formula_222">(d 2 L 1 + s) log nL 1 (L 1 + L 2 ) + (L 1 + 1) log ∥S A ∥ 1,∞ ∨ d + L 2 log s ≤ C d,L 1 ,∥S A ∥ 1,∞ sL 2 log(nsL 2 ),<label>(57)</label></formula><p>where C d,L 1 ,∥S A ∥ 1,∞ is a positive constant depending only on d, L 1 , and ∥S A ∥ 1,∞ .</p><p>Substituting ( <ref type="formula" target="#formula_220">56</ref>) and ( <ref type="formula" target="#formula_222">57</ref>) into Corollary 2 with ε = 1 gives that for sufficiently large n,</p><formula xml:id="formula_223">R( f , f * ) ≤ C q,β,d,t,α,M,F max i=0,...,q n - 2α * i 2α * i +t i + C d,L 1 ,∥S A ∥ 1,∞ m 2 F 2 π sL 2 log(nsL 2 ) n ≤ C q,β,d,t,α,M,F max i=0,...,q n - 2α * i 2α * i +t i + C q,β,d,t,α,M,L 1 ,∥S A ∥ 1,∞ m 2 F 2 π N n log 3 n ≤ C q,β,d,t,α,M,F,L 1 ,∥S A ∥ 1,∞ m 2 log 3 n π max i=0,...,q n - 2α * i 2α * i +t i ,</formula><p>which completes the proof.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>E Proof of the covering number bound</head><p>To prove Proposition 1, we first show that for any two GCNs with matrix parameters and reweighting coefficients differing by at most ε, their outputs, for any given input, differ by at most a value proportional to ε.</p><p>Recall that for a matrix M = (M i,j ), its row-sum norm is given by</p><formula xml:id="formula_224">∥M∥ 1,∞ = max i j |M i,j |.</formula><p>Lemma 12. Let G(L 1 , T) denote the class of functions defined in <ref type="bibr" target="#b6">(7)</ref>. If g, h ∈ G(L 1 , T) are two GCNs with corresponding weight matrices W g ℓ , W h ℓ and reweighting coefficients γ g ℓ , γ h ℓ satisfying</p><formula xml:id="formula_225">W g ℓ -W h ℓ ∞ ≤ ε, |γ g ℓ -γ h ℓ | ≤ ε, for all ℓ ∈ {1, . . . , L 1 }, then for any x ∈ [0, 1] n×d , ∥g(x) -h(x)∥ ∞ ≤ (L 2 1 + L 1 ) ∥T∥ 1,∞ ∨ 1 L 1 d L 1 ε.</formula><p>Proof. We denote by H (ℓ)</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>T,g and H (ℓ)</head><p>T,h the functions corresponding to the ℓ-th layer of networks g and h, respectively. First, we show by induction that for each ℓ = 1, . . . , L 1 ,</p><formula xml:id="formula_226">H (ℓ) T,g (x) -H (ℓ) T,h (x) ∞ ≤ ℓ∥T∥ ℓ 1,∞ d ℓ ε. (<label>58</label></formula><formula xml:id="formula_227">)</formula><p>For ℓ = 1, we can deduce from (6) that</p><formula xml:id="formula_228">H (1) T,g (x) -H (1) T,h (x) ∞ = Tx W g 1 -W h 1 ∞ ≤ ∥T∥ 1,∞ dε.</formula><p>Assuming the claim holds for ℓ -1 ∈ {1, . . . , L 1 -1}, we prove it now for ℓ. To this end,</p><formula xml:id="formula_229">H (ℓ) T,g (x) -H (ℓ) T,h (x) ∞ = TH (ℓ-1) T,g (x)W g ℓ -TH (ℓ-1) T,h (x)W h ℓ ∞ ≤ T H (ℓ-1) T,g (x) -H (ℓ-1) T,h (x) W g ℓ ∞ + TH (ℓ-1) T,h (x) W g ℓ -W h ℓ ∞ ≤ ∥T∥ 1,∞ î (ℓ -1)∥T∥ ℓ-1 1,∞ d ℓ-1 ε ó d + ∥T∥ 1,∞ ∥T∥ ℓ-1 1,∞ d ℓ-1 dε ≤ ℓ∥T∥ ℓ 1,∞ d ℓ ε.</formula><p>Hence, by definition <ref type="bibr" target="#b6">(7)</ref> and the fact that</p><formula xml:id="formula_230">|γ g ℓ |, |γ h ℓ | ≤ 1, for ℓ = 1 . . . , L 1 , ∥g(x) -h(x)∥ ∞ = L 1 ℓ=1 γ g ℓ H (ℓ) T,g (x) - L 1 ℓ=1 γ h ℓ H (ℓ) T,h (x) ∞ ≤ L 1 ℓ=1 γ g ℓ H (ℓ) T,g (x) - L 1 ℓ=1 γ g ℓ H (ℓ) T,h (x) ∞ + L 1 ℓ=1 γ g ℓ H (ℓ) T,h (x) - L 1 ℓ=1 γ h ℓ H (ℓ) T,h (x) ∞ ≤ L 1 ℓ=1 H (ℓ) T,g (x) -H (ℓ) T,h (x) ∞ + γ g ℓ -γ h ℓ • L 1 ℓ=1 H (ℓ) T,h (x) ∞ ≤ L 2 1 ∥T∥ 1,∞ ∨ 1 L 1 d L 1 ε + L 1 ∥T∥ 1,∞ ∨ 1 L 1 d L 1 ε ≤ L 1 (L 1 + 1) ∥T∥ 1,∞ ∨ 1 L 1 d L 1 ε. Proof of Proposition 1. Let g, h ∈ F (T, L 1 , L 2 , p, s, ∞)</formula><p>be two networks such that their weight matrices and bias vectors differ by at most ε in each entry. By definition, for each j ∈ [n] we have</p><formula xml:id="formula_231">g j = g 0 • g 1,j and h j = h 0 • h 1,j ,</formula><p>where g 0 , h 0 ∈ F(L 2 , p, s, ∞) and g 1 , h 1 ∈ G(L 1 , T). We first show that for any j ∈ [n] and any</p><formula xml:id="formula_232">x ∈ [0, 1] n×d , g 0 • g 1,j (x) -h 0 • h 1,j (x) ≤ L 1 (L 1 + L 2 + 2) L 2 +1 k=0 (p k + 1) ∥T∥ 1,∞ ∨ 1 L 1 d L 1 ε.</formula><p>For any x ∈ [0, 1] n×d , the triangle inequality yields</p><formula xml:id="formula_233">|g 0 • g 1,j (x) -h 0 • h 1,j (x)| ≤ |g 0 • g 1,j (x) -h 0 • g 1,j (x)| + |h 0 • g 1,j (x) -h 0 • h 1,j (x)|. (<label>59</label></formula><formula xml:id="formula_234">)</formula><p>Let g i 1,j (x) denote the i-th component of g 1,j (x) ∈ R 1×d . Observe that by the definition of g 1,j , for all i,</p><formula xml:id="formula_235">g i 1,j (x) ≤ L 1 ℓ=1 ∥T∥ ℓ 1,∞ d ℓ . (<label>60</label></formula><formula xml:id="formula_236">)</formula><p>Since all parameters in the weight matrices and shift vectors of F (L 2 , p, s, ∞) lie within [-1, 1], it follows from the proof of Lemma 5 in <ref type="bibr" target="#b45">[46]</ref> that the function h 0 is Lipschitz with a Lipschitz constant bounded by L 2 k=0 p k . Together with Lemma 12, we obtain</p><formula xml:id="formula_237">|h 0 • g 1,j (x) -h 0 • h 1,j (x)| ≤ L 2 k=0 p k |g 1,j (x) -h 1,j (x)| ∞ ≤ L 2 k=0 p k î L 1 (L 1 + 1) ∥T∥ 1,∞ ∨ 1 L 1 d L 1 ε ó . (<label>61</label></formula><formula xml:id="formula_238">)</formula><p>Applying the argument from the proof of Lemma 5 in <ref type="bibr" target="#b45">[46]</ref> (specifically, the last step in the chain of inequalities on page 15) together with (60), we obtain</p><formula xml:id="formula_239">|g 0 • g 1,j (x) -h 0 • g 1,j (x)| ≤ ε(L 2 + 1) L 2 +1 k=0 (p k + 1) L 1 ℓ=1 ∥T∥ ℓ 1,∞ d ℓ .<label>(62)</label></formula><p>Thus, substituting (61) and ( <ref type="formula" target="#formula_239">62</ref>) into <ref type="bibr" target="#b58">(59)</ref>, it follows that</p><formula xml:id="formula_240">g 0 • g 1,j (x) -h 0 • h 1,j (x) ≤ ε(L 2 + 1) L 2 +1 k=0 (p k + 1) L 1 ℓ=1 ∥T∥ ℓ 1,∞ d ℓ + L 2 k=0 p k î L 1 (L 1 + 1) ∥T∥ 1,∞ ∨ 1 L 1 d L 1 ε ó ≤ L 1 (L 1 + L 2 + 2) L 2 +1 k=0 (p k + 1) ∥T∥ 1,∞ ∨ 1 L 1 d L 1 ε.</formula><p>This implies that for any δ &gt; 0, constructing a δ-covering of F(T, L 1 , L 2 , p, s, ∞) only requires discretizing the network parameters with grid size</p><formula xml:id="formula_241">ρ δ = δ L 1 (L 1 + L 2 + 2) î L 2 +1 k=0 (p k + 1) ó ∥T∥ 1,∞ ∨ 1 L 1 d L 1 .</formula><p>When δ ≤ 1 and L 1 ≥ 1, it follows that ρ δ ≤ 1. The GCN part has (d 2 + 1)L 1 parameters in total and all parameters take values in [-1, 1]. For the class F (L 2 , p, s, ∞), the total number of parameters is bounded by</p><formula xml:id="formula_242">L 2 k=0 (p k + 1)p k+1 ≤ L 2 +1 k=0 (p k + 1).</formula><p>To pick s non-zero parameters, there are at most [ L 2 +1 k=0 (p k + 1)] s combinations. Therefore, we obtain that</p><formula xml:id="formula_243">N δ, F(T, L 1 , L 2 , p, s, ∞ , ∥ • ∥ ∞ ) ≤   s * ≤s 2 ρ δ L 2 +1 k=0 (p k + 1) s *   Å 2 ρ δ ã (d 2 +1)L 1 ≤ 2 ρ δ L 2 +1 k=0 (p k + 1) s+1 Å 2 ρ δ ã (d 2 +1)L 1 ≤ Ñ 2L 1 (L 1 + L 2 + 2)(∥T∥ 1,∞ ∨ 1) L 1 d L 1 δ L 2 +1 k=0 (p k + 1) 2 é (d 2 +1)L 1 +s+1 .</formula><p>Taking logarithms yields the result.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F Proofs for the approximation theory F.1 Proof of Lemma 3</head><p>Proof. It suffices to show that, under the given condition, for every f ∈ F 0 (β, k, T), one can find a function g ∈ G(L 1 , T) such that f ≡ g. Recall that for any g ∈ G(L 1 , T) and any input x ∈ [0, 1] n×d , the output takes the form</p><formula xml:id="formula_244">g(x) = L 1 ℓ=1 γ ℓ H (ℓ) T,g (x),</formula><p>where for ℓ ∈ {1, . . . , L 1 }, H</p><p>T,g (x) = TH (ℓ-1) T,g (x)W g ℓ , with H (0) T,g (x) = x. Here, W g ℓ ∈ R d×d are the parameter matrices associated with the function g, with each of its entries lying in [-1, 1]. Under the given conditions, every target function f ∈ F 0 (β, k, T) admits the representation</p><formula xml:id="formula_246">f (x) = k i=1 θ i T i x, where |θ i | ≤ β ≤ 1. For k ≤ L 1 , the parameter choice W g ℓ = I d , for 1 ≤ ℓ ≤ k, and W g ℓ = 0, for ℓ &gt; k yields for 1 ≤ ℓ ≤ k, H (ℓ) T,g (x) = TH (ℓ-1) T,g (x)I d = TT ℓ-1 xI d = T ℓ x and H (ℓ) T,g (x) = 0, for ℓ &gt; k.</formula><p>Let γ ℓ = θ ℓ for 1 ≤ ℓ ≤ k and θ ℓ = 0 otherwise. Summing the outputs from ℓ = 1 to L 1 then completes the proof.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.2 Proof of Lemma 4</head><p>To prove Lemma 4, we apply a direct consequence of Theorem 1 in <ref type="bibr" target="#b45">[46]</ref> (page 1891), incorporating the necessary adjustments detailed in the correction note <ref type="bibr" target="#b46">[47]</ref>. It shows that deep neural networks can effectively approximate finite compositions of Hölder smooth functions. Lemma 13. Let t i ∈ N and α i &gt; 0, for i = 0, . . . , q and let α * i be defined as in <ref type="bibr" target="#b14">(15)</ref>. Set .</p><formula xml:id="formula_247">m i = ⌈(α i + t i ) log 2 n/(2α * i + t i )⌉, L ′ i = 8 + (m i + 5)(1 + ⌈log 2 (t i ∨ α i )⌉),<label>and</label></formula><formula xml:id="formula_248">s i = 141(t i + α i + 1) 3+t i (m i + 6). Let φ * ∈ G(q, d, t, α, K) and let Q 0 = 1, Q i = (2K) α i for i ∈ [q -1], and Q q = K(2K) αq . For any N i ∈ N such that N i ≥ (α i + 1) t i ∨ (Q i + 1)e t i , there exists h ∈ F L, (d, 6rN, . . . , 6rN, 1), s, ∞ with L = 3q + q i=0 L ′ i , r = max i=0,...,q d i+1 (t i + ⌈α i ⌉), N = max i=0,...,q N i , s ≤ q i=0 d i+1 (s i N + 4),</formula><p>The proof of Lemma 4 relies moreover on the following stability lemma for compositions of Hölder smooth functions. It quantifies how input perturbations propagate through the compositional structure. Lemma 14. For 0 ≤ i ≤ q, let h i = (h i,1 , . . . , h i,d i+1 ) ⊤ be defined on [0, 1] d i , where each h i,j ∈ H α i t i ([0, 1] t i , Q i ), Q i ≥ 1 and d q+1 = 1. Then, for any functions u, v : D → [0, 1] d 0 ,</p><formula xml:id="formula_249">h q • . . . • h 0 • u -h q • . . . • h 0 • v ∞ ≤ Q q q-1 ℓ=0 Q (α ℓ+1 ∧1) ℓ ∥u -v∥ q ℓ=0 (α ℓ ∧1) ∞ .</formula><p>Proof. The proof is based on a slight modification of the proof of Lemma 3 in <ref type="bibr" target="#b45">[46]</ref>. Define</p><formula xml:id="formula_250">H i = h i • . . . • h 0 . It follows that ∥H i • u -H i • v∥ ∞ = ∥h i • H i-1 • u -h i • H i-1 • v∥ ∞ ≤ Q i (∥H i-1 • u -H i-1 • v∥ ∞ ) α i ∧1 . (<label>63</label></formula><formula xml:id="formula_251">)</formula><p>Applying <ref type="bibr" target="#b62">(63)</ref> repeatedly and using the fact that Q i ≥ 1 yields the result.</p><p>Proof of Lemma 4. For any vector or matrix v and constants K 1 , K 2 , we write K 1 v + K 2 to denote the entrywise affine transformation v j → K 1 v j + K 2 for all entries v j . For any function f * whose j-th component f * j = φ * • ψ * A,j with ψ * A ∈ F ρ (β, k, S A ), we can rewrite it as</p><formula xml:id="formula_252">f * j = φ * β • ψ * β,j</formula><p>, where φ * β (z) = φ * (βz), ψ * β,j (x) = ψ * A,j (x) β .</p><p>Consequently, ψ * β ∈ F 0 (1, k, S A ) if ψ * A ∈ F 0 (β, k, S A ). Lemma 3 implies that there exists g ∈ G(L 1 , S A ) with L 1 ≥ k such that for all j = 1, . . . , n,</p><formula xml:id="formula_253">∥g j -ψ * β,j ∥ ∞ ≤ ρ &lt; 1. (<label>64</label></formula><formula xml:id="formula_254">)</formula><p>Given that ψ * A,j (x) ∈ [-M, M ] d for any x ∈ [0, 1] n×d , the (j, i)-th entry of g(x) ∈ R n×d , denoted by g i j (x), satisfies |g i j (x)| ≤ M/β + ρ. In the sequel, we denote J = M/β + ρ to simplify the notation. Observe that both ψ * β,j = ψ * β,j /(2J ) + 1/2 and ḡ = g/(2J ) + 1/2 are functions on [0, 1] n×d with outputs in [0, 1] n×d . Define g * β 0 (z) = g * 0 (βz). Then, under the representation φ * = g * q • • • • • g * 0 , where each g * i,j ∈ H α i t i ([a i , b i ] t i , K) with K ≥ 1, we have</p><formula xml:id="formula_255">φ * β = g * q • • • • • g * β 0 . Define h * β 0 = g * β 0 (2J • -J ) 2K + 1 2 = g * 0 (2βJ • -βJ ) 2K + 1 2 ,</formula><p>and for i = 1, . . . , q -1,</p><formula xml:id="formula_256">h * i = g * i (2K • -K) 2K + 1 2</formula><p>, h * q = g * q (2K • -K).</p><p>As a consequence, for ϕ = ψ * β,j or g j , we have</p><formula xml:id="formula_257">φ * β • ϕ = g * q • • • • • g * β 0 • ϕ = h * q • • • • • h * β 0 • Å ϕ 2J + 1 2 ã . (<label>65</label></formula><formula xml:id="formula_258">)</formula><p>By definition, we have h * β 0,j ∈ H α 0 t 0 ([0, 1] t 0 , (2βJ ) α 0 ), h * i,j ∈ H α i t i ([0, 1] t i , (2K) α i ) for i = 1, . . . , q -1, and h * q,j ∈ H αq tq ([0, 1] tq , K(2K) αq ). Observe that βJ ≥ M ≥ 1 and K ≥ 1. Then, combining <ref type="bibr" target="#b63">(64)</ref> with Lemma 14 yields</p><formula xml:id="formula_259">∥φ * β • g j -φ * β • ψ * β,j ∥ ∞ = g * q • • • • • g * β 0 • g j -g * q • • • • • g * β 0 • ψ * β,j ∞ = h * q • • • • • h * β 0 • ḡj -h * q • • • • • h * β 0 • ψ * β,j ∞ ≤ (2βJ ) α 0 K q ℓ=1 (2K) α ℓ ḡj -ψ * β,j q ℓ=0 (α ℓ ∧1) ∞ ≤ C • ρ q ℓ=0 (α ℓ ∧1) , (<label>66</label></formula><formula xml:id="formula_260">)</formula><p>where C &gt; 0 depends only on q, β, α, M and K.</p><p>Define φ * β = φ * β (2J • -J ). Then φ * β ∈ G(q, d, t, α, K ′ ) where K ′ depends only on β, M , K and α. According to Lemma 13, for any N i ∈ N such that N i ≥ (α i + 1) t i ∨ (Q i + 1)e t i , there exists h ∈ F L, (d, 6rN, . . . , 6rN, 1), s with L ≍ C q,t,α log 2 n, r = C d,t,α , N = max i=0...,q N i , s ≤ C q,d,t,α N log 2 n, <ref type="bibr" target="#b66">(67)</ref> such that sup</p><formula xml:id="formula_261">x∈[0,1] d | φ * β (x) -h(x)| ≤ C q,d,t,α,K ′ q i=0 Å N - α i t i i + N i n - α i +t i 2α * i +t i ã q ℓ=i+1 (α ℓ ∧1) , (<label>68</label></formula><formula xml:id="formula_262">)</formula><p>where all constants depend only on the parameters appearing in their subscripts. The bound <ref type="bibr" target="#b67">(68)</ref> further implies that if we define h = h(•/(2J ) + 1/2), then</p><formula xml:id="formula_263">∥h • g j -φ * β • g j ∥ ∞ = ∥ h • ḡj -φ * β • ḡj ∥ ∞ ≤ C q,d,t,α,K ′ q i=0 Å N - α i t i i + N i n - α i +t i 2α * i +t i ã q ℓ=i+1 (α ℓ ∧1)</formula><p>.</p><p>Observe 2⌈1/J ⌉+1 = ReLU(0 • z i + 0.5). In the first layer, we use in total M 1 = 2d(2⌈1/J ⌉ + 1) parameters. In the second layer, we proceed</p><formula xml:id="formula_264">ζ i = 1 2 ⌈1/J ⌉-1 k=1 a (i) k + Å 1 2J - ⌈1/J ⌉ -1 2 ã a (i) ⌈1/J ⌉ + Å - 1<label>2</label></formula><formula xml:id="formula_265">ã 2⌈1/J ⌉-1 k=⌈1/J ⌉+1 a (i) k + Å - 1 2J + ⌈1/J ⌉ -1 2 ã • a (i) 2⌈1/J ⌉ + 1 • a (i) 2⌈1/J ⌉+1 .</formula><p>This yields ζ i = z i /(2J ) + 1/2 for all z i ∈ R, with the networks parameters all lying within [-1, 1]. Observe that the output layer from the preceding construction can be combined with the input layer of the network F L, (d, 6rN, . . . , 6rN, 1), s . This yields h ∈ F L + 1, (d, (2⌈1/J ⌉ + 1)d, 6rN, . . . , 6rN, 1), s , (</p><p>where s = s + M 1 + ((2⌈1/J ⌉ + 1)d + 1)6rN, L, r, and s are as specified in <ref type="bibr" target="#b66">(67)</ref>.</p><p>Consequently,</p><formula xml:id="formula_267">∥h • g j -φ * β • g j ∥ ∞ ≤ C q,d,t,α,K ′ q i=0 Å N - α i t i i + N i n - α i +t i 2α * i +t i ã q ℓ=i+1 (α ℓ ∧1) . (<label>70</label></formula><formula xml:id="formula_268">)</formula><p>Combining ( <ref type="formula" target="#formula_259">66</ref>) with ( <ref type="formula" target="#formula_267">70</ref>), we find that there exists a network h in the class <ref type="bibr" target="#b68">(69)</ref> such that</p><formula xml:id="formula_269">∥h • g j -φ * β • ψ * β,j ∥ ∞ ≤ ∥h • g j -φ * β • g j ∥ ∞ + ∥φ * β • g j -φ * β • ψ * β,j ∥ ∞ ≤ C q,β,d,t,α,M,K q i=0 Å N - α i t i i + N i n - α i +t i 2α * i +t i ã q ℓ=i+1 (α ℓ ∧1)</formula><p>+ ρ q i=0 (α i ∧1) .</p><p>Define h F = (h ∨ -F ) ∧ F truncating the network output to [-F, F ]. Observe that with F ≥ K,</p><formula xml:id="formula_270">∥h F • g j -φ * β • ψ * β,j ∥ ∞ ≤ ∥h • g j -φ * β • ψ * β,j ∥ ∞ ≤ C q,β,d,t,α,M,K q i=0 Å N - α i t i i + N i n - α i +t i 2α * i +t i ã q ℓ=i+1 (α ℓ ∧1) + ρ q i=0 (α i ∧1) .</formula><p>This completes the proof.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>F.3 Proof of Lemma 5</head><p>Proof We now prove that for any positive integer i and row index j ∈ {1, . . . , n},</p><formula xml:id="formula_271">(T i -S i A )x j,• ∞ ≤ i d max τ A i-1 . Decomposing T i -S i A = i-1 ℓ=0 T ℓ (T -S A )S i-1-ℓ A , yields (T i -S i A )x j,• ∞ = e ⊤ j (T i -S i A )x ∞ ≤ i-1 ℓ=0 e ⊤ j T ℓ (T -S A )S i-1-ℓ A x ∞ , (<label>72</label></formula><formula xml:id="formula_272">)</formula><p>where e j represents the j-th standard basis vector. For each ℓ, let v (ℓ) = e ⊤ j T ℓ ∈ R 1×n . It follows that for each term </p><formula xml:id="formula_273">e ⊤ j T ℓ (T -S A )S i-1-ℓ A x ∞ ≤ v (ℓ) (T -S A )S i-1-ℓ A 1 • ∥x∥ ∞ ≤ v (ℓ) (T -S A )S i-1-ℓ A 1 . (<label>73</label></formula><formula xml:id="formula_274">≤ v (ℓ) 1 • ∥T -S A ∥ 1,∞ • ∥S i-1-ℓ A ∥ 1,∞ ≤ d max τ • e ⊤ j T ℓ 1 • ∥S i-1-ℓ A ∥ 1,∞ ,<label>(74)</label></formula><p>where the last inequality follows from <ref type="bibr" target="#b70">(71)</ref>. We claim that |e ⊤ j T ℓ | 1 ≤ ∥T∥ ℓ 1,∞ for all ℓ ≥ 0. When ℓ = 0, the bound is immediate since |e ⊤ j | 1 = 1 ≤ ∥T∥ 0 1,∞ = 1. Now assume the claim holds for some ℓ -1 ≥ 0, i.e., e ⊤ j T ℓ-1</p><formula xml:id="formula_275">1 = n h=1 |v (ℓ-1) h | ≤ ∥T∥ ℓ-1 1,∞ .</formula><p>We show that it also holds for ℓ. Observe that</p><p>e ⊤ j T ℓ 1 = Ä e ⊤ j T ℓ-1 ä T 1 = n m=1 n h=1 v (ℓ-1) h T h,m ≤ n h=1 v (ℓ-1) h Ç n m=1 |T h,m | å ≤ ∥T∥ ℓ 1,∞ .</p><p>This completes the induction and proves the claim. Similarly, we can show that ∥S i-1-ℓ A ∥ 1,∞ ≤ ∥S A ∥ i-1-ℓ 1,∞ , for 0 ≤ ℓ ≤ i -1. Plugging these two bounds into (74) yields</p><formula xml:id="formula_276">e ⊤ j T ℓ (T -S A )S i-1-ℓ A x ∞ ≤ d max τ A i-1 .</formula><p>Together with (72), this gives</p><formula xml:id="formula_277">(T i -S i A )x j,• ∞ ≤ iA i-1 d max τ.</formula><p>Hence, we conclude for any j ∈ [n],</p><formula xml:id="formula_278">L 1 i=1 θ i T i -S i A x j,• ∞ ≤ L 1 i=1 |θ i | (T i -S i A )x j,• ∞ ≤ d max τ L 1 i=1 |θ i |A i-1 i .</formula></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 2 :</head><label>2</label><figDesc>Figure 2: MSE (over 20 trials) as a function of training samples n, with the unmasked proportion held constant at π ∈ {0.35, 0.75, 0.85, 0.95}. Estimators are distinguished by color: GCN with skip connections, GCN without skip connections, and the MLP baseline.</figDesc><graphic coords="18,79.38,113.38,453.26,255.11" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 3 :</head><label>3</label><figDesc>Figure 3: Left: Fitted slopes of log(MSE) vs. log(n) as a function of connection probability π. Right: log(MSE) as a function of the effective sample size n eff = n × π for the GCN with skip connections, as proposed in Equation (7).</figDesc><graphic coords="19,113.37,113.39,385.26,170.07" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Figure 4 :</head><label>4</label><figDesc>Figure 4: MSE (over 20 trials) as a function of log(1/π) across different graph sizes. Estimators are distinguished by color: GCN with skip connections, GCN without skip connections, and the MLP baseline.</figDesc><graphic coords="20,79.37,113.39,453.24,207.05" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Figure 5 :</head><label>5</label><figDesc>Figure 5: Performance of the GCN (with skip connection) as a function of the maximum degree of the graph (x-axis), for different convolution types (columns) and values of δ (colors) on a Barabási-Albert graph.</figDesc><graphic coords="21,79.37,113.39,453.26,152.20" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Figure 6 :</head><label>6</label><figDesc>Figure 6: Performance of the different baselines averaged over 5 experiments as a function of π (x-axis) and the graph type (columns). Here, all GCN versions use L = 2 layers, and the average degree was fixed to δ = 2 across topologies.</figDesc><graphic coords="22,79.37,113.39,453.26,147.40" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Figure 7 :</head><label>7</label><figDesc>Figure 7: Performance of the different baselines as a function of the proportion of nodes used for training for the California Housing and Wikipedia datasets. For Wikipedia, displayed MSE values are capped at 3 to keep the scale readable; some MAGNET and MAGNET-critic replicates exceed this value.</figDesc><graphic coords="23,79.39,113.38,453.22,170.07" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><figDesc>and a positive constant C depending only on q, d, t, α, K, such that supx∈[0,1] d |φ * (x) -h(x)| ≤ C</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><figDesc>that the function ζ(z) = z/(2J ) + 1/2 for z = (z 1 , . . . , z d ) ⊤ ∈ R d can be realized via a ReLU network where all parameters are bounded in [-1, 1]. The construction proceeds coordinate-wise. For each z i with i = 1, . . . , d, we implement the transformation using two layers. In the first layer, we use 2⌈1/J ⌉ + 1 neurons to computea ⌉ = ReLU(1 • z i + 0), a (i) ⌈1/J ⌉+1 = • • • = a (i) 2⌈1/J ⌉ = ReLU(-1 • z i + 0),and a (i)</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_8"><head>.</head><figDesc>Let d max = d T + d S A and A = ∥T∥ 1,∞ ∨ ∥S A ∥ 1,∞ .Given that ∥T -S A ∥ F ≤ τ and each row has at most d max nonzero entries, for any i = 1, . . . , n, the Cauchy-Schwarz inequality gives∥T -S A ∥ 1,∞ ≤ max i∈[n] n j=1 |(T -S A ) i,j | ≤ d max max i∈[n] Ã n j=1 |(T -S A ) i,j | 2 ≤ d max τ.<ref type="bibr" target="#b70">(71)</ref> </figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_9"><figDesc>) From (73), we can further bound the right-hand sidev (ℓ) (T -S A )S i-1-ℓ -S A ) h,p | • (S i-1-ℓ A ) p,m</figDesc></figure>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="1" xml:id="foot_0"><p>The California Housing Dataset can be found as part of the sklearn library.</p></note>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="2" xml:id="foot_1"><p>The Wikipedia Chameleon Dataset can be found at: https://snap.stanford.edu/data/wikipedia-artic le-networks.html</p></note>
+		</body>
+		<back>
+
+			<div type="acknowledgement">
+<div><head>Acknowledgements</head><p><rs type="person">C. Donnat</rs> acknowledges support by the <rs type="funder">National Science Foundation</rs> (Award Number <rs type="grantNumber">2238616</rs>), as well as the resources provided by the <rs type="institution">University of Chicago's Research Computing Center</rs>. The work of <rs type="person">Olga Klopp</rs> was funded by <rs type="funder">CY Initiative</rs> (grant "<rs type="programName">Investissements d'Avenir</rs>" <rs type="grantNumber">ANR-16-IDEX-0008</rs>) and <rs type="funder">Labex MME-DII</rs> (<rs type="grantNumber">ANR11-LBX-0023-01</rs>). This work was partially done while <rs type="person">O. Klopp</rs> and <rs type="person">C. Donnat</rs> were visiting the <rs type="funder">Simons Institute for the Theory of Computing</rs>. J. S.-H. acknowledges support by the <rs type="funder">ERC</rs> grant <rs type="grantNumber">A2B</rs> (grant agreement number <rs type="grantNumber">101124751</rs>).</p></div>
+			</div>
+			<listOrg type="funding">
+				<org type="funding" xml:id="_p8JVbEb">
+					<idno type="grant-number">2238616</idno>
+				</org>
+				<org type="funding" xml:id="_SgQNfQ3">
+					<idno type="grant-number">ANR-16-IDEX-0008</idno>
+					<orgName type="program" subtype="full">Investissements d&apos;Avenir</orgName>
+				</org>
+				<org type="funding" xml:id="_JhvX5rx">
+					<idno type="grant-number">ANR11-LBX-0023-01</idno>
+				</org>
+				<org type="funding" xml:id="_9GTrhTH">
+					<idno type="grant-number">A2B</idno>
+				</org>
+				<org type="funding" xml:id="_YCbSHJf">
+					<idno type="grant-number">101124751</idno>
+				</org>
+			</listOrg>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Estimating composite functions by model selection</title>
+		<author>
+			<persName><forename type="first">Yannick</forename><surname>Baraud</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lucien</forename><surname>Birgé</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ann. Inst. H. Poincaré Probab. Statist</title>
+		<imprint>
+			<biblScope unit="volume">50</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="285" to="314" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Local Rademacher complexities</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Peter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Olivier</forename><surname>Bartlett</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shahar</forename><surname>Bousquet</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Mendelson</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ann. Statist</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Regularization and semi-supervised learning on large graphs</title>
+		<author>
+			<persName><forename type="first">Mikhail</forename><surname>Belkin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Irina</forename><surname>Matveeva</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Partha</forename><surname>Niyogi</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Conference on Learning Theory (COLT)</title>
+		<imprint>
+			<date type="published" when="2004">2004</date>
+			<biblScope unit="page" from="624" to="638" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Graph convolutional matrix completion</title>
+		<author>
+			<persName><forename type="first">Rianne</forename><surname>Van Den</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><forename type="middle">N</forename><surname>Berg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Max</forename><surname>Kipf</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Welling</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</title>
+		<meeting>the 24th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</meeting>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Dimensionality of social networks using motifs and eigenvalues</title>
+		<author>
+			<persName><forename type="first">Anthony</forename><surname>Bonato</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><forename type="middle">F</forename><surname>Gleich</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Myunghwan</forename><surname>Kim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dieter</forename><surname>Mitsche</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Paweł</forename><surname>Prałat</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yanhua</forename><surname>Tian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stephen</forename><forename type="middle">J</forename><surname>Young</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">PLoS ONE</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="issue">9</biblScope>
+			<biblScope unit="page">106052</biblScope>
+			<date type="published" when="2014-09">Sep 2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<monogr>
+		<title level="m" type="main">Concentration Inequalities: A Nonasymptotic Theory of Independence</title>
+		<author>
+			<persName><forename type="first">Stéphane</forename><surname>Boucheron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gábor</forename><surname>Lugosi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pascal</forename><surname>Massart</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2013">2013</date>
+			<publisher>Oxford University Press</publisher>
+			<pubPlace>Oxford</pubPlace>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Survey on algorithms for multi-index models</title>
+		<author>
+			<persName><forename type="first">Joan</forename><surname>Bruna</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Hsu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Stat. Sci</title>
+		<imprint>
+			<biblScope unit="volume">40</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="378" to="391" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Robust nonparametric regression based on deep ReLU neural networks</title>
+		<author>
+			<persName><forename type="first">Juntong</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Stat. Plan. Infer</title>
+		<imprint>
+			<biblScope unit="volume">233</biblScope>
+			<biblScope unit="page">106182</biblScope>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">Simple and deep graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">Ming</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zeng</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zengfeng</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bolin</forename><surname>Ding</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yujing</forename><surname>Li</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning (ICML)</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page" from="1725" to="1735" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Spectral Graph Theory</title>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">R</forename><surname>Chung</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Amer. Math. Soc</title>
+		<imprint>
+			<date type="published" when="1997">1997</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Convolutional neural networks on graphs with fast localized spectral filtering</title>
+		<author>
+			<persName><forename type="first">Michaël</forename><surname>Defferrard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xavier</forename><surname>Bresson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Pierre</forename><surname>Vandergheynst</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="3844" to="3852" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">Recommender systems based on graph embedding techniques: A review</title>
+		<author>
+			<persName><forename type="first">Yue</forename><surname>Deng</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Access</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="page" from="51587" to="51633" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Learning theory can (sometimes) explain generalisation in graph neural networks</title>
+		<author>
+			<persName><forename type="first">Pascal</forename><surname>Esser</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Leena</forename><forename type="middle">Chennuru</forename><surname>Vankadara</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Debarghya</forename><surname>Ghoshdastidar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="27043" to="27056" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Generalization and representational limits of graph neural networks</title>
+		<author>
+			<persName><forename type="first">Vikas</forename><surname>Garg</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stefanie</forename><surname>Jegelka</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tommi</forename><surname>Jaakkola</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning (ICML)</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page" from="3419" to="3430" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Robustness of graph neural networks at scale</title>
+		<author>
+			<persName><forename type="first">Simon</forename><surname>Geisler</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tobias</forename><surname>Schmidt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hakan</forename><surname>Sirin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Zügner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aleksandar</forename><surname>Bojchevski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stephan</forename><surname>Günnemann</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="7637" to="7649" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<monogr>
+		<title level="m" type="main">Mathematical Foundations of Infinite-Dimensional Statistical Methods</title>
+		<author>
+			<persName><forename type="first">Evarist</forename><surname>Giné</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Richard</forename><surname>Nickl</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<publisher>Cambridge University Press</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<monogr>
+		<title/>
+		<author>
+			<persName><forename type="first">Ian</forename><surname>Goodfellow</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yoshua</forename><surname>Bengio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aaron</forename><forename type="middle">Deep</forename><surname>Courville</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Learning</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<publisher>MIT Press</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Implicit regularization in matrix factorization</title>
+		<author>
+			<persName><forename type="first">Suriya</forename><surname>Gunasekar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Blake</forename><forename type="middle">E</forename><surname>Woodworth</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Srinadh</forename><surname>Bhojanapalli</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Behnam</forename><surname>Neyshabur</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Srebro</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<analytic>
+		<title level="a" type="main">On the symmetries in the dynamics of wide two-layer neural networks</title>
+		<author>
+			<persName><forename type="first">Karl</forename><surname>Hajjar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lénaïc</forename><surname>Chizat</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Electron. res. arch</title>
+		<imprint>
+			<biblScope unit="volume">31</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="2175" to="2212" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Wavelets on graphs via spectral graph theory</title>
+		<author>
+			<persName><forename type="first">Pierre</forename><surname>David K Hammond</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rémi</forename><surname>Vandergheynst</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Gribonval</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Appl. Comput. Harmon. Anal</title>
+		<imprint>
+			<biblScope unit="volume">30</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="129" to="150" />
+			<date type="published" when="2011">2011</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Semi-supervised air quality forecasting via self-supervised hierarchical graph neural network</title>
+		<author>
+			<persName><forename type="first">Jindong</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haoyi</forename><surname>Xiong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jing</forename><surname>Yang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Knowl. Data Eng</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page" from="5230" to="5243" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Grow: A row-stationary sparse-dense GEMM accelerator for memory-efficient graph convolutional neural networks</title>
+		<author>
+			<persName><forename type="first">Ranggi</forename><surname>Hwang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Minhoo</forename><surname>Kang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jiwon</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dongyun</forename><surname>Kam</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Youngjoo</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Minsoo</forename><surname>Rhu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IEEE International Symposium on High-Performance Computer Architecture (HPCA)</title>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page" from="42" to="55" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Optimal rates for total variation denoising</title>
+		<author>
+			<persName><forename type="first">Jan-Christian</forename><surname>Hütter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philippe</forename><surname>Rigollet</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Conference on Learning Theory (COLT)</title>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="1115" to="1146" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">A graph-based approach for missing sensor data imputation</title>
+		<author>
+			<persName><forename type="first">Xiao</forename><surname>Jiang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zean</forename><surname>Tian</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kenli</forename><surname>Li</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Sens. J</title>
+		<imprint>
+			<biblScope unit="volume">21</biblScope>
+			<biblScope unit="issue">20</biblScope>
+			<biblScope unit="page" from="23133" to="23144" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Generalization in graph neural networks: Improved PAC-Bayesian bounds on graph diffusion</title>
+		<author>
+			<persName><forename type="first">Haotian</forename><surname>Ju</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dongyue</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Aneesh</forename><surname>Sharma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hongyang R</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Artificial Intelligence and Statistics (AIStats)</title>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<biblScope unit="page" from="6314" to="6341" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">Nonparametric estimation of composite functions</title>
+		<author>
+			<persName><forename type="first">Anatoli</forename><surname>Juditsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oleg</forename><surname>Lepski</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alexandre</forename><surname>Tsybakov</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ann. Statist</title>
+		<imprint>
+			<biblScope unit="volume">37</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="1360" to="1404" />
+			<date type="published" when="2009">2009</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Not too little, not too much:A theoretical analysis of graph (over) smoothing</title>
+		<author>
+			<persName><forename type="first">Nicolas</forename><surname>Keriven</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="page" from="2268" to="2281" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Semi-supervised classification with graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">Thomas</forename><forename type="middle">N</forename><surname>Kipf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Max</forename><surname>Welling</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations (ICLR)</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">Estimating a smooth function on a large graph by Bayesian Laplacian regularisation</title>
+		<author>
+			<persName><forename type="first">Alisa</forename><surname>Kirichenko</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Harry</forename><surname>Van Zanten</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Electron. J. Stat</title>
+		<imprint>
+			<biblScope unit="volume">11</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="891" to="915" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">From the brownian motion to a multifractal process using the Lévy-Ciesielski construction</title>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Kleyntssens</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Samuel</forename><surname>Nicolay</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Stat. Probab. Lett</title>
+		<imprint>
+			<biblScope unit="volume">186</biblScope>
+			<biblScope unit="page">109450</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Training graph neural networks with 1000 layers</title>
+		<author>
+			<persName><forename type="first">Guohao</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthias</forename><surname>Müller</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bernard</forename><surname>Ghanem</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Vladlen</forename><surname>Koltun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning (ICML)</title>
+		<imprint>
+			<biblScope unit="page">2021</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">Deeper insights into graph convolutional networks for semi-supervised learning</title>
+		<author>
+			<persName><forename type="first">Qimai</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhichao</forename><surname>Han</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiao-Ming</forename><surname>Wu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">AAAI Conference on Artificial Intelligence</title>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<monogr>
+		<title level="m" type="main">A PAC-Bayesian approach to generalization bounds for graph neural networks</title>
+		<author>
+			<persName><forename type="first">Renjie</forename><surname>Liao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Raquel</forename><surname>Urtasun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Richard</forename><surname>Zemel</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2012.07690</idno>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Recommender systems with social regularization</title>
+		<author>
+			<persName><forename type="first">Hao</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dengyong</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chao</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Michael</forename><forename type="middle">R</forename><surname>Lyu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Irwin</forename><surname>King</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">ACM International Conference on Web Search and Data Mining</title>
+		<imprint>
+			<date type="published" when="2011">2011</date>
+			<biblScope unit="page" from="287" to="296" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">A flexible generative framework for graph-based semi-supervised learning</title>
+		<author>
+			<persName><forename type="first">Jiaqi</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weijing</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ji</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Qiaozhu</forename><surname>Mei</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="volume">32</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Provably powerful graph networks</title>
+		<author>
+			<persName><forename type="first">Heli</forename><surname>Haggai Maron</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hadar</forename><surname>Ben-Hamu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yaron</forename><surname>Serviansky</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Lipman</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="volume">32</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<analytic>
+		<title level="a" type="main">Weisfeiler and leman go neural: Higher-order graph neural networks</title>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Morris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Martin</forename><surname>Ritzert</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Matthias</forename><surname>Fey</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jan</forename><surname>William L Hamilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Gaurav</forename><surname>Eric Lenssen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Martin</forename><surname>Rattan</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Grohe</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the AAAI conference on artificial intelligence</title>
+		<meeting>the AAAI conference on artificial intelligence</meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="4602" to="4609" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Learning multi-index models with neural networks via mean-field Langevin dynamics</title>
+		<author>
+			<persName><forename type="first">Alireza</forename><surname>Mousavi-Hosseini</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Denny</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Murat</forename><forename type="middle">A</forename><surname>Erdogdu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations (ICLR)</title>
+		<imprint>
+			<biblScope unit="page">2025</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<monogr>
+		<title level="m" type="main">Revisiting graph neural networks: All we have is lowpass filters</title>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">T</forename><surname>Hoang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Takanori</forename><surname>Maehara</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1905.09550</idno>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Revisiting graph neural networks: Graph filtering perspective</title>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">T</forename><surname>Hoang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Takanori</forename><surname>Maehara</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tsuyoshi</forename><surname>Murata</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Pattern Recognition (ICPR)</title>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="8376" to="8383" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<analytic>
+		<title level="a" type="main">Graph neural networks exponentially lose expressive power for node classification</title>
+		<author>
+			<persName><forename type="first">Kenta</forename><surname>Oono</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Taiji</forename><surname>Suzuki</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations (ICLR)</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">Sparse spatial autoregressions</title>
+		<author>
+			<persName><forename type="first">Pace</forename><surname>Kelley</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ronald</forename><surname>Barry</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Stat. Probab. Lett</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="291" to="297" />
+			<date type="published" when="1997">1997</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">ReLU neural networks with linear layers are biased towards single-and multi-index models</title>
+		<author>
+			<persName><forename type="first">Suzanna</forename><surname>Parkinson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Greg</forename><surname>Ongie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Rebecca</forename><surname>Willett</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">SIAM J. Math. Data Sci</title>
+		<imprint>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="1021" to="1052" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">A regularity class for the roots of nonnegative functions</title>
+		<author>
+			<persName><forename type="first">Kolyan</forename><surname>Ray</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Johannes</forename><surname>Schmidt-Hieber</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ann. Mat. Pur. Appl</title>
+		<imprint>
+			<biblScope unit="volume">196</biblScope>
+			<biblScope unit="issue">6</biblScope>
+			<biblScope unit="page" from="2101" to="2113" />
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">Spatially resolved transcriptomics and graph-based deep learning improve accuracy of routine CNS tumor diagnostics</title>
+		<author>
+			<persName><forename type="first">Michael</forename><surname>Ritter</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christina</forename><surname>Blume</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yiheng</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Areeba</forename><surname>Patel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bhuvic</forename><surname>Patel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Natalie</forename><surname>Berghaus</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jasim</forename><surname>Kada Benotmane</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jan</forename><surname>Kueckelhaus</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yahaya</forename><surname>Yabo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Junyi</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elena</forename><surname>Grabis</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Giulia</forename><surname>Villa</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">David</forename><forename type="middle">Niklas</forename><surname>Zimmer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amir</forename><surname>Khriesh</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philipp</forename><surname>Sievers</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zaira</forename><surname>Seferbekova</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Felix</forename><surname>Hinz</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Vidhya</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Marcel</forename><surname>Ravi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Miriam</forename><surname>Seiz-Rosenhagen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christel</forename><surname>Ratliff</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Oliver</forename><surname>Herold-Mende</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Juergen</forename><surname>Schnell</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wolfgang</forename><surname>Beck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Felix</forename><surname>Wick</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Sahm</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nat. Cancer</title>
+		<imprint>
+			<biblScope unit="volume">6</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="550" to="565" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">Nonparametric regression using deep neural networks with ReLU activation function</title>
+		<author>
+			<persName><forename type="first">Johannes</forename><surname>Schmidt-Hieber</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ann. Statist</title>
+		<imprint>
+			<biblScope unit="volume">48</biblScope>
+			<biblScope unit="issue">4</biblScope>
+			<biblScope unit="page" from="1875" to="1897" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">Nonparametric regression using deep neural networks with ReLU activation function</title>
+		<author>
+			<persName><forename type="first">Johannes</forename><surname>Schmidt</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">-</forename><surname>Hieber</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Don</forename><surname>Vu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Ann. Statist</title>
+		<imprint>
+			<biblScope unit="volume">52</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="413" to="414" />
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note>Correction to Correction to the 2020 article</note>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<analytic>
+		<title level="a" type="main">scGCN is a graph convolutional networks algorithm for knowledge transfer in single cell omics</title>
+		<author>
+			<persName><forename type="first">Qianqian</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jing</forename><surname>Su</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Wei</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nat. Commun</title>
+		<imprint>
+			<biblScope unit="volume">12</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">3826</biblScope>
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<analytic>
+		<title level="a" type="main">Graph-based semi-supervised learning: A comprehensive review</title>
+		<author>
+			<persName><forename type="first">Zixing</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiangli</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zenglin</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Irwin</forename><surname>King</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Neural Netw. Learn. Syst</title>
+		<imprint>
+			<biblScope unit="volume">34</biblScope>
+			<biblScope unit="issue">11</biblScope>
+			<biblScope unit="page" from="8174" to="8194" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">The implicit bias of gradient descent on separable data</title>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Soudry</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Elad</forename><surname>Hoffer</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mor</forename><surname>Shpigel Nacson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Suriya</forename><surname>Gunasekar</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Nathan</forename><surname>Srebro</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Mach. Learn. Res</title>
+		<imprint>
+			<biblScope unit="volume">19</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="2822" to="2878" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Dropout: A simple way to prevent neural networks from overfitting</title>
+		<author>
+			<persName><forename type="first">Nitish</forename><surname>Srivastava</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Geoffrey</forename><surname>Hinton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Alex</forename><surname>Krizhevsky</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ilya</forename><surname>Sutskever</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ruslan</forename><surname>Salakhutdinov</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Mach. Learn. Res</title>
+		<imprint>
+			<biblScope unit="volume">15</biblScope>
+			<biblScope unit="page" from="1929" to="1958" />
+			<date type="published" when="2014">2014</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<analytic>
+		<title level="a" type="main">Semisupervised learning for structured regression on partially observed attributed graphs</title>
+		<author>
+			<persName><forename type="first">Jelena</forename><surname>Stojanovic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Milos</forename><surname>Jovanovic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Djordje</forename><surname>Gligorijevic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zoran</forename><surname>Obradovic</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">SIAM International Conference on Data Mining</title>
+		<imprint>
+			<date type="published" when="2015">2015</date>
+			<biblScope unit="page" from="217" to="225" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">New concentration inequalities in product spaces</title>
+		<author>
+			<persName><forename type="first">Michel</forename><surname>Talagrand</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Invent. Math</title>
+		<imprint>
+			<biblScope unit="volume">126</biblScope>
+			<biblScope unit="issue">3</biblScope>
+			<biblScope unit="page" from="505" to="563" />
+			<date type="published" when="1996">1996</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<analytic>
+		<title level="a" type="main">The generalized elastic net for least squares regression with network-aligned signal and correlated design</title>
+		<author>
+			<persName><forename type="first">Huy</forename><surname>Tran</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Sansen</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Claire</forename><surname>Donnat</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Signal Inf. Process. Netw</title>
+		<imprint>
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<analytic>
+		<title level="a" type="main">Weak Convergence and Empirical Processes: With Applications to Statistics</title>
+		<author>
+			<persName><forename type="first">Aad</forename><forename type="middle">W</forename><surname>Van Der</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jon</forename><forename type="middle">A</forename><surname>Vaart</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Wellner</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="s">Springer Series in Statistics</title>
+		<imprint>
+			<date type="published" when="2023">2023</date>
+			<publisher>Springer</publisher>
+		</imprint>
+	</monogr>
+	<note>second edition</note>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Stability and generalization of graph convolutional neural networks</title>
+		<author>
+			<persName><forename type="first">Saurabh</forename><surname>Verma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhi-Li</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</title>
+		<meeting>the 25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="1539" to="1548" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<monogr>
+		<author>
+			<persName><forename type="first">Lucian</forename><surname>Vinas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Arash</forename><forename type="middle">A</forename><surname>Amini</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2407.19567</idno>
+		<title level="m">Sharp bounds for Poly-GNNs and the effect of graph noise</title>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">How powerful are spectral graph neural networks?</title>
+		<author>
+			<persName><forename type="first">Xiyuan</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Muhan</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning (ICML)</title>
+		<imprint>
+			<date type="published" when="2022">2022</date>
+			<biblScope unit="page" from="23341" to="23362" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b58">
+	<analytic>
+		<title level="a" type="main">Collective dynamics of &apos;small-world&apos; networks</title>
+		<author>
+			<persName><forename type="first">Duncan</forename><forename type="middle">J</forename><surname>Watts</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Steven</forename><forename type="middle">H</forename><surname>Strogatz</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">393</biblScope>
+			<biblScope unit="issue">6684</biblScope>
+			<biblScope unit="page" from="440" to="442" />
+			<date type="published" when="1998">1998</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b59">
+	<analytic>
+		<title level="a" type="main">Simplifying graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">Felix</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amauri</forename><surname>Souza</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tianyi</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Christopher</forename><surname>Fifty</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tao</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Kilian</forename><surname>Weinberger</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning (ICML)</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="6861" to="6871" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b60">
+	<analytic>
+		<title level="a" type="main">A comprehensive survey on graph neural networks</title>
+		<author>
+			<persName><forename type="first">Zonghan</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shirui</forename><surname>Pan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Fengwen</forename><surname>Chen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Guodong</forename><surname>Long</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Chengqi</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Philip</forename><forename type="middle">S</forename><surname>Yu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Trans. Neural Netw. Learn. Syst</title>
+		<imprint>
+			<biblScope unit="volume">32</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="4" to="24" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b61">
+	<analytic>
+		<title level="a" type="main">How powerful are graph neural networks?</title>
+		<author>
+			<persName><forename type="first">Keyulu</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Weihua</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jure</forename><surname>Leskovec</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stefanie</forename><surname>Jegelka</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Learning Representations (ICLR)</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b62">
+	<analytic>
+		<title level="a" type="main">The number of neighbors needed for connectivity of wireless networks</title>
+		<author>
+			<persName><forename type="first">Feng</forename><surname>Xue</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><forename type="middle">R</forename><surname>Kumar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Wirel. Netw</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="169" to="181" />
+			<date type="published" when="2004">2004</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b63">
+	<analytic>
+		<title level="a" type="main">HyGCN: A GCN accelerator with hybrid architecture</title>
+		<author>
+			<persName><forename type="first">Mingyu</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lei</forename><surname>Deng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xing</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ling</forename><surname>Liang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yujing</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Xiaochun</forename><surname>Ye</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhimin</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Dongrui</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yuan</forename><surname>Xie</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IEEE International Symposium on High-Performance Computer Architecture (HPCA)</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page" from="15" to="29" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b64">
+	<analytic>
+		<title level="a" type="main">Learning with local and global consistency</title>
+		<author>
+			<persName><forename type="first">Dengyong</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Olivier</forename><surname>Bousquet</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Thomas</forename><surname>Lal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jason</forename><surname>Weston</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Bernhard</forename><surname>Schölkopf</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2003">2003</date>
+			<biblScope unit="page" from="321" to="328" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b65">
+	<analytic>
+		<title level="a" type="main">Graph-based semisupervised learning with non-ignorable non-response</title>
+		<author>
+			<persName><forename type="first">Fan</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Tengfei</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Haibo</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Hongtu</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Jieping</forename><surname>Ye</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Neural Information Processing Systems (NeurIPS)</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b66">
+	<analytic>
+		<title level="a" type="main">Graph neural networks: A review of methods and applications</title>
+		<author>
+			<persName><forename type="first">Jie</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ganqu</forename><surname>Cui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Shengding</forename><surname>Hu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhengyan</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Cheng</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zhiyuan</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lifeng</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Changcheng</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Maosong</forename><surname>Sun</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">AI Open</title>
+		<imprint>
+			<biblScope unit="volume">1</biblScope>
+			<biblScope unit="page" from="57" to="81" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b67">
+	<analytic>
+		<title level="a" type="main">A model-agnostic graph neural network for integrating local and global information</title>
+		<author>
+			<persName><forename type="first">Wenzhuo</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Annie</forename><surname>Qu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Keiland</forename><forename type="middle">W</forename><surname>Cooper</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Norbert</forename><surname>Fortin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Babak</forename><surname>Shahbaba</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">J. Amer. Statist. Assoc</title>
+		<imprint>
+			<biblScope unit="volume">120</biblScope>
+			<biblScope unit="issue">550</biblScope>
+			<biblScope unit="page" from="1225" to="1238" />
+			<date type="published" when="2025">2025</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b68">
+	<analytic>
+		<title level="a" type="main">Beyond homophily in graph neural networks: Current limitations and effective designs</title>
+		<author>
+			<persName><forename type="first">Jiong</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Yujun</forename><surname>Yan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Lingxiao</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Mark</forename><surname>Heimann</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Leman</forename><surname>Akoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Danai</forename><surname>Koutra</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">International Conference on Machine Learning (ICML)</title>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+			<biblScope unit="page" from="11968" to="11979" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b69">
+	<monogr>
+		<title level="m" type="main">Learning from labeled and unlabeled data with label propagation</title>
+		<author>
+			<persName><forename type="first">Xiaojin</forename><surname>Zhu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Zoubin</forename><surname>Ghahramani</surname></persName>
+		</author>
+		<idno>CMU-CALD-02-107</idno>
+		<imprint>
+			<date type="published" when="2002">2002</date>
+		</imprint>
+		<respStmt>
+			<orgName>Carnegie Mellon University</orgName>
+		</respStmt>
+	</monogr>
+	<note type="report_type">Tech. Rep., Technical Report</note>
+</biblStruct>
+
+<biblStruct xml:id="b70">
+	<analytic>
+		<title level="a" type="main">Adversarial attacks on neural networks for graph data</title>
+		<author>
+			<persName><forename type="first">Daniel</forename><surname>Zügner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Amir</forename><surname>Akbarnejad</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Stephan</forename><surname>Günnemann</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</title>
+		<meeting>the 24th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</meeting>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="2847" to="2856" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

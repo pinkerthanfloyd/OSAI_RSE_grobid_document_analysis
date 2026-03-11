@@ -1,0 +1,6 @@
+http://arxiv.org/abs/1410.3916
+http://arxiv.org/abs/1611.02344
+http://papers.nips.cc/paper/6863-vain-attentional-multi-agent-predictive-modeling.pdf
+https://github.com/PetarV-/GAT
+https://github.com/kermitt2/grobid
+https://www.tensorflow.org/.Softwareavail-ablefromtensorflow.org

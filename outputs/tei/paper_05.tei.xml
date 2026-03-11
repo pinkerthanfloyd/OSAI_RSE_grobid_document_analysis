@@ -1,0 +1,1702 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">Detecting Fake Reviewer Groups in Dynamic Networks: An Adaptive Graph Learning Method</title>
+				<funder ref="#_NzMWMKW #_tykyQJt #_v4FERhE #_V2Vxr2E">
+					<orgName type="full">National Natural Science Foundation of China</orgName>
+				</funder>
+				<funder ref="#_AUwBsUU">
+					<orgName type="full">National Natural Science Fund for Distinguished Young Scholars</orgName>
+				</funder>
+				<funder ref="#_6RBkvJn">
+					<orgName type="full">Natural Science Foundation of Shaanxi Province</orgName>
+				</funder>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability  status="unknown">
+					<licence/>
+				</availability>
+				<date type="published" when="2026-03-09">9 Mar 2026</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Jing</forename><surname>Zhang</surname></persName>
+							<idno type="ORCID">0000-0003-2494-8077</idno>
+						</author>
+						<author>
+							<persName><forename type="first">Ke</forename><surname>Huang</surname></persName>
+							<idno type="ORCID">0009-0001-2253-464X</idno>
+						</author>
+						<author>
+							<persName><roleName>Member, IEEE, Bin Guo, Senior Member, IEEE</roleName><forename type="first">Yao</forename><surname>Zhang</surname></persName>
+							<idno type="ORCID">0000-0002-1276-5399</idno>
+						</author>
+						<author>
+							<affiliation key="aff0">
+								<orgName type="department">School of Computer Science and Technology</orgName>
+								<orgName type="institution">Xi&apos;an University of Science and Technology</orgName>
+								<address>
+									<settlement>Xi&apos;an 710600</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff1">
+								<orgName type="institution">Northwestern Polytechnical University</orgName>
+								<address>
+									<settlement>Xi&apos;an 710021</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff2">
+								<orgName type="department">School of Computer Science</orgName>
+								<orgName type="institution">Yu is with Harbin Engineering University</orgName>
+								<address>
+									<settlement>Harbin Heilongjiang</settlement>
+									<country key="CN">China</country>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<affiliation key="aff3">
+								<orgName type="institution">Northwestern Polytechnical University</orgName>
+								<address>
+									<settlement>Xi&apos;an Shaanxi</settlement>
+									<region>China</region>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">Detecting Fake Reviewer Groups in Dynamic Networks: An Adaptive Graph Learning Method</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2026-03-09">9 Mar 2026</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">E02F7994A27BA1869E052AF674ECF113</idno>
+					<idno type="arXiv">arXiv:2603.08332v1[cs.SI]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.8.2" ident="GROBID" when="2026-03-11T18:22+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<label type="revision">a91ee48</label>
+					<label type="parameters">startPage=-1, endPage=-1, consolidateCitations=0, consolidateHeader=0, consolidateFunders=0, includeRawAffiliations=false, includeRawCitations=false, includeRawCopyrights=false, generateTeiIds=false, generateTeiCoordinates=[], sentenceSegmentation=false, flavor=null</label>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<textClass>
+				<keywords>
+					<term>Fake Review Detection</term>
+					<term>Graph Learning</term>
+					<term>NFS System</term>
+					<term>Dynamic Graph Attention Mechanism</term>
+				</keywords>
+			</textClass>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>The proliferation of fake reviews, often produced by organized groups, undermines consumer trust and fair competition on online platforms. These groups employ sophisticated strategies that evade traditional detection methods, particularly in coldstart scenarios involving newly launched products with sparse data. To address this, we propose the Diversity-and Similarityaware Dynamic Graph Attention-enhanced Graph Convolutional Network (DS-DGA-GCN), a new graph learning model for detecting fake reviewer groups. DS-DGA-GCN achieves robust detection since it focuses on the joint relationships among products, reviews, and reviewers by modeling product-review-reviewer networks. DS-DGA-GCN also achieves adaptive detection by integrating a Network Feature Scoring (NFS) system and a new dynamic graph attention mechanism. The NFS system quantifies network attributes, including neighbor diversity, network selfsimilarity, as a unified feature score. The dynamic graph attention mechanism improves the adaptability and computational efficiency by captures features related to temporal information, node importance, and global network structure. Extensive experiments conducted on two real-world datasets derived from Amazon and Xiaohongshu demonstrate that DS-DGA-GCN significantly outperforms state-of-the-art baselines, achieving accuracies of up to 89.8% and 88.3%, respectively.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>I. INTRODUCTION</head><p>I N online markets, detecting fake reviews is crucial for maintaining a fair and trustworthy environment <ref type="bibr" target="#b0">[1]</ref>. The scale of this issue is substantial; for instance, a recent study estimated that fraudulent reviews influence billions of dollars in online spending annually, with a significant portion of sellers admitting to using them to boost sales 1 . According to a recent survey <ref type="foot" target="#foot_0">2</ref> , 90.6% of consumers read online reviews before purchasing. While genuine positive reviews can build trust, excessive fake reviews distort consumer choices and undermine market fairness <ref type="bibr" target="#b1">[2]</ref>. To protect their reputation, platforms still rely heavily on manual screening, which consumes significant human resources.</p><p>Despite over a decade of research on fake review detection <ref type="bibr" target="#b2">[3]</ref>, fake reviews remain widespread <ref type="bibr" target="#b3">[4]</ref>, <ref type="bibr" target="#b4">[5]</ref>. For example, a significant proportion of Amazon product reviews are still fabricated <ref type="bibr" target="#b0">[1]</ref>, undermining consumer trust; according to the same survey, only 75.5% of consumers continue to place confidence in online reviews 1 . Two challenges make fake review detection particularly difficult:</p><p>• Organized fake review generation. Fake reviewers often collaborate in groups organized via off-platform private channels, such as dedicated social media groups or messaging apps. This coordination is invisible to e-commerce platforms, making it difficult to detect collusion based on on-site data alone. They may deliberately misalign texts and ratings (e.g., negative text with high star rating) or coordinate to target the same products at different times to mimic organic review patterns and avoid burst detection <ref type="bibr" target="#b5">[6]</ref>, <ref type="bibr" target="#b6">[7]</ref>. Such tactics are designed to circumvent systems that focus only on content anomalies or individual accounts <ref type="bibr" target="#b7">[8]</ref>, <ref type="bibr" target="#b8">[9]</ref>. • Newly launched products. In the early stage of a product launch, only a few reviews are available. Traditional methods that rely on abundant content or static structural features perform poorly here: sparse content limits behavioral signals, and the reviewer-product subgraph is extremely small and star-shaped, which undermines static heuristics. Fake groups can thus quickly dominate the initial review set, misleading both consumers and later detection algorithms <ref type="bibr" target="#b9">[10]</ref>.</p><p>The existing research on the challenge of fake reviewer group detection can be categorized into two types: relationship-based and network-based detection methods. The relationship-based detection methods focus on identifying the relationships between reviews and reviewers <ref type="bibr" target="#b3">[4]</ref>, <ref type="bibr" target="#b10">[11]</ref>, as well as distinguishing connections between fake reviewers and genuine reviewers <ref type="bibr" target="#b11">[12]</ref>. For example, a fundamental principle is to analyze the features of reviews, such as ratings, votes, and text content, to identify whether reviews are posted by similar reviewers. This approach is effective since fake reviewers within a group usually exhibit similar patterns in their reviews' features. However, relationshipbased methods are developed using historical review data. Human reviewers may evade the detection mechanism by writing fake reviews indistinguishable from organic reviews.</p><p>The network-based detection methods aim to identify products that use fake reviews by exploiting network-related features extracted from product-review-reviewer networks <ref type="bibr" target="#b4">[5]</ref>, <ref type="bibr" target="#b12">[13]</ref>- <ref type="bibr" target="#b14">[15]</ref>. The development of product-review-reviewer networks is based on an insightful finding revealed by He et al <ref type="bibr" target="#b4">[5]</ref> that the products buy fake reviews are highly clustered. The network-based detection methods exhibit stronger resistance to manipulation, as the network features are more difficult to manipulate or forge <ref type="bibr" target="#b12">[13]</ref>.</p><p>Despite existing works can achieve decent performance in their targeted datasets, we lack adaptive methods to handle the aforementioned challenge caused by newly launched products. An Amazon Statistics report shows that there are thousands of newly-launched products every day 3 . To address that, in this work, our goal is to enhance the adaptability of fake reviewer group detection in the real-world e-commence platforms that involve the launch of new products at various scales. We leverage the principle of graph learning technology to design our fake reviewer group detection algorithm. Researcher have devoted considerable effort to study fake reviewer group detection methods utilizing various graph learning technologies, including graph convolution <ref type="bibr" target="#b15">[16]</ref>, <ref type="bibr" target="#b16">[17]</ref>, graph pooling and clustering <ref type="bibr" target="#b17">[18]</ref>, as well as graph attention mechanism <ref type="bibr" target="#b13">[14]</ref>. These approaches effectively harness the capabilities of graph learning techniques in processing the complex topological data. However, we note that the product-review-reviewer network for an e-commence platform is highly dynamic since numerous products will be launched or pulled every day. This phenomenon will incur performance degradation of benchmarktrained graph learning models as their training relies on the static graph assumption.</p><p>In this paper, we propose an adaptive graph learningbased fake reviewer group detection algorithm. In contrast to existing graph learning based approaches, our algorithm exploits the intrinsic features of the dynamic product-reviewreviewer network, including the diversity of nodes and the selfsimilarity the network. To efficiently extract these features, our algorithm incorporates the dynamic graph attention mechanism into a graph convolutional network, forming a Diversity-and Similarity-aware Dynamic Graph Attention-enhanced Graph Convolutional Network, dubbed as DS-DGA-GCN. Our algorithm is able to adaptively quantify the network-related features, accordingly enhancing the accuracy, efficiency, and robustness of detecting fake reviewer groups. Specifically, the design rationales of our algorithm are twofold:</p><p>1) How to measure the importance of dynamic attributes in the product-review-reviewer network? Existing network-based detection methods for fake reviewer groups have shown that the node diversity and network self-similarity are key attributes in revealing potentially anomalous behaviors within a network. However, given dynamic relationships among products, reviews, and reviewers, the impact of these attributes on fake reviewer group detection is unknown. As aforementioned, adapting graph learning technologies to extract network-related features becomes viable, given static graph assumption. The core principle of designing our adaptive graph learning algorithm 3 <ref type="url" target="https://amzscout.net/blog/amazon-statistics/">https://amzscout.net/blog/amazon-statistics/</ref> is the imperative need to ensure that the GCN model can identify the importance of attributes within a network. Our NFS module uses an innovative scoring mechanism to integrate diverse network attributes, transforming them into intuitive score representations. This lightweight approach is crucial for quantifying their collective impact in detecting fake reviewer groups.</p><p>2) How to adaptively utilize the importance of attributes in fake reviewer group detection? The importance of attributes within the network fluctuates with changes in time and network structure. Graph attention mechanism has been proved as an efficient tool that enables nodes within the network aggregate neighborhoods' features based on feature importance <ref type="bibr" target="#b18">[19]</ref>. However, we lack an efficient graph attention mechanism that can handle the complex and dynamic nature of the product-review-reviewer network. We develop a dynamic graph attention mechanism that can be incorporated into GCNs. By integrating temporal information, node importance scores, and global network features, this mechanism dynamically learns the importance of neighboring nodes and prioritizes the extraction of key information during the aggregation process. As a result, it enhances the adaptability of fake reviewer group detection in complex and dynamic product-review-reviewer networks.</p><p>The main contributions of this paper are as follows:</p><p>• Conceptual Innovation: To the best of our knowledge, this is the first work that takes adaptability as the core optimization dimension of fake reviewer group detection, given dynamic product-review-reviewer network in realistic e-commerce platforms.</p><p>• Algoritgm Design: The newly proposed algorithm, DS-DGA-GCN, combines the NFS system the GCN model embedded by a new dynamic graph attention mechanism, achieving significant improvements in detection accuracy and adaptability. The NFS system integrates various network attributes to provide high-quality input features while the dynamic graph attention mechanism achieves adaptive aggregation of temporal information among the global network. • Experimental Validation: On two real-world datasets, our method outperforms baselines in Accuracy, Recall, F1, and AUROC, and achieves more stable performance under both temporal shift and newly launched product sparsity.</p><p>The structure of this paper is as follows. Section II discusses related works in the field. Section III details the proposed DS-DGA-GCN algorithm. Section IV presents the experimental settings, performance analysis, and experimental results while Section V concludes the paper with a summary of the main contributions and an outlook on future research directions.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>II. RELATED WORK</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Content and Behavioral-based Detection Methods</head><p>Content-and behavioral-based approaches leverage textual semantics and user interaction signals to identify fake reviews. The central idea is to mine informative cues from review texts, ratings, and behavioral traces so as to discriminate organic vs. fraudulent activity.</p><p>Xu et al. proposed a multimodal learning model "MMD" that integrates rating signals with review content; via metric learning it effectively identifies Professional Malicious Users (PMUs) and boosts detection performance <ref type="bibr" target="#b19">[20]</ref>. Li et al. introduced the notion of reviewer groups and modeled collusion among reviewers, thereby improving the identification of professional fake reviewers <ref type="bibr" target="#b20">[21]</ref>. Beyond reviews, Li et al. studied large-scale fake clicks in recommendation systems and formulated the "Ride Item's Coattails" attack that forges clicks to link low-quality with popular items; their detection techniques analyze click patterns to harden systems against such attacks <ref type="bibr" target="#b21">[22]</ref>. Yang et al. mined fraudsters in mobile social networks using semi-supervised and metric learning, obtaining precise characterizations of fraudulent behaviors in dynamic environments <ref type="bibr" target="#b22">[23]</ref>. Together, these works underscore the value of content and behavioral modeling for large-scale fraud analysis in complex interaction scenarios. Content and behavioral-based approaches are effective for detecting local anomalies in texts or individual user activity. However, they are limited in capturing (i) cross-entity structural patterns across products, reviews, and reviewers, and (ii) temporal coordination such as bursty or staged campaigns. DS-DGA-GCN explicitly models a dynamic heterogeneous graph, where NFS encodes structural signals (e.g., neighborhood diversity and self-similarity) and the dynamic attention mechanism propagates information over time. This design links dispersed reviewers through typed relations and temporal dynamics, enabling the detection of coordinated behaviors beyond the reach of content-or behavior-centric methods.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Collaborative Group Detection in Networks</head><p>A complementary line models collaboration explicitly on reviewer graphs. Wei et al. analyzed reviewer behaviors and inter-node structures, defining node diversity and self-similarity; with cumulative distribution functions and two-hop subgraphs they identified concealed fraudulent clusters at scale <ref type="bibr" target="#b23">[24]</ref>. Soni et al. designed a top-down framework that combines deep random walks with improved semi-supervised clustering and background knowledge, achieving strong accuracy on Google Play data <ref type="bibr" target="#b24">[25]</ref>. Es-Sabery et al. applied social network analysis and community detection, using weighted Gini coefficients to measure group purity and uncover coordinated fake review groups <ref type="bibr" target="#b25">[26]</ref>. These works highlight the utility of network behavior modeling and community detection in exposing collusion.</p><p>Cao et al. further proposed an unsupervised end-to-end method that uses a modular GCN to discover tightly-knit groups and integrates individual-and group-level anomaly indicators into a unified suspiciousness score <ref type="bibr" target="#b26">[27]</ref>. Unsupervised formulations improve scalability and portability across platforms by reducing reliance on labels. Classical group-detection methods often rely on handcrafted heuristics (e.g., purity scores, Gini indices, subgraph thresholds) and static snapshots. Such heuristics are brittle under evolving adversarial strategies and sensitive to parameter choices. DS-DGA-GCN replaces these heuristics with learnable NFS that integrates multiple structural cues, and performs temporal message passing on dynamic graphs. This reduces threshold sensitivity, captures coordination across time, and remains scalable to large e-commerce graphs through pooling and sampling.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Graph Learning-based Detection Methods</head><p>Graph learning methods model user-item interactions as graphs and learn to capture higher-order structures indicative of fraud. Techniques span GCNs and broader GNN families that propagate information over the topology to surface anomalous substructures.</p><p>Fan et al. introduced Graph Decomposition Network (GDN) to address Structural Distribution Shift (SDS) in graph anomaly detection; by frequency-domain decomposition it enhances normal-node homogeneity and mitigates anomalous heterogeneity, improving robustness on dynamic networks <ref type="bibr" target="#b27">[28]</ref>. Gao et al. revisited SDS and proposed an enhanced GDN that resists high heterophily for anomalies while reinforcing homophily for normal nodes, improving generalization under adversarial conditions <ref type="bibr" target="#b28">[29]</ref>. <ref type="bibr">Wang et al.</ref> proposed Deep Cluster Infomax (DCI), a self-supervised scheme that decouples representation learning from classification and partitions graphs into subgraphs to capture intrinsic properties, yielding gains in semi-supervised settings <ref type="bibr" target="#b29">[30]</ref>.</p><p>Topology-centric approaches also remain effective. Fayazi et al. used a Markov Random Field-based clustering over examiner-examiner graphs to uncover crowdsourced manipulation, outperforming traditional and SimRank-based detectors <ref type="bibr" target="#b30">[31]</ref>. Liu et al. proposed HoloScope, a contrastive metric that fuses graph topology with burstiness signals to emphasize fraud-normal contrasts in rich graphs <ref type="bibr" target="#b31">[32]</ref>. Hooi et al. developed FRAUDAR to detect fraud in bipartite user-product graphs, remaining robust to camouflage and hijacked accounts <ref type="bibr" target="#b32">[33]</ref>.</p><p>Within review ecosystems, Wang et al. presented FdGars, the first GCN-based detector at scale for app review systems, constructing user-app graphs to extract structural evidence and achieve high accuracy <ref type="bibr" target="#b33">[34]</ref>. Yu et al. proposed GFDN with a Temporal Group Dynamics Analyzer (TGDA) to model temporal aspects of group fraud in a semi-supervised framework <ref type="bibr" target="#b34">[35]</ref>. Overall, GNN-based methods excel at capturing intricate network relationships and temporal dynamics for large-scale fraud detection. In particular, heterogeneous GNNs and temporal GNNs are directly pertinent to our setting. HetGNN <ref type="bibr" target="#b35">[36]</ref> and TGN <ref type="bibr" target="#b36">[37]</ref> represent two state-of-the-art approaches for handling the heterogeneous and dynamic aspects of our data, respectively, and thus serve as strong baselines. HetGNN excels at capturing type-specific relations but lacks explicit temporal modeling, whereas TGN preserves temporal states but does not natively exploit type-aware structures. Our proposed DS-DGA-GCN is designed to unify these two perspectives through a synergistic architecture. It first distills complex structural properties into a robust NFS and then incorporates this score, alongside temporal information, into its dynamic attention mechanism during aggregation. This unique integration is crucial for enhancing model robustness, particularly under conditions of review data sparsity and in cold-start scenarios-a key advantage that we empirically validate in our experiments on newly-launched products. III. FAKE REVIEW GROUP DETECTION ALGORITHM BASED ON DS-DGA-GCN</p><p>In this section, we model the product-review-reviewer network as a dynamic heterogeneous graph in order to capture the relationships of products, reviews, and reviewers. The following definitions describe the main components within the network:</p><p>• Products: Denoted as P = {p 1 , p 2 , ..., p N }, representing the set of N products on the platform. • Reviewers: Denoted as U = {u 1 , u 2 , ..., u M }, representing the set of M potential reviewers, including fake reviewers and genuine consumers, who can post reviews for products. • Reviews: Denoted as R = {r 1 , r 2 , ..., r L }, representing the set of L reviews written by reviewers.</p><p>Each review r k , characterized by its attributes including timestamp t k , content c k , and rating s k , is associated with a reviewer u i(k) ∈ U and a product p j(k) ∈ P . The dynamic heterogeneous graph is defined as G = (V, E). V refers to the set of nodes where each node is a reviewer u i ∈ U or a product p j ∈ P . E refers to the set of edges where e k = (u i(k) , p j(k) ) denotes the attributes of the review r k written by the reviewer u i(k) for the product p j(k) . The edge consists of a tuple, including t k , c k , and s k .</p><p>The graph G evolves at discrete time steps as new reviews are added. At each time step t, the graph is denoted as G t = (V, E t ), where E t includes all edges up to time t.</p><p>We then define the core relationships within the graph as follows:</p><p>• Reviewer Feature Matrix: We define the reviewer feature matrix as H u ∈ R N ×du , where each row corresponds to the features of a reviewer node. • Product Feature Matrix: We define the product feature matrix as H p ∈ R N ×dp , where each row corresponds to the features of a product node. • Adjacency Matrix: At time t, the relationship between reviewers and products is represented by the adjacency matrix A t ∈ R M ×N , where the element A t (i, j) = 0</p><p>indicates that reviewer u i has reviewed product p j before time t, otherwise the element is 0. The proposed DS-DGA-GCN encompasses two modules to process the graph G t , including an NFS and a dynamic graph attention mechanism. Specifically, the NFS module quantifies node diversity and network self-similarity as a network feature score to provide node importance information for the model. By combining the network feature scoring process and the dynamic graph attention mechanism, the DS-DGA-GCN, as shown in Fig. <ref type="figure" target="#fig_0">1</ref>, is capable of detecting fake reviewer groups in complex dynamic product-review-reviewer networks. The dynamic graph attention mechanism is consist of two submodules, including graph pooling and sampling, as well as adaptive node aggregation. The former divides the graph into key subgraphs to mitigate the impact of redundant or unimportant nodes and edges within the network and thus reduce computational complexity. The latter dynamically learns the relationship weights among nodes using the attention mechanism to efficiently aggregate node information.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. NFS 1) Algorithm Overview:</head><p>To quantify the potential anomalousness of nodes, our model integrates multiple network features into a unified score. Specifically, the two primary features used are:</p><p>• Neighbor Diversity (D v ): Assesses the diversity of a node's neighbors. For reviewer nodes, lower diversity may indicate interactions mainly with specific products, potentially signaling coordinated behavior <ref type="bibr" target="#b37">[38]</ref>. • Network Self-Similarity (S v ): Measures the self-similarity of a node's ego-network structure. High self-similarity can indicate repetitive interaction patterns, characteristic of collusive activities <ref type="bibr" target="#b38">[39]</ref>. The workflow for calculating the final anomaly score is presented in Algorithm 1. The process begins with the precomputed diversity D v and self-similarity S v scores for all nodes. These two features are concatenated to form an initial feature vector for each node. This vector then undergoes preprocessing (standardization and PCA). A pre-trained linear Algorithm 1 NFS Score Calculation 1: Input:</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>2:</head><p>D: Array of pre-computed diversity scores for all nodes v ∈ V .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>3:</head><p>S: Array of pre-computed self-similarity scores for all nodes v ∈ V .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>4:</head><p>PCA model : A pre-trained PCA transformation model.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>5:</head><p>w: A pre-trained SVM weight vector. 6: Output:</p><formula xml:id="formula_0">7:</formula><p>S norm : Array of final normalized anomaly scores for all nodes v ∈ V . 8: Initialize feature matrix F of size |V | × 2. 9: for each node v ∈ V do 10: SVM provides a weight vector, w, which projects the processed features into a raw anomaly score. Finally, these raw scores are normalized to produce the final anomaly score S norm,v , for each node.</p><formula xml:id="formula_1">F[v] ← [D[v], S[v]]</formula><p>2) Diversity of Adjacent Nodes: The diversity of nodes is a key signal for detecting anomalous behaviors in reviewer-product networks <ref type="bibr" target="#b39">[40]</ref>. For a specific product, diversity reflects the randomness of the behaviors of its reviewers. Fig. <ref type="figure" target="#fig_1">2</ref> illustrates two cases: the left panel shows high diversity while the right panel shows low diversity, with reviewer types indicated by colors.</p><p>We measure diversity using information entropy:</p><formula xml:id="formula_2">H(v) = - k P k log(P k ),<label>(1)</label></formula><p>where P k is the probability density of the centrality of the k-th reviewer.</p><p>Degree centrality captures the immediate scale of a node's neighborhood. For a product connected to many one-time reviewers, the degree histogram becomes narrow and starshaped, yielding low entropy-typical of coordinated spam campaigns:</p><formula xml:id="formula_3">C(v) = deg(v) N -1 ,<label>(2)</label></formula><p>where deg(v) is the degree of node v and N is the total number of nodes. PageRank measures the authority of a node under random walks <ref type="bibr" target="#b40">[41]</ref>. Reviewers confined to small collusive rings have low PageRank, while those engaged broadly across products and time obtain higher values, indicating organic activity:</p><formula xml:id="formula_4">P R(v) = (1 -d) + d u∈N (v) P R(u) κ(u) , (<label>3</label></formula><formula xml:id="formula_5">)</formula><p>where d is the damping factor (set to 0.85), and</p><formula xml:id="formula_6">κ(u) = v∈N (u) A(u, v)<label>(4)</label></formula><p>denotes the degree of neighbor u based on adjacency A(u, v).</p><p>Let k ∈ K be the set of neighbor categories (e.g., reviewer types). For a target node v, denote the subset of neighbors in cat-</p><formula xml:id="formula_7">egory k as U k (v) = { u ∈ N (v) : u belongs to category k }. We define the category proportion p k (v) = |U k (v)|/|N (v)| and the aggregated PageRank mass P R k (v) = u∈U k (v) P R(u).</formula><p>By combining the local proportion and the global PageRank, the adjusted neighbor diversity weight is defined as:</p><formula xml:id="formula_8">ω k (v) = p k (v) • P R k (v) j∈K P R j (v) . (<label>5</label></formula><formula xml:id="formula_9">)</formula><p>This design ensures that local neighbor diversity is weighted by global authority, so that concentrated low-quality neighbors cannot artificially inflate diversity scores.</p><p>In short, degree centrality captures local bursty patterns such as star-shaped spam clusters, while PageRank captures global authority and distinguishes collusive rings from widely connected reviewers. By combining them, our method balances sensitivity to local anomalies with robustness against pseudodiversity created by low-authority spam rings.</p><p>Finally, we compute the diversity-adjusted entropy:</p><formula xml:id="formula_10">H pageRank (v) = - k ω k (v) log(ω k (v)),<label>(6)</label></formula><p>and normalize it as</p><formula xml:id="formula_11">η = H pageRank (v) max(H pageRank ) .<label>(7)</label></formula><p>3) Self-Similarity of Network Structure: Self-similarity is a key indicator of repetitive interaction patterns, often found in collusive activities within fake reviewer groups <ref type="bibr" target="#b41">[42]</ref>. To effectively quantify this, we propose a composite self-similarity score, S v , that integrates both geometric and spectral properties of the network, ensuring sensitivity to diverse fraudulent patterns like bursty stars and collusive rings. Fig. <ref type="figure" target="#fig_2">3</ref>  network structures can exhibit such self-similar characteristics across different scales.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>illustrates how</head><p>Our approach is built upon two complementary metrics. First, we compute the fractal dimension C f , using the Box-Counting method, which captures geometric scaling and is sensitive to star-like structures. It is derived from the powerlaw N (ϵ) ∝ (1/ϵ) C f , where N (ϵ) is the number of boxes of size ϵ to cover the network. Second, we analyze the network's spectral properties through the spectral exponent β, which characterizes the power-law distribution of the Laplacian eigenvalues, P (λ) ∼ λ -β . This metric is effective at identifying ring structures common in collusive groups.</p><p>Instead of using these metrics in isolation, we synthesize them into a single, robust score. The final integrated selfsimilarity score S v is defined as:</p><formula xml:id="formula_12">S v = αS g,v + (1 -α)S s,v • M v<label>(8)</label></formula><p>Here, S g,v and S s,v are the scores derived from the geometric C f and spectral β analyses respectively. Each score is normalized and weighted by the quality-of-fit (e.g., R-squared value) of its power-law estimation to ensure reliability. The term M v is a multi-scale consistency factor, obtained via network coarse-graining <ref type="bibr" target="#b42">[43]</ref>, which modulates the final score based on the stability of these patterns across scales. The hyperparameter α (default 0.5) balances the geometric and spectral contributions. This composite score S v serves as a key feature for our detection framework.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>4) Construction of NFS:</head><p>To effectively integrate the various structural and semantic features for anomaly detection, we construct a unified NFS <ref type="bibr" target="#b43">[44]</ref>. The process systematically transforms a node's high-dimensional features into a final, calibrated anomaly score.</p><p>First, for each node v, we define its initial feature vector f v by concatenating its degree centrality D v and its self-similarity score S v :</p><formula xml:id="formula_13">f v = [D v , S v ]<label>(9)</label></formula><p>This feature vector undergoes a two-step preprocessing: it is first standardized to have zero mean and unit variance, and then PCA is applied for dimensionality reduction, resulting in a processed feature vector z v .</p><p>Next, we learn a discriminative weight vector w using a linear SVM with a hinge-loss objective on the training data.</p><p>This weight vector is used to project the processed features into a raw anomaly score S nfs,v :</p><formula xml:id="formula_14">S nfs,v = w ⊤ z v (10)</formula><p>This raw score is then normalized to the range [0, 1] to produce the final node anomaly score S norm,v :</p><formula xml:id="formula_15">S norm,v = S nfs,v -min(S nfs ) max(S nfs ) -min(S nfs )<label>(11)</label></formula><p>Finally, nodes are classified based on this score using an optimal threshold t * . A node is labeled as suspicious if its score exceeds this threshold:</p><formula xml:id="formula_16">Label v = Suspicious if S norm,v ≥ t * Normal otherwise (<label>12</label></formula><formula xml:id="formula_17">)</formula><p>The threshold t * is not a fixed hyperparameter but is determined empirically after training. Specifically, we use the trained model to predict scores on a held-out validation set. The optimal threshold t * is then selected using <ref type="bibr" target="#b44">[45]</ref>, which finds the point that maximizes the difference between the true positive rate (TPR) and the false positive rate (FPR): t * = arg max t (TPR(t) -FPR(t)). This principled approach ensures that the threshold optimally balances sensitivity and specificity. Once determined, t * is fixed for evaluation on the test set.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Dynamic Graph Attention Mechanism</head><p>1) Model Overview: Based on NFS, this paper introduces a dynamic graph attention mechanism as the core innovative module of the DS-DGA-GCN model, aimed at efficiently detecting fake reviewer groups by leveraging temporal information, node importance, and global network structure.</p><p>Traditional Graph Convolutional Networks (GCNs) are designed for static graphs and are unable to capture the timevarying characteristics of nodes and edges in dynamic networks. To address this, this paper proposes a dynamic graph attention mechanism framework by combining temporal information, node importance scores, and global structural information. This framework shown in Fig. <ref type="figure" target="#fig_3">4</ref> consists of the following three key components:</p><p>• Graph Pooling and Sampling: The dynamic graph is pooled and sampled by dividing it into time windows and evaluating node importance, resulting in simplified subgraphs that retain key network structural information while reducing computational complexity. • Adaptive Node Aggregation: On the simplified subgraph, the attention mechanism is used to dynamically learn the weights of neighboring nodes, integrating temporal differences, network feature scores, and global structural embeddings to capture complex relationships between nodes. • Dynamic Graph Attention Updating: Through a multilayer dynamic graph attention network, node representations are iteratively updated, mining the dynamic evolution features of nodes and their importance differences. 2) Graph Pooling and Sampling: When processing largescale dynamic product-review-reviewer networks, the number of nodes and edges may grow rapidly over time, leading to high consumption of computational resources and difficulties in model training. Additionally, the network contains a large number of redundant or outdated nodes and edges, which may interfere with the model's learning of important patterns. Therefore, how to effectively simplify and sample the dynamic graph while retaining the network's key structures and informative information becomes crucial. To improve computational efficiency and robustness of fake reviewer group detection, we develop a graph pooling and sampling method by resorting to <ref type="bibr" target="#b45">[46]</ref>. This method can capture and provide simplified and informative input for subsequent adaptive node aggregation, which is completed by selecting and merging key nodes and edges of the dynamic graph.</p><p>Specifically, the method performs as follows. The dynamic graph is first divided into several time windows along the time series to capture the network's temporal evolution. Let the time series be T = {t 1 , t 2 , ..., t T }, and the entire time range is divided into M time windows {△t 1 , △t 2 , ..., △t M }, where the m-th time window is defined as:</p><formula xml:id="formula_18">△t m = [t m-1 , t m ).<label>(13)</label></formula><p>By integrating NFS, node degree d v and clustering coefficient C v , the importance score of the node v is defined as:</p><formula xml:id="formula_19">I v = α 1 S norm,v + α 2 d v max u∈V d u + α 3 C v ,<label>(14)</label></formula><p>where α 1 , α 2 and α 3 are the weight coefficients subject to</p><formula xml:id="formula_20">α 1 + α 2 + α 3 = 1.</formula><p>In each time window △t M , nodes are sampled by comparing their importance scores I v with the threshold θ:</p><formula xml:id="formula_21">V ′ △tm = {v ∈ V △tm |I v ≥ θ}. (<label>15</label></formula><formula xml:id="formula_22">)</formula><p>For the sampled node set V ′ △tm , the corresponding edge set △t m associated with these nodes in the time window E ′ △tm is selected:</p><formula xml:id="formula_23">E ′ △tm = {e uv ∈ E △tm |u, v ∈ V ′ △tm }. (<label>16</label></formula><formula xml:id="formula_24">)</formula><p>To preserve more structural information, the edge weights can be redefined. The importance of the edges is defined as I euv :</p><formula xml:id="formula_25">I euv = β 1 W uv + β 2 S uv ,<label>(17)</label></formula><p>where S uv is the cosine similarity between nodes u and v:</p><formula xml:id="formula_26">S uv = h ⊤ u h v ||h u ||||h v || , (<label>18</label></formula><formula xml:id="formula_27">)</formula><p>where W uv is the original weight of the edge, and β 1 , β 2 are weight coefficients, satisfying</p><formula xml:id="formula_28">β 1 + β 2 = 1.</formula><p>The subgraph obtained through sampling is then pooled, with similar nodes and edges merged to further simplify the graph structure. Clustering is performed on V ′ △tm , resulting in K clusters {C k }. The node representations are updated as follows:</p><formula xml:id="formula_29">h C k = v∈C k I v h v v∈C k I v . (<label>19</label></formula><formula xml:id="formula_30">)</formula><p>Edge weight updates as:</p><formula xml:id="formula_31">W c k c l = u∈c k v∈c l I euv . (<label>20</label></formula><formula xml:id="formula_32">)</formula><p>All pooled subgraphs from the time windows {△t m } are merged to obtain the final simplified graph G ′ = (V ′ , E ′ ).</p><p>3) Adaptive Node Aggregation: Existing node aggregation methods include average aggregation, maximum aggregation, weighted aggregation, adaptive aggregation, and content aggregation. Average aggregation is the simplest form of node information integration, where for each node V , its new representation is the average of its neighboring nodes' representations. Its advantage lies in its simplicity, making it suitable for static networks, but it fails to distinguish the importance of neighboring nodes and ignores node heterogeneity. Maximum aggregation takes the maximum value from each dimension of the neighboring node representations, emphasizing the most significant features, but it may lose other important information and is not suitable for capturing the overall trend. Weighted aggregation assigns a preset weight to each neighboring node, considering the relationship strength between nodes; however, the weights need to be predefined and cannot be adjusted adaptively. Adaptive aggregation utilizes attention mechanisms to learn the weights of neighboring nodes based on node features. A typical example is the Graph Attention Network (GAT), which can adaptively learn the weights of neighboring nodes and capture node heterogeneity, but it does not consider temporal information and dynamic features, limiting its performance in dynamic graphs. Content aggregation typically refers to aggregating the feature representations of neighboring nodes. However, in some applications, edge features or combined node and edge features may also be aggregated to obtain richer information <ref type="bibr" target="#b46">[47]</ref> [48] <ref type="bibr" target="#b48">[49]</ref>.</p><p>In dynamic product-review-reviewer networks, the attributes of nodes and edges change over time, presenting the following challenges:</p><p>• Temporal Dynamics: The features of nodes and edges exhibit temporal dependencies, and traditional aggregation methods fail to capture temporal information. • Differences in Node Importance: Different reviewers and products have varying influences within the network, requiring differentiated treatment. • Complex Interactions: Fake reviewers may hide their behaviors through complex interaction patterns, making it difficult for simple aggregation methods to identify such behaviors.</p><p>Therefore, existing aggregation methods have limitations in the context of this paper and need to be improved to adapt to dynamic networks and node importance differences. To address these issues, this paper proposes a new adaptive node aggregation mechanism.</p><p>To capture the temporal relationships between nodes, this paper introduces temporal differences into the attention mechanism:</p><formula xml:id="formula_33">α uv = exp(σ(α ⊤ [W q h v ||W k h u ||W t (t v -t u )])) k∈N (v) exp(σ(α ⊤ [W q h v ||W k h k ||W t (t v -t k )])) ,<label>(21)</label></formula><p>where t v and t u are the timestamps of nodes v and u, respectively. W q , W k and W t are learnable weight matrices. By integrating temporal information into adaptive aggregation, the attention coefficients can reflect the temporal differences between nodes, which helps identify synchronized or nearsynchronized anomalous behaviors.</p><p>To integrate prior node importance into the aggregation process, we leverage the anomaly score S norm,u computed by NFS to adjust the attention weights. Specifically, we introduce this score as an additive term in the attention calculation, enabling the model to focus more on neighboring nodes with high anomaly scores:</p><formula xml:id="formula_34">α uv = exp σ a ⊤ [W q h v ||W k h u ] + γS norm,u k∈N (v) exp (σ (a ⊤ [W q h v ||W k h k ] + γS norm,k )) ,<label>(22)</label></formula><p>where γ is a hyperparameter that controls the influence of the NFS score. By introducing S norm,u , the model can prioritize information from high-risk nodes, thereby improving detection precision.</p><p>To capture deeper network structural information, this paper introduces a node aggregation method based on random walks. Using the random walk algorithm (DeepWalk), the paper obtains the global embedding representations of nodes z v , capturing the global structural features of the network. In the attention mechanism, the global embedding representations of nodes are combined as follows:</p><formula xml:id="formula_35">α uv = exp(σ(h ⊤ v W h u + z ⊤ v z u ) k∈N (v) exp(σ(h ⊤ v W h k + z ⊤ v z k ) ,<label>(23)</label></formula><p>where z ⊤ v z u represents the similarity between nodes v and u in the global structure. This method can emphasize nodes that are closely related in the network structure, enhancing the model's ability to capture group behaviors.</p><p>Finally, this paper combines the above methods to construct a comprehensive adaptive node aggregation model:</p><formula xml:id="formula_36">α uv = exp(A uv ) k∈N (v) exp(A vk ) ,<label>(24)</label></formula><p>where A uv is denoted as:</p><formula xml:id="formula_37">A uv = σ α ⊤ [W q h v ∥W k h u ∥W t (t v -t u )]+γS norm,u +λz ⊤ v z u ,<label>(25)</label></formula><p>where γ and λ are static hyperparameters rather than learnable weights. This design ensures a stable structural and topological prior, preventing the attention mechanism from over-fitting to local interaction noise. The specific values (γ = 0.5, λ = 0.2) were determined via a grid search on the validation set, balancing the trade-off between local dynamic features and global network patterns. The proposed model integrates temporal information, node importance scores, and global structural information, enabling it to comprehensively capture complex relationships between nodes. By incorporating temporal information and adaptive weights, the model can capture dynamic relationships between nodes, adapting to changes in the network. Using NFS scores, the model can focus on nodes with higher importance, improving the precision of anomaly detection. With random walk-based embeddings, the model is able to capture the global structural features of the network, identifying potential group behaviors.</p><p>The complete workflow of our dynamic graph attention mechanism is detailed in Algorithm 2. The algorithm iteratively updates node representations over L layers. In each layer, it computes attention coefficients that integrate temporal differences, NFS scores, and global structural information. These coefficients are then used as weights to aggregate features from neighboring nodes, producing refined node embeddings that capture the complex interactions within the graph.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>IV. EXPERIMENTAL DESIGN AND ANALYSIS</head></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>A. Experimental Datasets and Evaluation Metrics</head><p>To comprehensively validate the performance of the DS-DGA-GCN model in fake review group detection, two realworld datasets were selected: the Amazon dataset and the Xiaohongshu dataset. These datasets represent different scenarios of e-commerce platforms and social media platforms.</p><p>The Amazon dataset originates from the globally renowned e-commerce platform Amazon<ref type="foot" target="#foot_1">foot_1</ref> , covering 15 major product categories, with a total of 525, 619 product entries, 1, 424, 596 reviewer records, and 7, 202, 921 review records. Each review sample in the dataset contains the following 13 fields:</p><p>• Reviewer information: Reviewer ID Algorithm 2 Dynamic Graph Attention Mechanism Input: G ′ = (V ′ , E ′ ): pooled graph with nodes V ′ and edges E ′ . {H (0) v }: initial node features, including time encoding and NFS scores. {z v }: global embeddings derived from random walk algorithms. Θ: parameter set, including W</p><formula xml:id="formula_38">q , W k , W t , W v , γ, λ, etc. Output: Updated node representations {H (L) v | v ∈ V ′ }. 1: Initialize node representations for all v ∈ V ′ with {H (0) v }. 2: for l = 1 to L do 3: for all v ∈ V ′ do 4: U v ← N (v) 5:</formula><p>for all u ∈ U v do 6:</p><formula xml:id="formula_39">q v ← W q H (l-1) v 7: k u ← W k H (l-1) u 8:</formula><p>t vu ← W t (e tv -e tu )</p><p>9:</p><formula xml:id="formula_40">e vu ← σ a ⊤ [q v ∥k u ∥t vu ] + γS norm,u + λ(z ⊤ v z u ) 10:</formula><p>end for</p><formula xml:id="formula_41">11:</formula><p>for all u ∈ U v do</p><p>12: α (l) vu ← exp(evu) k∈Uv exp(e vk ) 13: end for 14: end for 15:</p><p>for all v ∈ V ′ do 16:</p><formula xml:id="formula_42">H (l) v ← σ u∈Uv α (l) vu W v H (l-1) u 17:</formula><p>end for 18: end for 19: return {H</p><formula xml:id="formula_43">(L) v | v ∈ V ′ }</formula><p>TABLE I DATASET OVERVIEW BEFORE AND AFTER PREPROCESSING Dataset Number of Reviewers Number of Reviews Number of Products Before Preprocessing 61,357 754,256 42,127 After Preprocessing 50,253 701,731 35,593 • Product information: Product ID, primary category ID and name, secondary category ID and name • Review information: Review rating, review date, review title, review content, title length, content length • Product information: Product name</p><p>To improve the quality of experimental data and the reliability of analysis, the anonymous users and their reviews within the dataset are removed. The reviewers with fewer than 3 reviews and products with fewer than 3 reviews are excluded, as they are less likely to be influenced by fake review groups. Additionally, redundant fields were removed to improve computational efficiency. A summary of the dataset before and after preprocessing is shown in Table <ref type="table">I</ref>.</p><p>Xiaohongshu is a leading lifestyle and social e-commerce platform in China. Due to its high user engagement and rich content ecosystem, it serves as an ideal data source for research on fake user behaviors. This paper collects 137, 789 video blog published between January 10, 2024, and April 29, 2024. These videos cover a wide range of subtopics with a time period from March 2017 to April 2024. Each record in the Xiaohongshu</p><p>TABLE II COMPARISON OF DIFFERENT DATASET FEATURES Dataset Platform Type Data Scale Data Dynamics Application Scenario Amazon E-commerce 35,593 Products Low Fake review detection and product analysis Xiaohongshu Social Media 6,993 Videos High Fake user behavior and group detection dataset contains three main categories of information: • User engagement: Video likes, comments, and shares, serving as key indicators of user responses and engagement behavior. • Video content information: Video title, text description, tags, and topic categories. • Creator information: Creator's gender, number of followers, total interactions, and personal bio. To ensure data validity and experimental reproducibility, the following processing steps were applied: duplicate records, invalid links, and missing values are removed. The records lacking complete video information are excluded. The final processed dataset contains 76, 923 valid records.</p><p>Each video blog is treated as a "product," and users who liked or commented on the videos are treated as "reviewers," thus constructing a dynamic interaction network. Based on this network, the model can analyze user behavior, mine the characteristics of fake reviewers, and build corresponding 2-hop subgraphs for identification.</p><p>Table <ref type="table">II</ref> shows that the Amazon dataset mainly captures static review relationships, while the Xiaohongshu dataset involves dynamic interaction behaviors that can test the model's performance across different time dimensions. These two datasets represent the typical scenarios of e-commerce platforms and social media platforms, covering common group behavior types in fake review detection. By comparing the experimental results across these two datasets, the generalizability and robustness of the DS-DGA-GCN model in different application scenarios can be comprehensively evaluated. High/Low follow the composite index D defined in Section IV-B.</p><p>We evaluate our method using four standard classification metrics under identical data splits and features:</p><p>1) Accuracy: overall correctness, defined as:</p><formula xml:id="formula_44">Accuracy = T P + T N T P + T N + F P + F N . (<label>26</label></formula><formula xml:id="formula_45">)</formula><p>2) Recall: fraction of correctly predicted positives, defined as:</p><formula xml:id="formula_46">Recall = T P T P + F N . (<label>27</label></formula><formula xml:id="formula_47">)</formula><p>3) F1-macro: unweighted average of per-class F1, where F1 is calculated as:</p><formula xml:id="formula_48">F1 = 2 • Precision • Recall Precision + Recall . (<label>28</label></formula><formula xml:id="formula_49">)</formula><p>4) AUROC: Area Under the ROC Curve, a threshold-free measure summarizing the trade-off between true positive rate (TPR) and false positive rate (FPR) across all decision thresholds <ref type="bibr" target="#b49">[50]</ref>. Accuracy, Recall, and F1 are reported at the validationselected threshold t * , while AUROC is computed directly from the raw continuous scores and is threshold-free. Here, T P , T N , F P , and F N denote true positives, true negatives, false positives, and false negatives, respectively.</p><p>For deployment, we adopt the threshold rule based on Youden's index <ref type="bibr" target="#b44">[45]</ref>. In our datasets, this yields t * = 0.68; accounts with Score ≥ t * are flagged as FAKE, and otherwise as REAL. This provides a clear and reproducible way to distinguish real users from fake reviewers in practice.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>B. Experimental Settings</head><p>This study implements the DS-DGA-GCN model using Python and PyTorch, The hyperparameter settings are described as follows:</p><p>• seed: Set to 72.</p><p>• weight decay: 5 × 10 -4 .</p><p>• nb head: Set to 32.</p><p>• α: Regularization hyperparameter, set to 0.2.</p><p>• l r : Learning rate, set to 0.005.</p><p>• hidden: Embedding dimension, set to 8.</p><p>• dropout: Set to 0.3.</p><p>• patience: Set to 200.</p><p>• δ: Edge weight threshold, set to 0.3.</p><p>• τ : Time window size, set to 10.</p><p>• MS: Maximum sample size, set to 1000.</p><p>• MINSPAM: Group fabrication score threshold, set to 0.6. We segment each dataset into fixed windows of length τ and compute four indicators per window.</p><p>Interaction arrival rate:</p><formula xml:id="formula_50">r t = |E t | τ<label>(29)</label></formula><p>where E t is the set of review edges in window t.</p><p>Reviewer churn:</p><formula xml:id="formula_51">c t = 1 - |V t ∩ V t-1 | |V t ∪ V t-1 |<label>(30)</label></formula><p>where V t is the set of active reviewers in window t.</p><p>Edge turnover:</p><formula xml:id="formula_52">u t = 1 - |E t ∩ E t-1 | |E t ∪ E t-1 |<label>(31)</label></formula><p>Burstiness of inter-arrival times:</p><formula xml:id="formula_53">B t = σ ∆ -µ ∆ σ ∆ + µ ∆<label>(32)</label></formula><p>where ∆ denotes review inter-arrival times in window t, and µ ∆ , σ ∆ are their mean and standard deviation.</p><p>For each dataset, we average these indicators over all windows. We then perform min-max normalization across the two datasets for each indicator to obtain r, c, ũ, B ∈ [0, 1]. The composite data dynamics index is then calculated as:</p><formula xml:id="formula_54">D = 1 4 r + c + ũ + B .<label>(33)</label></formula><p>TABLE III QUANTITATIVE DATA DYNAMICS INDICATORS Indicator Amazon Xiaohongshu Interaction Arrival Rate (r) 0.45 0.85 Reviewer Churn (c) 0.28 0.79 Edge Turnover (ũ) 0.35 0.81 Burstiness ( B) 0.19 0.65 Composite Index (D) 0.32 0.78</p><p>To provide a quantitative basis for the "High" and "Low" dynamics labels mentioned in Table <ref type="table">II</ref>, we calculated the normalized values of these four indicators and the final composite index D for both datasets. The results are presented in Table <ref type="table">III</ref>.</p><p>As shown in Table <ref type="table">III</ref>, the Xiaohongshu dataset yields a composite index of D = 0.78, which is substantially higher than the Amazon dataset's index of D = 0.32. Therefore, we designate Xiaohongshu as having "High" data dynamics and Amazon as "Low". This label reflects the combined frequency of new reviews, the change of reviewer participation, and the evolution of network topology across the two platforms.</p><p>To comprehensively evaluate the performance of the DS-DGA-GCN method, five existing state-of-the-art methods are used as baselines.</p><p>(1) GraphSAGE <ref type="bibr" target="#b50">[51]</ref>: A graph neural network based on a neighbor sampling and aggregation strategy. By sampling neighboring nodes and aggregating their features, it generates embeddings for target nodes. GraphSAGE demonstrates high efficiency on large-scale graph data, making it suitable for product-review-reviewer networks on e-commerce platforms.</p><p>(2) GCN <ref type="bibr" target="#b51">[52]</ref>: A convolutional neural network designed for graph structures, which aggregates features from neighboring nodes to generate local structural information. GCN effectively identifies nodes exhibiting abnormal patterns in user-product interactions and is a classic method for fake review detection.</p><p>(3) GAT <ref type="bibr" target="#b52">[53]</ref>: This method incorporates multi-head attention mechanisms to dynamically adjust aggregation weights based on the features of neighboring nodes. It captures complex interaction patterns in highly heterogeneous graph networks, making it particularly suitable for diverse and complex user behavior data.</p><p>(4) HetGNN <ref type="bibr" target="#b52">[53]</ref>: A heterogeneous graph representation model that jointly exploits heterogeneous structure and content. It first samples correlated heterogeneous neighbors via a random walk with restart and groups them by node types. A two-module architecture encodes multi-modal content into embeddings and then aggregates them at the type level with a graph context loss for end-to-end training. HetGNN is particularly applicable to product-review-reviewer networks that inherently feature multi-typed entities and relations.</p><p>(5) TGN <ref type="bibr" target="#b36">[37]</ref>: A temporal GNN framework designed for dynamic graphs modeled as sequences of time-stamped events. It maintains node states via memory modules, message functions, temporal aggregators, and time encoding, supporting both transductive and inductive prediction with competitive efficiency. TGN naturally captures the evolution of user interactions and review dynamics on e-commerce platforms.</p><p>Our data form a reviewer-product bipartite graph R ∈ {0, 1} N ×M . To adapt homogeneous baselines for a direct and meaningful comparison, we construct a block adjacency matrix with self-loops and apply symmetric normalization:</p><formula xml:id="formula_55">Ã = I N R R ⊤ I M , Â = D -1/2 ÃD -1/2 .</formula><p>Node features are stacked as X = [X rev ; X prod ], projected to a common dimension d, and concatenated with a one-hot type indicator.</p><p>Homogeneous baselines. These models operate on the constructed matrix Â:</p><p>• GCN: Uses standard propagation on Â.</p><p>• GraphSAGE: Applies mean aggregation with a symmetric fan-out from reviewer and product neighbors.</p><p>• GAT: Employs multi-head attention on Â without typespecific heads.</p><p>Heterogeneous and Temporal Baselines. These models are run in their native settings to leverage their specific designs:</p><p>• HetGNN: Is run in its native heterogeneous schema with type-aware sampling and aggregation.</p><p>• TGN: Is run on the temporal event-stream with its memory and time encoding modules.</p><p>In all cases, the loss is computed only on reviewer nodes, with product nodes providing contextual information.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>C. Result Analysis</head><p>We evaluate two groups of methods that play different roles. Ablation variants of our framework are used for mechanism verification, while external baselines are used for cross-method comparison under the same data and budget.</p><p>Ablation Variants. To verify the contribution of each component in DS-DGA-GCN, we define four variants:</p><p>• Ablation-A: Removes the NFS module and relies only on graph propagation. • Ablation-B: Removes temporal features, using only static graph snapshots. • Ablation-C: Removes heterogeneous relations, propagating neighbor information in a type-agnostic manner (i.e., treating reviewer and product nodes as the same type). • Ablation-D: Uses only the linear NFS scorer, without any graph message passing.</p><p>Baselines. To compare against state-of-the-art methods, we use the following models:</p><p>• GraphSAGE, GCN, and GAT: As these are designed for homogeneous graphs, they were adapted to our bipartite data using a standard block adjacency matrix transformation, as detailed in our response to Comment 10. • HetGNN and TGN: These models were run in their native heterogeneous and temporal configurations, respectively, as they are inherently designed for such data.</p><p>TABLE IV FULL-SAMPLE MEAN AND STANDARD DEVIATION OF NFS SCORES Dataset Class NFS Mean NFS Std. Dev. Amazon Real 0.55 0.15 Fake 0.85 0.10 Xiaohongshu Real 0.48 0.18 Fake 0.82 0.14 1) Effectiveness Analysis of the NFS: We validate the NFS on the full labeled sets rather than a small random sample. We report a threshold free separability metric and a fixed operating point metric. AUROC is computed from raw scores. Accuracy Recall and F1 use a single threshold selected on the validation set by the Youden index as described in Section IV.A and then kept fixed on the test set.</p><p>Table <ref type="table">IV</ref> reports the means and standard deviations of NFS for the two classes on both datasets. Real users have lower scores on average. Fake users have higher scores with smaller dispersion. This pattern is consistent with the design goal of NFS which is to amplify abnormal interaction signals in the reviewer-product network.</p><p>Fig. <ref type="figure" target="#fig_4">5</ref> and Fig. <ref type="figure" target="#fig_5">6</ref> visualize the full sample distributions. The left panels show violin plots for Real and Fake. The right panels show empirical cumulative distribution functions by class. On Amazon the distribution of Fake shifts to the right which indicates stronger abnormality captured by NFS. On Xiaohongshu we observe the same trend under higher data dynamics. These distribution level results align with the AUROC computed from raw scores and with the thresholded metrics defined above.</p><p>To validate the contribution of each key component in our proposed DS-DGA-GCN framework, we conducted a comprehensive ablation study. The results, visualized in Figure <ref type="figure" target="#fig_6">7</ref>, clearly demonstrate that the full model (bold black line) consistently and significantly outperforms all of its ablated variants across both datasets, highlighting the powerful synergy of its architecture. The analysis reveals two key findings. First, the most substantial performance degradation occurs when removing the entire NFS module (Ablation-A) or relying solely on it without graph propagation (Ablation-D). This confirms that the structure-aware NFS and the GNN-based relational learning are the two indispensable, symbiotic pillars of our model. Second, the distinct performance decline in Ablation-   B (removing temporal features) and Ablation-C (removing heterogeneous relations) validates their crucial role in capturing the dynamic and complex nature of the fraudulent interactions. In essence, the model's success stems from the effective integration of all its components.</p><p>2) Effectiveness Analysis of the Dynamic Graph Attention Mechanism: In this section, we evaluate the effectiveness of our model's architecture by analyzing its runtime and memory usage in comparison to the baselines. Figure <ref type="figure" target="#fig_7">8</ref> presents the training time per epoch and the peak memory usage for all models on both the Amazon and Xiaohongshu datasets.</p><p>As illustrated in the figure, a clear trend emerges. The static, homogeneous GNNs (GCN, GAT, GraphSAGE) are the most efficient, serving as a lower bound for computational</p><p>TABLE V TIME COMPLEXITY ANALYSIS Step Time Complexity Description Node Importance Calculation O(N ) N denotes the number of nodes; importance is computed for each node. Node Sampling O(N ) The sampling process scales linearly with the total number of nodes. Edge Sampling and Reconstruction O(E ′ ) E ′ represents the number of edges after sampling, significantly smaller than E. Adaptive Node Aggregation O(N ′ KL) N ′ denotes the number of sampled nodes, K is the number of clusters, and L is the number of iterations. Overall Complexity Significantly Reduced Due to N ′ ≪ N and E ′ ≪ E, the overall computational cost is greatly reduced.</p><p>cost. In contrast, models designed for more complex graph structures, such as HetGNN and the temporal model TGN, exhibit significantly higher resource consumption. Notably, TGN, which relies on a memory module to process temporal information, incurs the highest costs in both training time and memory footprint, highlighting the typical efficiency challenges of advanced dynamic graph models. Our proposed DS-DGA-GCN model strikes an effective balance between detection performance and computational efficiency. While it is naturally more resource-intensive than the simpler static baselines, it is markedly more efficient than its main temporal competitor, TGN. This efficiency gain is attributed to our streamlined dynamic attention mechanism, which captures temporal dependencies without the extensive overhead of a continuous-time memory module.</p><p>To better illustrate the time complexity of each step and the overall computational efficiency, the complexity analysis is presented in Table <ref type="table">V</ref>. As illustrated in Table V, the time complexity for each step is significantly reduced due to the node and edge sampling processes. These optimizations ensure that the model remains computationally efficient even when applied to large-scale networks.</p><p>We then compare the dynamic graph attention mechanism with existing graph attention mechanisms on both Amazon and Xiaohongshu datasets. Specifically, the baseline models are listed below:</p><p>• No Attention (Baseline Model) <ref type="bibr" target="#b53">[54]</ref>: A GCN model without any attention mechanism, serving as a baseline to evaluate the basic performance without attention mechanisms.</p><p>• GAT [55]: The standard Graph Attention Network mechanism, which captures relationships between key nodes by assigning different weights to neighboring nodes. • Multi-Head Attention [56]: A multi-head attention mechanism applied to GCN, enabling the model to learn node</p><p>TABLE VI PERFORMANCE COMPARISON OF DYNAMIC ATTENTION MECHANISMS ON DIFFERENT DATASETS Model Amazon Dataset Xiaohongshu Dataset Accuracy Recall F1 AUROC Accuracy Recall F1 AUROC No Attention 0.803 0.776 0.781 0.880 0.783 0.757 0.763 0.860 GAT 0.832 0.803 0.816 0.900 0.814 0.789 0.792 0.885 Multi-Head 0.841 0.822 0.838 0.910 0.832 0.807 0.812 0.895 GaAN 0.854 0.832 0.848 0.918 0.841 0.822 0.834 0.904 Self-Attention 0.865 0.842 0.851 0.926 0.857 0.834 0.848 0.912 DS-DGA-GCN 0.898 0.864 0.872 0.945 0.883 0.858 0.866 0.928 relationships across multiple subspaces. • GaAN [57]: Combines gating mechanisms with attention mechanisms to achieve finer control of information flow. • Self-Attention: A self-attention mechanism akin to Transformers, capturing node relationships on a global scale.</p><p>The results in Table <ref type="table">VI</ref> show that DS-DGA-GCN outperforms all attention variants on both datasets across Accuracy Recall F1 and AUROC. On Amazon it reaches Accuracy 0.898 F1 0.872 and AUROC 0.945. On Xiaohongshu it reaches Accuracy 0.883 F1 0.866 and AUROC 0.928. The threshold free AUROC confirms that the gains are not tied to a single operating point. These findings indicate that the dynamic graph attention improves detection in dynamic and complex networks.</p><p>3) Detection Adaptability in Newly Launching Products: The launch of new products is often characterized by a sparsity of reviews, which poses significant challenges for the detection of fake reviewer groups. We evaluate the adaptability of the proposed DS-DGA-GCN model in detecting fake reviewer within the context of newly launching products. We categorize both Amazon and Xiaohongshu datasets into subsets with different scales based on their characteristics. Three subsets of varying scales are defined: a small-scale group, comprising new products or content with fewer than 50 reviews; a mediumscale group, consisting of new products or content with 50 to 200 reviews; and a large-scale group, encompassing new products or content with more than 200 reviews.</p><p>Traditional methods often deteriorate when review data is sparse, as they cannot extract robust content or structural features. Our experiments specifically assess performance as the data sparsity for new products diminishes. Tables VII and VIII present the results on the Amazon and Xiaohongshu datasets across subsets of varying scales.</p><p>Analysis of the results in Tables VII and VIII reveals several key findings. On the Amazon dataset, DS-DGA-GCN consistently achieves the highest F1-score and AUROC across all product scales. Notably, the performance gap is most pronounced in the small scale group, where review data is sparse, underscoring our model's strength in cold-start scenarios. On the more dynamic Xiaohongshu dataset, while the temporal baseline TGN demonstrates competitive performance, our DS-DGA-GCN still maintains the lead on both F1 and AUROC across all scales. The superior, threshold-free AUROC scores confirm that our model's advantages are robust and not an artifact of a specific operating point. These results provide strong evidence that the synergy between the structureaware NFS and the time-aware dynamic attention mechanism significantly improves adaptability under temporal shifts and cold-start sparsity.</p><p>4) Cross-Platform Adaptability Evaluation: In addition to testing adaptability under temporal sparsity with newly launched products, we further investigate whether DS-DGA-GCN can generalize across different platforms. This setting evaluates robustness under domain shifts in user populations, interaction structures, and even language. We design two complementary transfer experiments: (i) Amazon↔Yelp, where both platforms share English-language reviews but differ in community norms and interaction patterns, thereby isolating platform-level transferability; and (ii) Amazon→Xiaohongshu, which introduces both platform and cross-lingual shift (English reviews versus Chinese social posts).</p><p>We first evaluate cross-platform adaptability between Amazon and Yelp, two English-language platforms with distinct interaction dynamics but without linguistic mismatch. This setting isolates platform-level domain shifts and provides a clearer measure of transferability. As shown in Table <ref type="table">IX</ref>, DS-DGA-GCN achieves reasonable zero-shot performance in both directions, with F1 scores around 0.78-0.80 and AUROC above 0.85. When only 5% of labeled target data is available for finetuning, performance further improves by approximately 3-4 points across all metrics. These results indicate that DS-DGA-GCN successfully captures structural and temporal patterns that generalize across different review communities, demonstrating strong adaptability under realistic platform migration scenarios.</p><p>We also conduct a supplementary transfer from Amazon to Xiaohongshu, which introduces both cross-platform and crosslingual shift (English reviews versus Chinese social posts). Results in Table <ref type="table">X</ref> show that the structure-only variant which incorporates the graph topology and our proposed NFS scores while excluding all textual embeddings yields modest transfer performance. The limited performance in this setting, despite the inclusion of NFS to capture platform-invariant structural anomalies, is primarily due to the extreme distribution shift of the initial node features (H u , H p ). The lack of aligned semantic information between English and Chinese prevents the dynamic attention mechanism from accurately weighing interactions across such disparate feature spaces. While multilingual text</p><p>TABLE VII DETECTION RESULTS FOR NEW PRODUCTS OF DIFFERENT SCALES IN THE AMAZON DATASET Model Small scale group Middle scale group Large scale group Accuracy Recall F1 AUROC Accuracy Recall F1 AUROC Accuracy Recall F1 AUROC GraphSAGE 0.713 0.688 0.698 0.775 0.782 0.754 0.765 0.835 0.859 0.829 0.841 0.895 GAT 0.696 0.683 0.673 0.765 0.763 0.749 0.738 0.825 0.839 0.823 0.811 0.875 GCN 0.717 0.711 0.730 0.785 0.786 0.780 0.800 0.845 0.864 0.857 0.879 0.915 HetGNN 0.709 0.694 0.706 0.795 0.806 0.784 0.792 0.865 0.874 0.849 0.870 0.920 TGN 0.721 0.706 0.720 0.810 0.812 0.791 0.804 0.870 0.887 0.862 0.880 0.930 DS-DGA-GCN 0.745 0.717 0.724 0.835 0.817 0.786 0.794 0.885 0.898 0.864 0.872 0.945 TABLE VIII DETECTION RESULTS FOR NEW PRODUCTS OF DIFFERENT SCALES IN THE DATASET Model Small scale group Middle size group Large scale group Accuracy Recall F1 AUROC Accuracy Recall F1 AUROC Accuracy Recall F1 AUROC GraphSAGE 0.684 0.642 0.654 0.735 0.750 0.703 0.717 0.795 0.824 0.773 0.788 0.875 GAT 0.708 0.696 0.702 0.770 0.776 0.763 0.770 0.830 0.861 0.842 0.853 0.905 GCN 0.699 0.681 0.692 0.745 0.766 0.747 0.759 0.815 0.842 0.821 0.834 0.895 HetGNN 0.706 0.690 0.701 0.760 0.774 0.756 0.767 0.840 0.868 0.847 0.862 0.915 TGN 0.713 0.702 0.709 0.790 0.790 0.772 0.780 0.865 0.875 0.854 0.868 0.935 DS-DGA-GCN 0.715 0.699 0.708 0.805 0.784 0.766 0.776 0.865 0.883 0.858 0.866 0.928 TABLE IX CROSS PLATFORM TRANSFER BETWEEN AMAZON AND YELP Train →Test Setting Accuracy Recall F1 AUROC Amazon →Yelp Zero shot 0.824 0.768 0.784 0.858 Amazon →Yelp +5% target fine tuning 0.852 0.802 0.821 0.898 Yelp →Amazon Zero shot 0.834 0.780 0.796 0.864 Yelp →Amazon +5% target fine tuning 0.861 0.812 0.832 0.904 TABLE X SUPPLEMENTARY AMAZON→XIAOHONGSHU TRANSFER UNDER LANGUAGE AND PLATFORM SHIFT Variant Accuracy Recall F1 AUROC Structure only zero shot 0.696 0.642 0.658 0.760 Multilingual text embeddings zero shot 0.714 0.658 0.676 0.792 +5% target fine tuning 0.748 0.700 0.724 0.842</p><p>embeddings provide incremental improvements and light finetuning with 5% labeled target data further enhances results, the overall accuracy and F1 remain lower than in same-language transfer. This performance gap reflects the compounded difficulty of linguistic differences, heterogeneous content formats, and platform-specific behaviors. We conclude that DS-DGA-GCN retains partial adaptability under such extreme shifts, but its effectiveness is most clearly demonstrated in same-language transfer scenarios where platform-level generalization can be isolated and verified.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>V. CONCLUSION</head><p>This paper proposes a novel framework, DS-DGA-GCN, for the adaptive detection of fake reviewer groups in dynamic networks. The core of the method involves using a NFS module to first quantify key structural features (e.g., selfsimilarity) into a node's prior anomaly score, which then guides a dynamic graph attention network to capture complex temporal and interaction patterns. Experimental results on realworld datasets like Amazon show that the model achieves excellent performance with up to 89.8% accuracy, significantly outperforming existing baselines and demonstrating robust adaptability in data-sparse, cold-start scenarios. In summary, this research validates an effective design approach-combining interpretable structural features with dynamic graph learning models-which offers a valuable solution for tackling the challenges of online fraud detection in complex and evolving scenarios.</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Fig. 1 .</head><label>1</label><figDesc>Fig. 1. DS-DGA-GCN Model Framework Diagram. Left: consumers, reviewers, products; Middle: where is Cv and Tv</figDesc><graphic coords="4,48.96,56.08,514.05,172.54" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Fig. 2 .</head><label>2</label><figDesc>Fig. 2. Diversity of Adjacent Nodes.</figDesc><graphic coords="5,48.96,384.63,251.04,143.38" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2"><head>Fig. 3 .</head><label>3</label><figDesc>Fig. 3. Changes in Network Structure at Different Scales.</figDesc><graphic coords="6,48.96,56.07,251.03,146.77" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3"><head>Fig. 4 .</head><label>4</label><figDesc>Fig. 4. Dynamic Graph Attention Mechanism.</figDesc><graphic coords="7,48.96,56.07,251.03,286.82" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4"><head>Fig. 5 .</head><label>5</label><figDesc>Fig. 5. Amazon NFS distributions. The left panel shows violin plots for the Real and Fake classes, while the right panel displays the ECDF for each class.</figDesc><graphic coords="11,311.98,154.12,251.06,124.02" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5"><head>Fig. 6 .</head><label>6</label><figDesc>Fig. 6. Xiaohongshu NFS distributions. The left panel shows violin plots for the Real and Fake classes, while the right panel displays the ECDF for each class.</figDesc><graphic coords="12,48.96,229.96,251.07,129.11" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6"><head>Fig. 7 .</head><label>7</label><figDesc>Fig. 7. Ablation study comparing the DS-DGA-GCN model against its variants on the Amazon and Xiaohongshu datasets.</figDesc><graphic coords="12,48.96,401.69,251.05,129.18" type="bitmap" /></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_7"><head>Fig. 8 .</head><label>8</label><figDesc>Fig. 8. Efficiency comparison of DS-DGA-GCN against baseline models on the Amazon and Xiaohongshu datasets.</figDesc></figure>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="2" xml:id="foot_0"><p>https://help-center.pissedconsumer.com/online-review-trends-andstatistics/</p></note>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="4" xml:id="foot_1"><p>https://www.amazon.cn/</p></note>
+		</body>
+		<back>
+
+			<div type="funding">
+<div><p>This work was supported in part by the <rs type="funder">National Natural Science Fund for Distinguished Young Scholars</rs> (<rs type="grantNumber">62025205</rs>), in part by the <rs type="funder">National Natural Science Foundation of China</rs> under Grant <rs type="grantNumber">62541327</rs>, Grant <rs type="grantNumber">62532009</rs>, Grant <rs type="grantNumber">U25B2042</rs>, and Grant <rs type="grantNumber">62302396</rs>, in part by the <rs type="funder">Natural Science Foundation of Shaanxi Province</rs> (Grant No.<rs type="grantNumber">2024JC-YBQN-0665</rs>).</p></div>
+			</div>
+			<listOrg type="funding">
+				<org type="funding" xml:id="_AUwBsUU">
+					<idno type="grant-number">62025205</idno>
+				</org>
+				<org type="funding" xml:id="_NzMWMKW">
+					<idno type="grant-number">62541327</idno>
+				</org>
+				<org type="funding" xml:id="_tykyQJt">
+					<idno type="grant-number">62532009</idno>
+				</org>
+				<org type="funding" xml:id="_v4FERhE">
+					<idno type="grant-number">U25B2042</idno>
+				</org>
+				<org type="funding" xml:id="_V2Vxr2E">
+					<idno type="grant-number">62302396</idno>
+				</org>
+				<org type="funding" xml:id="_6RBkvJn">
+					<idno type="grant-number">2024JC-YBQN-0665</idno>
+				</org>
+			</listOrg>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">The market for fake reviews</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hollenbeck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Proserpio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Marketing Science</title>
+		<imprint>
+			<biblScope unit="volume">41</biblScope>
+			<biblScope unit="issue">5</biblScope>
+			<biblScope unit="page" from="896" to="921" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Reputation and feedback systems in online platform markets</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Tadelis</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Annual review of economics</title>
+		<imprint>
+			<biblScope unit="volume">8</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="321" to="340" />
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Fake online reviews: Literature review, synthesis, and directions for future research</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><forename type="middle">W</forename><surname>Ngai</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Wu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Decision Support Systems</title>
+		<imprint>
+			<biblScope unit="volume">132</biblScope>
+			<biblScope unit="page">113280</biblScope>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Spotting fake reviewer groups in consumer reviews</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mukherjee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Glance</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 21st international conference on World Wide Web</title>
+		<meeting>the 21st international conference on World Wide Web</meeting>
+		<imprint>
+			<date type="published" when="2012">2012</date>
+			<biblScope unit="page" from="191" to="200" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Detecting fake-review buyers using network structure: Direct evidence from amazon</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hollenbeck</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Overgoor</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Proserpio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Tosyali</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Proceedings of the National Academy of Sciences</title>
+		<imprint>
+			<biblScope unit="volume">119</biblScope>
+			<biblScope unit="issue">47</biblScope>
+			<biblScope unit="page">e2211932119</biblScope>
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Detect professional malicious user with metric learning in recommender systems</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Xiong</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<biblScope unit="volume">34</biblScope>
+			<biblScope unit="issue">9</biblScope>
+			<biblScope unit="page" from="4133" to="4146" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Detecting product review spammers using rating behaviors</title>
+		<author>
+			<persName><forename type="first">E.-P</forename><surname>Lim</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V.-A</forename><surname>Nguyen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Jindal</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">W</forename><surname>Lauw</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 19th ACM international conference on Information and knowledge management</title>
+		<meeting>the 19th ACM international conference on Information and knowledge management</meeting>
+		<imprint>
+			<date type="published" when="2010">2010</date>
+			<biblScope unit="page" from="939" to="948" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<analytic>
+		<title level="a" type="main">Shilling attacks against collaborative recommender systems: a review</title>
+		<author>
+			<persName><forename type="first">M</forename><surname>Si</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Li</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Artificial Intelligence Review</title>
+		<imprint>
+			<biblScope unit="volume">53</biblScope>
+			<biblScope unit="page" from="291" to="319" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<analytic>
+		<title level="a" type="main">What yelp fake review filter might be doing</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mukherjee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Venkataraman</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Glance</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the international AAAI conference on web and social media</title>
+		<meeting>the international AAAI conference on web and social media</meeting>
+		<imprint>
+			<date type="published" when="2013">2013</date>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="409" to="418" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+		<title level="a" type="main">Spotting fake reviewer groups in consumer reviews</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Mukherjee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Glance</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 21st international conference on World Wide Web</title>
+		<meeting>the 21st international conference on World Wide Web</meeting>
+		<imprint>
+			<date type="published" when="2012">2012</date>
+			<biblScope unit="page" from="191" to="200" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b10">
+	<analytic>
+		<title level="a" type="main">Fakex: A framework for detecting fake reviews of browser extensions</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Olsson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Eriksson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Picazo-Sanchez</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Andersson</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Sabelfeld</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 19th ACM Asia Conference on Computer and Communications Security</title>
+		<meeting>the 19th ACM Asia Conference on Computer and Communications Security</meeting>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+			<biblScope unit="page" from="769" to="784" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b11">
+	<analytic>
+		<title level="a" type="main">A contrast metric for fraud detection in rich graphs</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hooi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Faloutsos</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<biblScope unit="volume">31</biblScope>
+			<biblScope unit="issue">12</biblScope>
+			<biblScope unit="page" from="2235" to="2248" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b12">
+	<analytic>
+		<title level="a" type="main">Opinion fraud detection in online reviews by network effects</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Akoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Chandy</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Faloutsos</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the international AAAI conference on web and social media</title>
+		<meeting>the international AAAI conference on web and social media</meeting>
+		<imprint>
+			<date type="published" when="2013">2013</date>
+			<biblScope unit="volume">7</biblScope>
+			<biblScope unit="page" from="2" to="11" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b13">
+	<analytic>
+		<title level="a" type="main">Rhgnn: Fake reviewer detection based on reinforced heterogeneous graph neural networks</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Shao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Tang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Du</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Wang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Knowledge-Based Systems</title>
+		<imprint>
+			<biblScope unit="volume">280</biblScope>
+			<biblScope unit="page">111029</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b14">
+	<analytic>
+		<title level="a" type="main">Temporal insights for group-based fraud detection on e-commerce platforms</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Qin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Yang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b15">
+	<analytic>
+		<title level="a" type="main">Uncovering crowdsourced manipulation of online reviews</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Fayazi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Caverlee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Squicciarini</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 38th international ACM SIGIR conference on research and development in information retrieval</title>
+		<meeting>the 38th international ACM SIGIR conference on research and development in information retrieval</meeting>
+		<imprint>
+			<date type="published" when="2015">2015</date>
+			<biblScope unit="page" from="233" to="242" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b16">
+	<analytic>
+		<title level="a" type="main">Fdgars: Fraudster detection via graph convolutional networks in online app review system</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Wen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Xiong</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Companion proceedings of the 2019 World Wide Web conference</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="310" to="316" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b17">
+	<analytic>
+		<title level="a" type="main">Decoupling representation learning and classification for gnn-based anomaly detection</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 44th international ACM SIGIR conference on research and development in information retrieval</title>
+		<meeting>the 44th international ACM SIGIR conference on research and development in information retrieval</meeting>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="1239" to="1248" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b18">
+	<monogr>
+		<title level="m" type="main">Graph attention networks</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Veličković</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Cucurull</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Casanova</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Romero</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Lio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bengio</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1710.10903</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b19">
+	<analytic>
+		<title level="a" type="main">Detect professional malicious user with metric learning in recommender systems</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">E</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Zhuang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Xiong</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<biblScope unit="volume">34</biblScope>
+			<biblScope unit="issue">9</biblScope>
+			<biblScope unit="page" from="4133" to="4146" />
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b20">
+	<analytic>
+		<title level="a" type="main">Detection of fake reviews using group model</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Niu</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="s">Mobile Networks and Applications</title>
+		<imprint>
+			<biblScope unit="volume">26</biblScope>
+			<biblScope unit="page" from="91" to="103" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b21">
+	<analytic>
+		<title level="a" type="main">Largescale fake click detection for e-commerce recommendation systems</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Lu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhou</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">2021 IEEE 37th International Conference on Data Engineering (ICDE)</title>
+		<imprint>
+			<publisher>IEEE</publisher>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="2595" to="2606" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b22">
+	<analytic>
+		<title level="a" type="main">Mining fraudsters and fraudulent strategies in large-scale mobile social networks</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Xu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Sun</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Dong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhuang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<biblScope unit="volume">33</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="169" to="179" />
+			<date type="published" when="2019">2019</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b23">
+	<analytic>
+		<title level="a" type="main">Massive fake review group recognition based on network structure features</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Jinrui</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Ruotong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Han</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Operations Research and Management Science</title>
+		<imprint>
+			<biblScope unit="volume">32</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page">194</biblScope>
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b24">
+	<analytic>
+		<title level="a" type="main">Effective machine learning approach to detect groups of fake reviewers</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Soni</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Prabakar</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 14th international conference on data science (ICDATA&apos;18)</title>
+		<meeting>the 14th international conference on data science (ICDATA&apos;18)<address><addrLine>Las Vegas, NV</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+			<biblScope unit="page" from="74" to="78" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b25">
+	<analytic>
+		<title level="a" type="main">A mapreduce opinion mining for covid-19-related tweets classification using enhanced id3 decision tree classifier</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Es-Sabery</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Es-Sabery</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Qadir</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Sainz-De-Abajo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Hair</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Garcia-Zapirain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>De</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">La</forename><surname>Torre-Díez</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Access</title>
+		<imprint>
+			<biblScope unit="volume">9</biblScope>
+			<biblScope unit="page" from="58" to="706" />
+			<date type="published" when="2021">2021</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b26">
+	<analytic>
+		<title level="a" type="main">Fake reviewer group detection in online review systems</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Cao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">2021 International Conference on Data Mining Workshops (ICDMW)</title>
+		<imprint>
+			<publisher>IEEE</publisher>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="935" to="942" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b27">
+	<analytic>
+		<title level="a" type="main">Adversarial attacks for black-box recommender systems via copying transferable cross-domain user profiles</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Fan</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Zhao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Q</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Derr</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Tang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<biblScope unit="volume">35</biblScope>
+			<biblScope unit="issue">12</biblScope>
+			<biblScope unit="page" from="12" to="415" />
+			<date type="published" when="2023">2023</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b28">
+	<analytic>
+		<title level="a" type="main">Revisiting attack-caused structural distribution shift in graph anomaly detection</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Gao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>He</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Feng</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b29">
+	<analytic>
+		<title level="a" type="main">Decoupling representation learning and classification for gnn-based anomaly detection</title>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Guo</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 44th international ACM SIGIR conference on research and development in information retrieval</title>
+		<meeting>the 44th international ACM SIGIR conference on research and development in information retrieval</meeting>
+		<imprint>
+			<date type="published" when="2021">2021</date>
+			<biblScope unit="page" from="1239" to="1248" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b30">
+	<analytic>
+		<title level="a" type="main">Uncovering crowdsourced manipulation of online reviews</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Fayazi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Lee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Caverlee</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Squicciarini</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 38th international ACM SIGIR conference on research and development in information retrieval</title>
+		<meeting>the 38th international ACM SIGIR conference on research and development in information retrieval</meeting>
+		<imprint>
+			<date type="published" when="2015">2015</date>
+			<biblScope unit="page" from="233" to="242" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b31">
+	<analytic>
+		<title level="a" type="main">A contrast metric for fraud detection in rich graphs</title>
+		<author>
+			<persName><forename type="first">S</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hooi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Faloutsos</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<biblScope unit="volume">31</biblScope>
+			<biblScope unit="issue">12</biblScope>
+			<biblScope unit="page" from="2235" to="2248" />
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b32">
+	<analytic>
+		<title level="a" type="main">Fraudar: Bounding graph fraud in the face of camouflage</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Hooi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">A</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Beutel</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><surname>Shah</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">K</forename><surname>Shin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Faloutsos</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 22nd ACM SIGKDD international conference on knowledge discovery and data mining</title>
+		<meeting>the 22nd ACM SIGKDD international conference on knowledge discovery and data mining</meeting>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+			<biblScope unit="page" from="895" to="904" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b33">
+	<analytic>
+		<title level="a" type="main">Fdgars: Fraudster detection via graph convolutional networks in online app review system</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><surname>Wen</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Wu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Xiong</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Companion proceedings of the 2019 World Wide Web conference</title>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="310" to="316" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b34">
+	<analytic>
+		<title level="a" type="main">Temporal insights for group-based fraud detection on e-commerce platforms</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Li</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Qin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Liao</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Yang</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">IEEE Transactions on Knowledge and Data Engineering</title>
+		<imprint>
+			<date type="published" when="2024">2024</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b35">
+	<analytic>
+		<title level="a" type="main">Heterogeneous graph neural network</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Swami</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">N</forename><forename type="middle">V</forename><surname>Chawla</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 25th ACM SIGKDD international conference on knowledge discovery &amp; data mining</title>
+		<meeting>the 25th ACM SIGKDD international conference on knowledge discovery &amp; data mining</meeting>
+		<imprint>
+			<date type="published" when="2019">2019</date>
+			<biblScope unit="page" from="793" to="803" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b36">
+	<monogr>
+		<title level="m" type="main">Temporal graph networks for deep learning on dynamic graphs</title>
+		<author>
+			<persName><forename type="first">E</forename><surname>Rossi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">B</forename><surname>Chamberlain</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Frasca</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Eynard</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><surname>Monti</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Bronstein</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:2006.10637</idno>
+		<imprint>
+			<date type="published" when="2020">2020</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b37">
+	<analytic>
+		<title level="a" type="main">Self-similarity of complex networks</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Havlin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">A</forename><surname>Makse</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">433</biblScope>
+			<biblScope unit="issue">7024</biblScope>
+			<biblScope unit="page" from="392" to="395" />
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b38">
+	<analytic>
+		<title level="a" type="main">A review of fractality and self-similarity in complex networks</title>
+		<author>
+			<persName><forename type="first">L</forename><forename type="middle">K</forename><surname>Gallos</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">A</forename><surname>Makse</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Physica A: Statistical Mechanics and its Applications</title>
+		<imprint>
+			<biblScope unit="volume">386</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="686" to="691" />
+			<date type="published" when="2007">2007</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b39">
+	<analytic>
+		<title level="a" type="main">Recommendation based on mining product reviewers preference similarity network</title>
+		<author>
+			<persName><forename type="first">F</forename><surname>Wang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Chen</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of 6th SNAKDD Workshop</title>
+		<meeting>6th SNAKDD Workshop</meeting>
+		<imprint>
+			<date type="published" when="2012">2012</date>
+			<biblScope unit="page">166</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b40">
+	<monogr>
+		<title level="m" type="main">The pagerank citation ranking: Bringing order to the web. technical report</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Page</surname></persName>
+		</author>
+		<imprint>
+			<date type="published" when="1998">1998. 1998</date>
+			<publisher>Stanford Digital Library Technologies Project</publisher>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b41">
+	<analytic>
+		<title level="a" type="main">Self-similarity of complex networks</title>
+		<author>
+			<persName><forename type="first">C</forename><surname>Song</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Havlin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><forename type="middle">A</forename><surname>Makse</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">433</biblScope>
+			<biblScope unit="issue">7024</biblScope>
+			<biblScope unit="page" from="392" to="395" />
+			<date type="published" when="2005">2005</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b42">
+	<analytic>
+		<title level="a" type="main">Fundamental statistical features and self-similar properties of tagged networks</title>
+		<author>
+			<persName><forename type="first">G</forename><surname>Palla</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><forename type="middle">J</forename><surname>Farkas</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Pollner</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>Derényi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">T</forename><surname>Vicsek</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">New Journal of Physics</title>
+		<imprint>
+			<biblScope unit="volume">10</biblScope>
+			<biblScope unit="issue">12</biblScope>
+			<biblScope unit="page">123026</biblScope>
+			<date type="published" when="2008">2008</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b43">
+	<analytic>
+		<title level="a" type="main">Graph based anomaly detection and description: a survey</title>
+		<author>
+			<persName><forename type="first">L</forename><surname>Akoglu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Tong</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><surname>Koutra</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Data mining and knowledge discovery</title>
+		<imprint>
+			<biblScope unit="volume">29</biblScope>
+			<biblScope unit="page" from="626" to="688" />
+			<date type="published" when="2015">2015</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b44">
+	<analytic>
+		<title level="a" type="main">Index for rating diagnostic tests</title>
+		<author>
+			<persName><forename type="first">W</forename><forename type="middle">J</forename><surname>Youden</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Cancer</title>
+		<imprint>
+			<biblScope unit="volume">3</biblScope>
+			<biblScope unit="issue">1</biblScope>
+			<biblScope unit="page" from="32" to="35" />
+			<date type="published" when="1950">1950</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b45">
+	<analytic>
+		<title level="a" type="main">Hierarchical graph representation learning with differentiable pooling</title>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Ying</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>You</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Morris</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Ren</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Hamilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Leskovec</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Advances in neural information processing systems</title>
+		<imprint>
+			<biblScope unit="volume">31</biblScope>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b46">
+	<analytic>
+		<title level="a" type="main">Network representation learning: from preprocessing, feature extraction to node embedding</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhou</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">L</forename><surname>Liu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">W</forename><surname>Wei</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Fan</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">ACM Computing Surveys (CSUR)</title>
+		<imprint>
+			<biblScope unit="volume">55</biblScope>
+			<biblScope unit="issue">2</biblScope>
+			<biblScope unit="page" from="1" to="35" />
+			<date type="published" when="2022">2022</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b47">
+	<monogr>
+		<author>
+			<persName><forename type="first">J</forename><forename type="middle">L</forename><surname>Kelley</surname></persName>
+		</author>
+		<title level="m">General topology. Courier</title>
+		<imprint>
+			<publisher>Dover Publications</publisher>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b48">
+	<monogr>
+		<title level="m" type="main">Spatio-temporal graph convolutional networks: A deep learning framework for traffic forecasting</title>
+		<author>
+			<persName><forename type="first">B</forename><surname>Yu</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Yin</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Zhu</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1709.04875</idno>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b49">
+	<analytic>
+		<title level="a" type="main">An introduction to roc analysis</title>
+		<author>
+			<persName><forename type="first">T</forename><surname>Fawcett</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">Pattern recognition letters</title>
+		<imprint>
+			<biblScope unit="volume">27</biblScope>
+			<biblScope unit="issue">8</biblScope>
+			<biblScope unit="page" from="861" to="874" />
+			<date type="published" when="2006">2006</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b50">
+	<analytic>
+		<title level="a" type="main">Inductive representation learning on large graphs</title>
+		<author>
+			<persName><forename type="first">W</forename><surname>Hamilton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Ying</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Leskovec</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Advances in neural information processing systems</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+			<biblScope unit="volume">30</biblScope>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b51">
+	<monogr>
+		<title level="m" type="main">Semi-supervised classification with graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">N</forename><surname>Kipf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Welling</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1609.02907</idno>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b52">
+	<analytic>
+		<title level="a" type="main">Graph attention networks</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Velickovic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Cucurull</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Casanova</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Romero</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Lio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bengio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">stat</title>
+		<imprint>
+			<biblScope unit="volume">1050</biblScope>
+			<biblScope unit="issue">20</biblScope>
+			<biblScope unit="page">550</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b53">
+	<monogr>
+		<title level="m" type="main">Semi-supervised classification with graph convolutional networks</title>
+		<author>
+			<persName><forename type="first">T</forename><forename type="middle">N</forename><surname>Kipf</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Welling</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1609.02907</idno>
+		<imprint>
+			<date type="published" when="2016">2016</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b54">
+	<analytic>
+		<title level="a" type="main">Graph attention networks</title>
+		<author>
+			<persName><forename type="first">P</forename><surname>Velickovic</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><surname>Cucurull</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Casanova</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Romero</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">P</forename><surname>Lio</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Bengio</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="j">stat</title>
+		<imprint>
+			<biblScope unit="volume">1050</biblScope>
+			<biblScope unit="issue">20</biblScope>
+			<biblScope unit="page">550</biblScope>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b55">
+	<analytic>
+		<title level="a" type="main">Attention is all you need</title>
+		<author>
+			<persName><forename type="first">A</forename><surname>Vaswani</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">Advances in Neural Information Processing Systems</title>
+		<imprint>
+			<date type="published" when="2017">2017</date>
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b56">
+	<monogr>
+		<title level="m" type="main">Gaan: Gated attention networks for learning on large and spatiotemporal graphs</title>
+		<author>
+			<persName><forename type="first">J</forename><surname>Zhang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">X</forename><surname>Shi</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Xie</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">H</forename><surname>Ma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">I</forename><surname>King</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D.-Y</forename><surname>Yeung</surname></persName>
+		</author>
+		<idno type="arXiv">arXiv:1803.07294</idno>
+		<imprint>
+			<date type="published" when="2018">2018</date>
+		</imprint>
+	</monogr>
+	<note type="report_type">arXiv preprint</note>
+</biblStruct>
+
+<biblStruct xml:id="b57">
+	<analytic>
+		<title level="a" type="main">He served as a Research Assistant and Post-Doctoral Fellow at The Hong Kong Polytechnic University in 2019 and 2021, respectively. From 2021 to 2023, he was a Post-Researcher at Northwestern Polytechnical University, Xi&apos;an, China, where he is currently an Associate Professor. His research interests include CrowdNet, human-AI collaboration, mobile edge computing, edge AI, and networked autonomous driving. Bin Guo received the PhD degree in computer science from Keio University, Minato, Japan, in 2009, and then was a postdoc researcher with Insti-tut Telecom SudParis, France. He is currently a professor with Northwestern Polytechnical University</title>
+	</analytic>
+	<monogr>
+		<title level="m">His research interests include pervasive computing, context-aware systems, human-computer interaction, mobile social networks, and personalization</title>
+		<title level="s">She is an Associate Professor with Xi&apos;an University of Science and Technology, Xi&apos;an. She has been presided two NSFC projects and one project from Shaanxi Science and Technology Department. Her research interests include ubiquitous computing, mobile crowd sensing and human-AI collaboration. Ke Huang is currently a Ph.D. student at the School of Computer Science</title>
+		<meeting><address><addrLine>Xi&apos;an, China; Xi&apos;an, China; Xi&apos;an, China; Xi&apos;an, China; Harbin, Heilongjiang, China; Xi&apos;an, China; Japan; Japan</addrLine></address></meeting>
+		<imprint>
+			<publisher>Elsevier</publisher>
+			<date type="published" when="2005-02">2018. 2020. 2005. February 2007 to January 2009. 2006-2007</date>
+		</imprint>
+		<respStmt>
+			<orgName>Jing Zhang received her Ph.D. degree in computer science and technology from Northwest University ; Northwestern Polytechnical University ; He is currently with Harbin Engineering University ; Northwestern Polytechnical University ; Kyoto University ; Information Technology Center, Nagoya University</orgName>
+		</respStmt>
+	</monogr>
+	<note>His current research interests include fraud detection, dynamic network analysis, and graph representation learning. He has published several research papers in international journals and conferences His research interests include ubiquitous computing, mobile crowd sensing, and human-computer interaction. He has served as an associate editor of the IEEE Communications Magazine and the IEEE Transactions on Human-Machine-Systems, the guest editor of the ACM Transactions on Intelligent Systems and Technology and the IEEE Internet of Things, the general co-chair of IEEE UIC&apos;15, and the program chair of IEEE CPSCom&apos;16, ANT&apos;14, and UIC&apos;13. He is a senior member of the IEEE. Zhiwen Yu received the Ph.D. degree of engineering in computer science and technology from Northwestern Polytechnical University He has worked as a research fellow with the Academic Center for Computing and Media Studies IEEE Internet of Things Journal. Zhang received his Ph.D. degree in communication and information system from Xidian University He was the general chair of IEEE CPSCom&apos;15, and IEEE UIC&apos;14 He served as a vice program chair of PerCom&apos;15, the program chair of UIC&apos;13, and the workshop chair of UbiComp&apos;11. He is a senior member of the IEEE, a member of the ACM, and a council member of the China Computer Federation (CCF</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>

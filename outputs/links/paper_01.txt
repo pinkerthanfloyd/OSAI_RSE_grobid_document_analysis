@@ -1,0 +1,10 @@
+http://snap.stanford.edu/jodie/reddit.csv
+http://snap.stanford.edu/jodie/wikipedia.csv
+https://github.com/PetarV-/GAT
+https://github.com/chrischute/real-nvp
+https://github.com/ex4sperans/variational-inference-with-normalizing-flows
+https://github.com/kermitt2/grobid
+https://github.com/phanein/deepwalk
+https://github.com/snap-stanford/snap/tree/master/examples/node2vec
+https://github.com/williamleif/GraphSAGE
+https://grocery.walmart.com/

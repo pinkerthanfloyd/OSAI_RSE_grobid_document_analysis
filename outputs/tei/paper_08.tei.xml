@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve" xmlns="http://www.tei-c.org/ns/1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title level="a" type="main">A Closer Look at Invalid Action Masking in Policy Gradient Algorithms</title>
+			</titleStmt>
+			<publicationStmt>
+				<publisher/>
+				<availability  status="unknown">
+					<licence/>
+				</availability>
+				<date type="published" when="2022-05-31">31 May 2022</date>
+			</publicationStmt>
+			<sourceDesc>
+				<biblStruct>
+					<analytic>
+						<author>
+							<persName><forename type="first">Shengyi</forename><surname>Huang</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">College of Computing &amp; Informatics</orgName>
+								<address>
+									<postCode>19104</postCode>
+									<settlement>Drexel University Philadelphia</settlement>
+									<region>PA</region>
+								</address>
+							</affiliation>
+						</author>
+						<author>
+							<persName><forename type="first">Santiago</forename><surname>Onta</surname></persName>
+							<affiliation key="aff0">
+								<orgName type="department">College of Computing &amp; Informatics</orgName>
+								<address>
+									<postCode>19104</postCode>
+									<settlement>Drexel University Philadelphia</settlement>
+									<region>PA</region>
+								</address>
+							</affiliation>
+						</author>
+						<title level="a" type="main">A Closer Look at Invalid Action Masking in Policy Gradient Algorithms</title>
+					</analytic>
+					<monogr>
+						<imprint>
+							<date type="published" when="2022-05-31">31 May 2022</date>
+						</imprint>
+					</monogr>
+					<idno type="MD5">5CE2B8F72D04322024E4D92B5A27A060</idno>
+					<idno type="arXiv">arXiv:2006.14171v3[cs.LG]</idno>
+				</biblStruct>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<appInfo>
+				<application version="0.8.2" ident="GROBID" when="2026-03-11T18:22+0000">
+					<desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+					<label type="revision">a91ee48</label>
+					<label type="parameters">startPage=-1, endPage=-1, consolidateCitations=0, consolidateHeader=0, consolidateFunders=0, includeRawAffiliations=false, includeRawCitations=false, includeRawCopyrights=false, generateTeiIds=false, generateTeiCoordinates=[], sentenceSegmentation=false, flavor=null</label>
+					<ref target="https://github.com/kermitt2/grobid"/>
+				</application>
+			</appInfo>
+		</encodingDesc>
+		<profileDesc>
+			<abstract>
+<div xmlns="http://www.tei-c.org/ns/1.0"><p>In recent years, Deep Reinforcement Learning (DRL) algorithms have achieved state-of-the-art performance in many challenging strategy games. Because these games have complicated rules, an action sampled from the full discrete action distribution predicted by the learned policy is likely to be invalid according to the game rules (e.g., walking into a wall). The usual approach to deal with this problem in policy gradient algorithms is to "mask out" invalid actions and just sample from the set of valid actions. The implications of this process, however, remain under-investigated. In this paper, we 1) show theoretical justification for such a practice, 2) empirically demonstrate its importance as the space of invalid actions grows, and 3) provide further insights by evaluating different action masking regimes, such as removing masking after an agent has been trained using masking.</p></div>
+			</abstract>
+		</profileDesc>
+	</teiHeader>
+	<text xml:lang="en">
+		<body>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Introduction</head><p>Deep Reinforcement Learning (DRL) algorithms have yielded state-of-the-art game playing agents in challenging domains such as Real-time Strategy (RTS) games <ref type="bibr" target="#b4">(Vinyals et al. 2017;</ref><ref type="bibr" target="#b4">Vinyals et al. 2019)</ref> and Multiplayer Online Battle Arena (MOBA) games <ref type="bibr" target="#b0">(Berner et al. 2019;</ref><ref type="bibr" target="#b6">Ye et al. 2020)</ref>. Because these games have complicated rules, the valid discrete action spaces of different states usually have different sizes. That is, one state might have 5 valid actions and another state might have 7 valid actions. To formulate these games as a standard reinforcement learning problem with a singular action set, previous work combines these discrete action spaces to a full discrete action space that contains available actions of all states <ref type="bibr" target="#b4">(Vinyals et al. 2017;</ref><ref type="bibr" target="#b0">Berner et al. 2019;</ref><ref type="bibr" target="#b6">Ye et al. 2020</ref>). Although such a full discrete action space makes it easier to apply DRL algorithms, one issue is that an action sampled from this full discrete action space could be invalid for some game states, and this action will have to be discarded.</p><p>To make matters worse, some games have extremely large full discrete action spaces and an action sampled will typically be invalid. As an example, the full discrete action space of Dota 2 has a size of 1,837,080 <ref type="bibr" target="#b0">(Berner et al. 2019)</ref>, Figure <ref type="figure">1</ref>: A screenshot of µRTS. Square units are "bases" (light grey, that can produce workers), "barracks" (dark grey, that can produce military units), and "resources mines" (green, from where workers can extract resources to produce more units), the circular units are "workers" (small, dark grey) and military units (large, yellow or light blue), and on the right is the 10×10 map we used to train agents to harvest resources. The agents could control units at the top left, and the units in the bottom left will remain stationary. and an action sampled might be to buy an item, which can be valid in some game states but will become invalid when there is not enough gold. To avoid repeatedly sampling invalid actions in full discrete action spaces, recent work applies policy gradient algorithms in conjunction with a technique known as invalid action masking, which "masks out" invalid actions and then just samples from those actions that are valid <ref type="bibr" target="#b4">(Vinyals et al. 2017;</ref><ref type="bibr" target="#b0">Berner et al. 2019;</ref><ref type="bibr" target="#b6">Ye et al. 2020)</ref>. To the best of our knowledge, however, the theoretical foundations of invalid action masking have not been studied and its empirical effect is under-investigated. In this paper, we take a closer look at invalid action masking in the context of games, pointing out the gradient produced by invalid action masking corresponds to a valid policy gradient. More interestingly, we show that in fact, invalid action masking can be seen as applying a state-dependent differentiable function during the calculation of the action probability distribution, to produce a behavior policy. Next, we de-sign experiments to compare the performance of invalid action masking versus invalid action penalty, which is a common approach that gives negative rewards for invalid actions so that the agent learns to maximize reward by not executing any invalid actions. We empirically show that, when the space of invalid actions grows, invalid action masking scales well and the agent solves our desired task while invalid action penalty struggles to explore even the very first reward. Then, we design experiments to answer two questions: (1) What happens if we remove the invalid action mask once the agent was trained with the mask? (2) What is the agent's performance when we implement the invalid action masking naively by sampling the action from the masked action probability distribution but updating the policy gradient using the unmasked action probability distribution? Finally, we made our source code available at GitHub for the purpose of reproducibility 1 .</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Background</head><p>In this paper, we use policy gradient methods to train agents. Let us consider the Reinforcement Learning problem in a Markov Decision Process (MDP) denoted as (S, A, P, ρ 0 , r, γ, T ), where S is the state space, A is the discrete action space, P : S × A × S → [0, 1] is the state transition probability, ρ 0 : S → [0, 1] is the initial state distribution, r : S × A → R is the reward function, γ is the discount factor, and T is the maximum episode length. A stochastic policy π θ : S × A → [0, 1], parameterized by a parameter vector θ, assigns a probability value to an action given a state. The goal is to maximize the expected discounted return of the policy:</p><formula xml:id="formula_0">J = E τ T -1 t=0 γ t r t</formula><p>where τ is the trajectory (s 0 , a 0 , r 0 , . . .</p><formula xml:id="formula_1">, s T -1 , a T -1 , r T -1 ) , s 0 ∼ ρ 0 , s t ∼ P (•|s t-1 , a t-1 ), a t ∼ π θ (•|s t ), r t = r (s t , a t )</formula><p>The core idea behind policy gradient algorithms is to obtain the policy gradient ∇ θ J of the expected discounted return with respect to the policy parameter θ. Doing gradient ascent θ = θ + ∇ θ J therefore maximizes the expected discounted reward. Earlier work proposes the following policy gradient estimate to the objective J (Sutton and Barto 2018):</p><formula xml:id="formula_2">∇ θ J = E τ ∼π θ T -1 t=0 ∇ θ log π θ (a t |s t )G t , G t = ∞ k=0 γ k r t+k</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Invalid Action Masking</head><p>Invalid action masking is a common technique implemented to avoid repeatedly generating invalid actions in large discrete action spaces <ref type="bibr" target="#b4">(Vinyals et al. 2017;</ref><ref type="bibr" target="#b0">Berner et al. 2019;</ref><ref type="bibr" target="#b6">Ye et al. 2020)</ref>. To the best of our knowledge, there is no literature providing detailed descriptions of the implementation of invalid action masking. Existing work <ref type="bibr" target="#b4">(Vinyals et al. 2017;</ref><ref type="bibr" target="#b0">Berner et al. 2019</ref>) seems to treat invalid action masking as an auxiliary detail, usually describing it using only a 1 <ref type="url" target="https://github.com/vwxyzjn/invalid-action-masking">https://github.com/vwxyzjn/invalid-action-masking</ref> few sentences. Additionally, there is no literature providing theoretical justification to explain why it works with policy gradient algorithms. In this section, we examine how invalid action masking is implemented and prove it indeed corresponds to valid policy gradient updates <ref type="bibr" target="#b3">(Sutton et al. 2000)</ref>. More interestingly, we show it works by applying a statedependent differentiable function during the calculation of action probability distribution.</p><p>First, let us see how a discrete action is typically generated through policy gradient algorithms. Most policy gradient algorithms employ a neural network to represent the policy, which usually outputs unnormalized scores (logits) and then converts them into an action probability distribution using a softmax operation or equivalent, which is the framework we will assume in the rest of the paper. For illustration purposes, consider an MDP with the action set A = {a 0 , a 1 , a 2 , a 3 } and S = {s 0 , s 1 }, where the MDP reaches the terminal state s 1 immediately after an action is taken in the initial state s 0 and the reward is always +1. Further, consider a policy π θ parameterized by θ = [l 0 , l 1 , l 2 , l 3 ] = [1.0, 1.0, 1.0, 1.0] that, for the sake of this example, directly produces θ as the output logits. Then in s 0 we have:</p><formula xml:id="formula_3">π θ (•|s 0 ) = [π θ (a 0 |s 0 ), π θ (a 1 |s 0 ), π θ (a 2 |s 0 ), π θ (a 3 |s 0 )] = softmax([l 0 , l 1 , l 2 , l 3 ]) (1) = [0.25, 0.25, 0.25, 0.25],</formula><p>where π θ (a i |s 0 ) = exp(l i ) j exp(l j ) At this point, regular policy gradient algorithms will sample an action from π θ (•|s 0 ). Suppose a 0 is sampled from π θ (•|s 0 ), and the policy gradient can be calculated as follows:</p><formula xml:id="formula_4">g policy = E τ ∇ θ T -1 t=0 log π θ (a t |s t )G t = ∇ θ log π θ (a 0 |s 0 )G 0 = [0.75, -0.25, -0.25, -0.25] (∇ θ log softmax(θ) j ) i =    (1 - exp(lj ) j exp(lj ) ) if i = j -exp(lj ) j exp(lj )</formula><p>otherwise Now suppose a 2 is invalid for state s 0 , and the only valid actions are a 0 , a 1 , a 3 . Invalid action masking helps to avoid sampling invalid actions by "masking out" the logits corresponding to the invalid actions. This is usually accomplished by replacing the logits of the actions to be masked by a large negative number M (e.g. M = -1 × 10 8 ). Let us use mask : R → R to denote this masking process, and we can calculate the re-normalized probability distribution π θ (•|s 0 ) as the following: <ref type="bibr">.33, 0.33, 0.0000, 0.33]</ref> where is the resulting probability of the masked invalid action, which should be a small number. If M is chosen to be sufficiently negative, the probability of choosing the masked invalid action a 2 will be virtually zero. After finishing the episode, the policy is updated according to the following gradient, which we refer to as the invalid action policy gradient. <ref type="table">67</ref>, <ref type="table" target="#tab_3">-0.33</ref>, <ref type="table">0.0000</ref>, <ref type="table" target="#tab_3">-0.33]</ref> This example highlights that invalid action masking appears to do more than just "renormalizing the probability distribution"; it in fact makes the gradient corresponding to the logits of the invalid action to zero.</p><formula xml:id="formula_5">π θ (•|s 0 ) = softmax(mask([l 0 , l 1 , l 2 , l 3 ])) (2) = softmax([l 0 , l 1 , M, l 3 ]) (3) = [π θ (a 0 |s 0 ), π θ (a 1 |s 0 ), , π θ (a 3 |s 0 )] (4) = [0</formula><formula xml:id="formula_6">g invalid action policy = E τ ∇ θ T -1 t=0 log π θ (a t |s t )G t (5) = ∇ θ log π θ (a 0 |s 0 )G 0 (6) = [0.</formula></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Masking Still Produces a Valid Policy Gradient</head><p>The action selection process is affected by a process that seems external to π θ that calculates the mask. It is therefore natural to wonder how does the policy gradient theorem <ref type="bibr" target="#b3">(Sutton et al. 2000)</ref> apply. As a matter of fact, our analysis shows that the process of invalid action masking can be considered as a state-dependent differentiable function applied for the calculation of π θ , and therefore g invalid action policy can be considered as a policy gradient update for π θ .</p><p>Proposition 1. g invalid action policy is the policy gradient of policy π θ . Proof. Let s ∈ S to be arbitrary and consider the process of invalid action masking as a differentiable function mask to be applied to the logits l(s) outputted by policy π θ given state s. Then we have:</p><formula xml:id="formula_7">π θ (•|s) = softmax(mask(l(s))) mask(l(s)) i = l i if a i is valid in s M otherwise</formula><p>Clearly, mask is either an identity function or a constant function for elements in the logits. Since these two kinds of functions are differentiable, π θ is differentiable to its parameters θ. That is,</p><formula xml:id="formula_8">∂π θ (a|s) ∂θ</formula><p>exists for all a ∈ A, s ∈ S, which satisfies the assumption of policy gradient theorem <ref type="bibr" target="#b3">(Sutton et al. 2000)</ref>. Hence, g invalid action policy is the policy gradient of policy π θ . Note that mask is not a piece-wise linear function. If we plot mask, it is either an identity function or a constant function, depending on the state s, going from -∞ to +∞. We therefore call mask a state-dependent differentiable function. That is, given a vector x and two states s, s with different number of invalid actions available in these states, mask(s, x) = mask(s , x).</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Experimental Setup</head><p>In the remainder of this paper, we provide a series of empirical results showing the practical implications of invalid action masking. Target Unit [0, h × w -1] the location of unit that will be attacked</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evaluation Environment</head><p>We use µRTS<ref type="foot" target="#foot_0">foot_0</ref> as our testbed, which is a minimalistic RTS game maintaining the core features that make RTS games challenging from an AI point of view: simultaneous and durative actions, large branching factors, and real-time decision-making. A screenshot of the game can be found in Figure <ref type="figure">1</ref>. It is the perfect testbed for our experiments because the action space in µRTS grows combinatorially and so does the number of invalid actions that could be generated by the DRL agent. We now present the technical details of the environment for our experiments.</p><p>• Observation Space. Given a map of size h × w, the observation is a tensor of shape (h, w, n f ), where n f is a number of feature planes that have binary values.</p><p>The observation space used in this paper uses 27 feature planes as shown in</p><p>Table 1, similar to previous work in µRTS (Stanescu et al. 2016; Yang and Ontañón 2018;</p><p>Huang and Ontañón 2019). A feature plane can be thought of as a concatenation of multiple one-hot encoded features. As an example, if there is a worker with hit points equal to 1, not carrying any resources, the owner being Player 1, and currently not executing any actions, then the one-hot encoding features will look like the following:</p><p>[0, 1, 0, 0, 0], [1, 0, 0, 0, 0], [1, 0, 0], [0, 0, 0, 0, 1, 0, 0, 0], [1, 0, 0, 0, 0, 0] The 27 values of each feature plane for the position in the map of such worker will thus be the concatenation of the arrays above.</p><p>• Action Space. Given a map of size h × w, the action is an 8-dimensional vector of discrete values as specified in Table <ref type="table" target="#tab_0">1</ref>. The action space is designed similar to the action space formulation by <ref type="bibr" target="#b1">Hausknecht, et al., (Hausknecht and Stone 2016)</ref>. The first component of the action vector represents the unit in the map to issue actions to, the second is the action type, and the rest of the components represent the different parameters different action types can take. Depending on which action type is selected, the game engine will use the corresponding parameters to execute the action.</p><p>• Rewards. We are evaluating our agents on the simple task of harvesting resources as fast as they can for Player 1 who controls units at the top left of the map. A +1 reward is given when a worker harvests a resource, and another +1 is received once the worker returns the resource to a base.</p><p>• Termination Condition. We set the maximum game length to be 200 time steps, but the game could be terminated earlier if all the resources in the map are harvested first.</p><p>Notice that the space of invalid actions becomes significantly larger in larger maps. This is because the range of the first and last discrete values in the action space, corresponding to Source Unit and Attack Target Unit selection, grows linearly with the size of the map. To illustrate, in our experiments, there are usually only two units that can be selected as the Source Unit (the base and the worker). Although it is possible to produce more units or buildings to be selected, the production behavior has no contribution to reward and therefore is generally not learned by the agent. Note the range of Source Unit is 4 × 4 = 16 and 24 × 24 = 576, in maps of size 4×4 and 24×24, respectively. Selecting a valid Source Unit at random has a probability of 2/16 = 0.125 in the 4 × 4 map and 2/576 = 0.0034 in the 24 × 24 map. With such action space, we can examine the scalability of invalid action masking.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Training Algorithm</head><p>We use Proximal Policy Optimization (Schulman et al. 2017) as the DRL algorithm to train our agents.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Strategies to Handle Invalid Actions</head><p>To examine the empirical importance of invalid action masking, we compare the following four strategies to handle invalid actions.</p><p>1. Invalid action penalty. Every time the agent issues an invalid action, the game environment adds a non-positive reward r invalid ≤ 0 to the reward produced by the current time step. This technique is standard in previous work <ref type="bibr">(Dietterich 2000)</ref>. We experiment with r invalid ∈ {0, -0.01, -0.1, -1}, respectively, to study the effect of the different scales on the negative reward.</p><p>2. Invalid action masking. At each time step t, the agent receives a mask on the Source Unit and Attack Target Unit features such that only valid units can be selected and targeted. Note that in our experiments, invalid actions still could be sampled because the agent could still select incorrect parameters for the current action type. We didn't provide a feature-complete invalid action mask for simplicity, as the mask on Source Unit and Attack Target Unit already significantly reduce the action space.</p><p>3. Naive invalid action masking. At each time step t, the agent receives the same mask on the Source Unit and Attack Target Unit as described for invalid action masking. The action shall still be sampled according to the re-normalized probability calculated in Equation <ref type="formula">4</ref>, which ensures no invalid actions could be sampled, but the gradient is updated according to the probability calculated in Equation 1. We call this implementation naive invalid action masking because its gradient does not replace the gradient of the logits corresponds to invalid actions with zero.</p><p>4. Masking removed. At each time step t, the agent receives the same mask on the Source Unit and Attack Target Unit as described for invalid action masking, and trains in the same way as the agent trained under invalid action mask- ing. However, we then evaluate the agent without providing the mask. In other words, in this scenario, we evaluate what happens if we train with a mask, but then perform without it.</p><p>We evaluate the agent's performance in maps of sizes 4 × 4, 10 × 10, 16 × 16, and 24 × 24. All maps have one base and one worker for each player, and each worker is located near the resources.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evaluation Metrics</head><p>We used the following metrics to measure the performance of the agents in our experiments: r episode is the average episodic return over the last 10 episodes. a null is the average number of actions that select a Source Unit that is not valid over the last 10 episodes. a busy is the average number of actions that select a Source Unit that is already busy executing other actions over the last 10 episodes. a owner is the average number of actions that select a Source Unit that does not belong to Player 1 over the last 10 episodes. t solve is the percentage of total training time steps that it takes for the agents' moving average episodic return of the last 10 episodes to exceed 40. t first is the percentage of the total training time step that it takes for the agent to receive the first positive reward.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Evaluation Results</head><p>We report the results in Figure <ref type="figure" target="#fig_0">2</ref> and in Table <ref type="table" target="#tab_2">2</ref>. Here we present a list of important observations:</p><p>Invalid action masking scales well. Invalid action masking is shown to scale well as the number of invalid actions increases; t solve is roughly 12% and very similar across different map sizes. In addition, the t first for invalid action masking is not only the lowest across all experiments (only taking about 0.05 -0.08% of the total time steps), but also consistent against different map sizes. This would mean the agent was able to find the first reward very quickly regardless of the map sizes.</p><p>Invalid action penalty does not scale. Invalid action penalty is able to achieve good results in 4 × 4 maps, but it does not scale to larger maps. As the space of invalid action gets larger, sometimes it struggles to even find the very first reward. E.g. in the 10 × 10 map, agents trained with invalid action penalty with r invalid = -0.01 spent 3.43% of the entire training time just discovering the first reward, while agents trained with invalid action masking take roughly 0.06% of the time in all maps. In addition, the hyper-parameter r invalid can be difficult to tune. Although having a negative r invalid did encourage the agents not to execute any invalid actions (e.g. a null , a busy , a owner are usually very close to zero for these agents), setting r invalid = -1 seems to have an adverse effect of discouraging exploration by the agent, therefore achieving consistently the worst performance across maps.</p><p>KL divergence explodes for naive invalid action masking. According to Table 2, the r episode of naive invalid action masking is the best across almost all maps. In the 4 × 4 map, the agent trained with naive invalid action masking even learns to travel to the other side of the map to harvest additional resources. However, naive invalid action masking has two main issues: 1) As shown in the second row of Figure <ref type="figure" target="#fig_1">3</ref>, the average Kullback-Leibler (KL) divergence <ref type="bibr" target="#b2">(Kullback and Leibler 1951)</ref> between the target and current policy of PPO for naive invalid action masking is significantly higher than that of any other experiments. Since the policy changes so drastically between policy updates, the performance of naive invalid action masking might suffer when dealing with more challenging tasks. 2) As shown in Table <ref type="table" target="#tab_2">2</ref>, the t solve of naive invalid action masking is more volatile and sensitive to the map sizes. In the 24 × 24 map, for example, the agents trained with naive invalid action masking take 49.14% of the entire training time to converge. In comparison, agents trained with invalid action masking exhibit a consistent t solve ≈ 12% in all maps.</p><p>Masking removed still behaves to some extent. As shown in Figures 3d, masking removed is still able to perform well to a certain degree. As the map size gets larger, its performance degrades and starts to execute more invalid actions by, most prominently, selecting an invalid Source Unit. Nevertheless, its performance is significantly better than that of the agents trained with invalid action penalty even though they are evaluated without the use of invalid action masking. This shows that the agents trained with invalid action masking can, to some extent, still produce useful behavior when the invalid action masking can no longer be provided.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Related Work</head><p>There have been other approaches to deal with invalid actions. <ref type="bibr" target="#b1">Dulac-Arnold, Evans, et al. (Dulac-Arnold et al. 2015)</ref> suggest embedding discrete action spaces into a continuous action space, using nearest-neighbor methods to locate the nearest valid actions. In the field of games with natural language, others propose to train an Action Elimination Network (AEN) <ref type="bibr" target="#b6">(Zahavy et al. 2018</ref>) to reduce the action set.</p><p>The purpose of avoiding executing invalid actions arguably is to boost exploration efficiency. Some less related work achieves this purpose by reducing the full discrete action space to a simpler action space. <ref type="bibr" target="#b2">Kanervisto, et al. (Kanervisto, Scheller, and Hautamäki 2020)</ref> describes this kind of work as "action space shaping", which typically involves 1) action removals (e.g. Minecraft RL environment removes non-useful actions such as "sneak" <ref type="bibr" target="#b1">(Johnson et al. 2016</ref>)), and 2) discretization of continuous action space (e.g. the famous CartPole-v0 environment discretize the continuous forces to be applied to the cart <ref type="bibr" target="#b0">(Brockman et al. 2016)</ref>). Although a well-shaped action space could help the agent efficiently explore and learn a useful policy, action space shaping is shown to be potentially difficult to tune and sometimes detrimental in helping the agent solve the desired tasks <ref type="bibr" target="#b1">(Dulac-Arnold et al. 2015)</ref>.</p><p>Lastly, <ref type="bibr" target="#b2">Kanervisto, et al. (Kanervisto, Scheller, and Hautamäki 2020)</ref> and <ref type="bibr" target="#b6">Ye, et al. (Ye et al. 2020)</ref> provide ablation studies to show invalid action masking could be important to the performance of agents, but they do not study the empirical effect of invalid action masking as the space of invalid action grows, which is addressed in this paper.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Conclusions</head><p>In this paper, we examined the technique of invalid action masking, which is a technique commonly implemented in policy gradient algorithms to avoid executing invalid actions. Our work shows that: 1) the gradient produced by invalid action masking is a valid policy gradient, 2) it works by applying a state-dependent differentiable function during the calculation of action probability distribution, 3) invalid action masking empirically scales well as the space of invalid action gets larger; in comparison, the common technique of giving a negative reward when an invalid action is issued fails to scale, sometimes struggling to find even the first reward in our environment, 4) the agent trained with invalid action masking was still able to produce useful behaviors with masking removed.</p><p>Given the clear effectiveness of invalid action masking demonstrated in this paper, we believe the community would benefit from wider adoption of this technique in practice. Invalid action masking empowers the agents to learn more efficiently, and we ultimately hope that it will accelerate research in applying DRL to games with large and complex discrete action spaces. 5. Adam Learning Rate Annealing 7 : The Adam (Kingma and Ba 2015) optimizer's learning rate is set to decay as the number of timesteps agent trained increase.</p><p>6. Mini-batch updates 8 : The PPO implementation of the openai/baselines also uses minibatches to compute the gradient and update the policy instead of the whole batch data such as in open/spinningup. The mini-batch sampling scheme, however, still makes sure that every transition is sampled only once, and that the all the transitions sampled are actually for the network update.</p><p>7. Global Gradient Clipping 9 : For each update iteration in an epoch, the gradients of the policy and value network are clipped so that the "global ℓ 2 norm" (i.e. the norm of the concatenated gradients of all parameters) does not exceed 0.5.</p><p>8. Orthogonal Initialization of weights 10 : The weights and biases of fully connected layers use with orthogonal initialization scheme with different scaling. For our experiments, however, we always use the scaling of 1 for historical reasons.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Additional Details on the µRTS Environment Setup</head><p>Each action in µRTS takes some internal game time, measured in ticks, for the action to be completed. gym-microrts (Huang and Ontañón 2019) sets the time of performing harvest action, return action, and move action to be 10 game ticks. Once an action is issued to a particular unit, the unit would be considered as a "busy" unit and would therefore no longer be able to execute any actions until its current action is finished. To prevent the DRL algorithms from repeatedly issuing actions to "busy" units, gym-microrts allows performing frame skipping of 9 frames such that from the agent's perspective, once it executes the harvest action, return action, or move action given the current observation, those actions would be finished in the next observation. Such frame skipping is used for all of our experiments.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Reproducibility</head><p>It is important to for the research work to be reproducible. We now present the list of hyperparameters used in Table <ref type="table" target="#tab_4">4</ref> and the list of neural network architecture in Table <ref type="table">5</ref>. In addition, we provide the source code to reproduce our experiments at GitHub 11 . Table 5: Neural Network Architecture.</p><p>To explain the notation, let us provide detailed description of the architecture used in 24×24 map as an example. The input to the neural network is a tensor of shape <ref type="bibr">(24,</ref><ref type="bibr">24,</ref><ref type="bibr">27)</ref>. The first hidden layer convolves 16 3 × 3 filters with stride 1 with the input tensor followed by a 2 × 2 max pooling layer <ref type="bibr" target="#b3">(Ranzato et al. 2007</ref>) and applies a rectifier nonlinearity <ref type="bibr" target="#b3">(Nair and Hinton 2010)</ref>. The second hidden layer similarly convolves 32 2 × 2 filters with stride 1 followed by a 2 × 2 max pooling layer and applies a rectifier nonlinearity. The final hidden layer is a fully connected linear layer consisting of 128 rectifier units. The output layer is a fully connected linear layer with 2hw + 36 = 1188 number of output.</p><p>4 × 4 10 × 10</p></div><figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0"><head>Figure 2 :</head><label>2</label><figDesc>Figure2: The first two figures show the episodic return over the time steps, and the remaining two show the Kullback-Leibler (KL) divergence between the target and current policy of PPO over the time steps. The shaded area represents one standard deviation of the data over 4 random seeds. Curves are exponentially smoothed with a weight of 0.9 for readability.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1"><head>Figure 3 :</head><label>3</label><figDesc>Figure3: The first row shows the episodic return over the time steps, and the second row shows the Kullback-Leibler (KL) divergence the target and current policy of PPO over the time steps. The shaded area represents one standard deviation of the data over 4 random seeds. Curves are exponentially smoothed with a weight of 0.9 for readability.</figDesc></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_0"><head>Table 1 :</head><label>1</label><figDesc>Observation features and action components.</figDesc><table><row><cell>Observation Fea-</cell><cell>Planes</cell><cell>Description</cell></row><row><cell>tures</cell><cell></cell><cell></cell></row><row><cell>Hit Points</cell><cell>5</cell><cell>0, 1, 2, 3, ≥ 4</cell></row><row><cell>Resources</cell><cell>5</cell><cell>0, 1, 2, 3, ≥ 4</cell></row><row><cell>Owner</cell><cell>3</cell><cell>player 1, -, player 2</cell></row><row><cell>Unit Types</cell><cell>8</cell><cell>-, resource, base, bar-</cell></row><row><cell></cell><cell></cell><cell>rack, worker, light,</cell></row><row><cell></cell><cell></cell><cell>heavy, ranged</cell></row><row><cell>Current Action</cell><cell>6</cell><cell>-, move, harvest, return,</cell></row><row><cell></cell><cell></cell><cell>produce, attack</cell></row><row><cell>Action Compo-</cell><cell>Range</cell><cell>Description</cell></row><row><cell>nents</cell><cell></cell><cell></cell></row><row><cell>Source Unit</cell><cell cols="2">[0, h × w -1] the location of the unit</cell></row><row><cell></cell><cell></cell><cell>selected to perform an</cell></row><row><cell></cell><cell></cell><cell>action</cell></row><row><cell>Action Type</cell><cell>[0, 5]</cell><cell>NOOP, move, harvest,</cell></row><row><cell></cell><cell></cell><cell>return, produce, attack</cell></row><row><cell>Move Parameter</cell><cell>[0, 3]</cell><cell>north, east, south, west</cell></row><row><cell>Harvest Parame-</cell><cell>[0, 3]</cell><cell>north, east, south, west</cell></row><row><cell>ter</cell><cell></cell><cell></cell></row><row><cell>Return Parameter</cell><cell>[0, 3]</cell><cell>north, east, south, west</cell></row><row><cell>Produce Direction</cell><cell>[0, 3]</cell><cell>north, east, south, west</cell></row><row><cell>Parameter</cell><cell></cell><cell></cell></row><row><cell>Produce Type Pa-</cell><cell>[0, 6]</cell><cell>resource, base, barrack,</cell></row><row><cell>rameter</cell><cell></cell><cell>worker, light, heavy,</cell></row><row><cell></cell><cell></cell><cell>ranged</cell></row><row><cell>Attack</cell><cell></cell><cell></cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2"><head>Table 2 :</head><label>2</label><figDesc>Results averaged over 4 random seeds. The symbol "-" means "not applicable". Higher is better for r episode and lower is better for a null , a busy , a owner , t solve , and t first .</figDesc><table><row><cell>Strategies</cell><cell cols="3">Map size rinvalid repisode</cell><cell cols="2">anull abusy</cell><cell>aowner</cell><cell>tsolve tfirst</cell></row><row><cell>Invalid action penalty</cell><cell>4 × 4</cell><cell>-1.00</cell><cell>0.00</cell><cell cols="2">0.00 0.00</cell><cell>0.00</cell><cell>-0.53%</cell></row><row><cell></cell><cell></cell><cell>-0.10</cell><cell>30.00</cell><cell cols="2">0.02 0.00</cell><cell cols="2">0.00 50.94% 0.52%</cell></row><row><cell></cell><cell></cell><cell>-0.01</cell><cell>40.00</cell><cell cols="2">0.02 0.00</cell><cell cols="2">0.00 14.32% 0.51%</cell></row><row><cell></cell><cell></cell><cell>0.00</cell><cell>30.25</cell><cell cols="2">2.17 0.22</cell><cell cols="2">2.70 36.00% 0.60%</cell></row><row><cell></cell><cell>10 × 10</cell><cell>-1.00</cell><cell>0.00</cell><cell cols="2">0.00 0.00</cell><cell>0.00</cell><cell>-3.43%</cell></row><row><cell></cell><cell></cell><cell>-0.10</cell><cell>0.00</cell><cell cols="2">0.00 0.00</cell><cell>0.00</cell><cell>-2.18%</cell></row><row><cell></cell><cell></cell><cell>-0.01</cell><cell>0.50</cell><cell cols="2">0.00 0.00</cell><cell>0.00</cell><cell>-1.57%</cell></row><row><cell></cell><cell></cell><cell>0.00</cell><cell>0.25</cell><cell cols="3">90.10 0.00 102.95</cell><cell>-3.41%</cell></row><row><cell></cell><cell>16 × 16</cell><cell>-1.00</cell><cell>0.25</cell><cell cols="2">0.00 0.00</cell><cell>0.00</cell><cell>-0.44%</cell></row><row><cell></cell><cell></cell><cell>-0.10</cell><cell>0.75</cell><cell cols="2">0.00 0.00</cell><cell>0.00</cell><cell>-0.44%</cell></row><row><cell></cell><cell></cell><cell>-0.01</cell><cell>1.00</cell><cell cols="2">0.02 0.00</cell><cell>0.00</cell><cell>-0.44%</cell></row><row><cell></cell><cell></cell><cell>0.00</cell><cell cols="3">1.00 184.68 0.00</cell><cell>2.53</cell><cell>-0.40%</cell></row><row><cell></cell><cell>24 × 24</cell><cell>-1.00</cell><cell>0.00</cell><cell cols="2">49.72 0.00</cell><cell>0.02</cell><cell>-1.40%</cell></row><row><cell></cell><cell></cell><cell>-0.10</cell><cell>0.25</cell><cell cols="2">0.00 0.00</cell><cell>0.00</cell><cell>-1.40%</cell></row><row><cell></cell><cell></cell><cell>-0.01</cell><cell>0.50</cell><cell cols="2">0.00 0.00</cell><cell>0.00</cell><cell>-1.92%</cell></row><row><cell></cell><cell></cell><cell>0.00</cell><cell cols="3">0.50 197.68 0.00</cell><cell>0.90</cell><cell>-1.83%</cell></row><row><cell cols="2">Invalid action masking 04x04</cell><cell>-</cell><cell>40.00</cell><cell>-</cell><cell>-</cell><cell>-</cell><cell>8.67% 0.07%</cell></row><row><cell></cell><cell>10x10</cell><cell>-</cell><cell>40.00</cell><cell>-</cell><cell>-</cell><cell cols="2">-11.13% 0.05%</cell></row><row><cell></cell><cell>16x16</cell><cell>-</cell><cell>40.00</cell><cell>-</cell><cell>-</cell><cell cols="2">-11.47% 0.08%</cell></row><row><cell></cell><cell>24x24</cell><cell>-</cell><cell>40.00</cell><cell>-</cell><cell>-</cell><cell cols="2">-18.38% 0.07%</cell></row><row><cell>Masking removed</cell><cell>04x04</cell><cell>-</cell><cell>33.53</cell><cell cols="2">63.57 0.00</cell><cell cols="2">17.57 76.42% -</cell></row><row><cell></cell><cell>10x10</cell><cell>-</cell><cell cols="3">25.93 128.76 0.00</cell><cell cols="2">7.75 94.15% -</cell></row><row><cell></cell><cell>16x16</cell><cell>-</cell><cell cols="3">17.32 165.12 0.00</cell><cell>0.52</cell><cell>--</cell></row><row><cell></cell><cell>24x24</cell><cell>-</cell><cell cols="3">17.37 150.06 0.00</cell><cell>0.94</cell><cell>--</cell></row><row><cell>Naive invalid action</cell><cell>4 × 4</cell><cell>-</cell><cell>59.61</cell><cell>-</cell><cell>-</cell><cell cols="2">-11.74% 0.07%</cell></row><row><cell>masking</cell><cell>10 × 10</cell><cell>-</cell><cell>40.00</cell><cell>-</cell><cell>-</cell><cell cols="2">-13.97% 0.05%</cell></row><row><cell></cell><cell>16 × 16</cell><cell>-</cell><cell>40.00</cell><cell>-</cell><cell>-</cell><cell cols="2">-30.59% 0.10%</cell></row><row><cell></cell><cell>24 × 24</cell><cell>-</cell><cell>38.50</cell><cell>-</cell><cell>-</cell><cell cols="2">-49.14% 0.07%</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_3"><head>Table 3 :</head><label>3</label><figDesc>The list of feature maps and their descriptions.</figDesc><table><row><cell>Features</cell><cell cols="2">Planes Description</cell></row><row><cell>Hit Points Resources Owner</cell><cell>5 5 3</cell><cell>0, 1, 2, 3, ≥ 4 0, 1, 2, 3, ≥ 4 player 1, -, player 2</cell></row><row><cell>Unit Types</cell><cell>8</cell><cell>-, resource, base, barrack,</cell></row><row><cell></cell><cell></cell><cell>worker, light, heavy, ranged</cell></row><row><cell cols="2">Current Action 6</cell><cell>-, move, harvest,</cell></row><row><cell></cell><cell></cell><cell>return, produce, attack</cell></row></table></figure>
+<figure xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_4"><head>Table 4 :</head><label>4</label><figDesc>The list of experiment parameters and their values.</figDesc><table><row><cell>Parameter Names</cell><cell>Parameter Values</cell></row><row><cell>Total Time steps</cell><cell>500,000 time steps</cell></row><row><cell>γ (Discount Factor)</cell><cell>0.99</cell></row><row><cell>λ (for GAE)</cell><cell>0.97</cell></row><row><cell>ε (PPO's Clipping Coefficient)</cell><cell>0.2</cell></row><row><cell>η (Entropy Regularization Coefficient)</cell><cell>0.01</cell></row><row><cell>ω (Gradient Norm Threshold)</cell><cell>0.5</cell></row><row><cell cols="2">K (Number of PPO Update Iteration Per Epoch) 10</cell></row><row><cell>α π Policy's Learning Rate</cell><cell>0.0003</cell></row><row><cell>α v Value Function's Learning Rate</cell><cell>0.0003</cell></row></table></figure>
+			<note xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="2" xml:id="foot_0"><p>https://github.com/santiontanon/microrts</p></note>
+		</body>
+		<back>
+			<div type="annex">
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Appendices Details on the Training Algorithm Proximal Policy Optimization</head><p>The DRL algorithm that we use to train the agent is Proximal Policy Optimization (PPO) <ref type="bibr">(Schulman et al. 2017)</ref>, one of the state of the art algorithms available. There are two important details regarding our PPO implementation that warrants explanation, as those details are not elaborated in the original paper. The first detail concerns how to generate an action in the MultiDiscrete action space as defined in the OpenAI Gym environment <ref type="bibr" target="#b0">(Brockman et al. 2016</ref>) of gym-microrts (Huang and Ontañón 2019), while the second detail is about the various code-level optimizations utilized to augment performance. As pointed out by <ref type="bibr" target="#b1">Engstrom, Ilyas, et al. (Engstrom et al. 2020)</ref>, such code-level optimizations could be critical to the performance of PPO.</p><p>Multi Discrete Action Generation To perform an action a t in µRTS, according to Table <ref type="table">1</ref>, we have to select a Source Unit, Action Type, and its corresponding action parameters. So in total, there are hw × 6 × 4 × 4 × 4 × 4 × 6 × hw = 9216(hw) 2 number of possible discrete actions (including invalid ones), which grows exponentially as we increase the map size. If we apply the PPO directly to this discrete action space, it would be computationally expensive to generate the distribution for 9216(hw) 2 possible actions. To simplify this combinatorial action space, openai/baselines (Dhariwal et al. 2017) library proposes an idea to consider this discrete action to be composed from some smaller independent discrete actions. Namely, a t is composed of smaller actions And the policy gradient is updated in the following way (without considering the PPO's clipping for simplicity) Implementation wise, for each Action Component of range [0, x -1], the logits of the corresponding shape x is generated, which we call Action Component logits, and each a d t is sampled from this Action Component logits. Because of this idea, the algorithm now only has to generate hw + 6 + 4 + 4 + 4 + 4 + 6 + hw = 2hw + 36 number of logits, which is significantly less than 9216(hw) 2 . To the best of our knowledge, this approach of handling large multi discrete action space is only mentioned by Kanervisto et, al <ref type="bibr" target="#b2">(Kanervisto, Scheller, and Hautamäki 2020)</ref>.</p></div>
+<div xmlns="http://www.tei-c.org/ns/1.0"><head>Code-level Optimizations</head><p>Here is a list of code-level optimizations utilized in this experiments. For each of these optimizations, we include a footnote directing the readers to the files in the openai/baselines <ref type="bibr">(Dhariwal et al. 2017</ref>) that implements these optimization.</p><p>1. Normalization of Advantages 3 : After calculating the advantages based on GAE, the advantages vector is normalized by subtracting its mean and divided by its standard deviation.</p><p>2. Normalization of Observation 4 : The observation is pre-processed before feeding to the PPO agent. The raw observation was normalized by subtracting its running mean and divided by its variance; then the raw observation is clipped to a range, usually <ref type="bibr">[-10, 10]</ref>.</p><p>3. Rewards Scaling 5 : Similarly, the reward is pre-processed by dividing the running variance of the discounted the returns, following by clipping it to a range, usually <ref type="bibr">[-10, 10]</ref>.</p><p>4. Value Function Loss Clipping 6 : The PPO implementation of openai/baselines clips the value function loss in a manner that is similar to the PPO's clipped surrogate objective:</p><p>where V targ is calculated by adding </p></div>			</div>
+			<div type="references">
+
+				<listBibl>
+
+<biblStruct xml:id="b0">
+	<analytic>
+		<title level="a" type="main">Dota 2 with large scale deep reinforcement learning</title>
+		<author>
+			<persName><surname>Berner</surname></persName>
+		</author>
+		<idno>ArXiv preprint abs/1606.01540</idno>
+		<ptr target="https://github.com/openai/baselines" />
+	</analytic>
+	<monogr>
+		<title level="m">Openai gym</title>
+		<imprint>
+			<date type="published" when="2016">2019. 2019. 2016. 2017</date>
+			<biblScope unit="volume">13</biblScope>
+			<biblScope unit="page" from="227" to="303" />
+		</imprint>
+	</monogr>
+	<note>Dhariwal et al. 2017 Dietterich 2000] Dietterich, T. G. 2000. Hierarchical reinforcement learning with the maxq value function decomposition</note>
+</biblStruct>
+
+<biblStruct xml:id="b1">
+	<analytic>
+		<title level="a" type="main">Comparing observation and action representations for deep reinforcement learning in µrts</title>
+		<author>
+			<persName><surname>Dulac-Arnold</surname></persName>
+		</author>
+		<idno>ArXiv preprint abs/1512.07679</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the Twenty-Fifth International Joint Conference on Artificial Intelligence</title>
+		<editor>
+			<persName><forename type="first">S</forename><surname>Kambhampati</surname></persName>
+		</editor>
+		<meeting>the Twenty-Fifth International Joint Conference on Artificial Intelligence<address><addrLine>Addis Ababa, Ethiopia; San Juan, Puerto Rico; New York, NY, USA</addrLine></address></meeting>
+		<imprint>
+			<publisher>IJCAI/AAAI Press</publisher>
+			<date type="published" when="2015">2015. 2015. 2020. April 26-30, 2020. 2016. 2016. 2016. May 2-4, 2016. 2019. 2019. 2016. 2016. July 2016</date>
+			<biblScope unit="volume">2020</biblScope>
+			<biblScope unit="page" from="4246" to="4247" />
+		</imprint>
+	</monogr>
+	<note>Engstrom et al. 2020 Deep reinforcement learning in large discrete action spaces Deep reinforcement learning in parameterized action space 4th International Conference on Learning Representations Conference Track Proceedings Implementation matters in deep RL: A case study on PPO and TRPO The malmo platform for artificial intelligence experimentation 8th International Conference on Learning Representations</note>
+</biblStruct>
+
+<biblStruct xml:id="b2">
+	<analytic>
+		<title level="a" type="main">Action space shaping in deep reinforcement learning</title>
+		<author>
+			<persName><forename type="first">Scheller</forename><surname>Kanervisto</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">A</forename><surname>Hautamäki ; Kanervisto</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">C</forename><surname>Scheller</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Hautamäki</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">D</forename><forename type="middle">P</forename><surname>Kingma</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">J</forename><surname>Ba</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename><surname>Kullback</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">R</forename><forename type="middle">A</forename><surname>Leibler</surname></persName>
+		</author>
+		<idno>ArXiv preprint abs/2004.00980</idno>
+	</analytic>
+	<monogr>
+		<title level="m">3rd International Conference on Learning Representations, ICLR 2015</title>
+		<editor>
+			<persName><forename type="first">Y</forename><surname>Bengio</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Y</forename><surname>Le-Cun</surname></persName>
+		</editor>
+		<meeting><address><addrLine>San Diego, CA, USA</addrLine></address></meeting>
+		<imprint>
+			<date type="published" when="1951">2020. 2020. 2015. 2015. May 7-9, 2015. 1951. 1951</date>
+			<biblScope unit="volume">22</biblScope>
+			<biblScope unit="page" from="79" to="86" />
+		</imprint>
+	</monogr>
+	<note>Adam: A method for stochastic optimization Conference Track Proceedings On information and sufficiency</note>
+</biblStruct>
+
+<biblStruct xml:id="b3">
+	<analytic>
+		<title level="a" type="main">Unsupervised learning of invariant feature hierarchies with applications to object recognition</title>
+		<author>
+			<persName><forename type="first">Hinton ;</forename><surname>Nair</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">V</forename><surname>Nair</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">G</forename><forename type="middle">E</forename><surname>Hinton</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">M</forename><surname>Ranzato</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">F</forename><forename type="middle">J</forename><surname>Huang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y.-L</forename><surname>Boureau</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Y</forename><surname>Lecun</surname></persName>
+		</author>
+		<author>
+			<persName><surname>Schulman</surname></persName>
+		</author>
+		<idno>ArXiv preprint abs/1707.06347</idno>
+	</analytic>
+	<monogr>
+		<title level="m">Proceedings of the 27th International Conference on Machine Learning (ICML-10)</title>
+		<editor>
+			<persName><forename type="first">Y</forename><surname>Bengio</surname></persName>
+		</editor>
+		<editor>
+			<persName><forename type="first">Y</forename><surname>Lecun</surname></persName>
+		</editor>
+		<meeting>the 27th International Conference on Machine Learning (ICML-10)<address><addrLine>Haifa, Israel; San Juan, Puerto Rico; Barto</addrLine></address></meeting>
+		<imprint>
+			<publisher>MIT press</publisher>
+			<date type="published" when="2000">2010. 2010. June 21-24, 2010. 2007. 2016. 2016. May 2-4, 2016. 2017. 2016. 2018. 2018. 2000</date>
+			<biblScope unit="page" from="1057" to="1063" />
+		</imprint>
+	</monogr>
+	<note>Ranzato et al. 2007 Rectified linear units improve restricted boltzmann machines 2007 IEEE Conference on Computer Vision and Pattern Recognition High-dimensional continuous control using generalized advantage estimation 4th International Conference on Learning Representations, ICLR 2016 Conference Track Proceedings Schulman et al. 2017 Proximal policy optimization algorithms Stanescu et al. 2016] Stanescu, Evaluating real-time strategy game states using convolutional neural networks Reinforcement learning: An introduction Sutton et al. 2000 Policy gradient methods for reinforcement learning with function approximation Advances in neural information processing systems</note>
+</biblStruct>
+
+<biblStruct xml:id="b4">
+	<analytic>
+		<title level="a" type="main">Grandmaster level in starcraft ii using multi-agent reinforcement learning</title>
+		<author>
+			<persName><surname>Vinyals</surname></persName>
+		</author>
+		<idno>ArXiv preprint abs/1708.04782. [Vinyals et al. 2019</idno>
+	</analytic>
+	<monogr>
+		<title level="j">Nature</title>
+		<imprint>
+			<biblScope unit="volume">575</biblScope>
+			<biblScope unit="issue">7782</biblScope>
+			<biblScope unit="page" from="350" to="354" />
+			<date type="published" when="2017">2017. 2017. 2019</date>
+		</imprint>
+	</monogr>
+	<note>Starcraft ii: A new challenge for reinforcement learning</note>
+</biblStruct>
+
+<biblStruct xml:id="b5">
+	<analytic>
+		<title level="a" type="main">Learning map-independent evaluation functions for real-time strategy games</title>
+		<author>
+			<persName><forename type="first">Yang</forename></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Ontañón ;</forename><surname>Yang</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">Z</forename><surname>Ontañón</surname></persName>
+		</author>
+		<author>
+			<persName><forename type="first">S</forename></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">IEEE Conference on Computational Intelligence and Games</title>
+		<imprint>
+			<date type="published" when="2018">2018. 2018. 2018</date>
+			<biblScope unit="page" from="1" to="7" />
+		</imprint>
+	</monogr>
+</biblStruct>
+
+<biblStruct xml:id="b6">
+	<analytic>
+		<title level="a" type="main">Learn what not to learn: Action elimination with deep reinforcement learning</title>
+		<author>
+			<persName><surname>Ye</surname></persName>
+		</author>
+	</analytic>
+	<monogr>
+		<title level="m">The Thirty-Fourth AAAI Conference on Artificial Intelligence, AAAI 2020, The Thirty-Second Innovative Applications of Artificial Intelligence Conference, IAAI 2020, The Tenth AAAI Symposium on Educational Advances in Artificial Intelligence</title>
+		<editor>
+			<persName><forename type="first">R</forename><surname>Garnett</surname></persName>
+		</editor>
+		<meeting><address><addrLine>New York, NY, USA; NeurIPS; Montréal, Canada</addrLine></address></meeting>
+		<imprint>
+			<publisher>Cesa-Bianchi</publisher>
+			<date type="published" when="2018-12-03">2020. 2020. February 7-12, 2020. 2018. 2018. 2018. December 3-8, 2018</date>
+			<biblScope unit="volume">2020</biblScope>
+			<biblScope unit="page" from="3566" to="3577" />
+		</imprint>
+	</monogr>
+	<note>Zahavy et al. 2018 Mastering complex control in MOBA games with deep reinforcement learning Advances in Neural Information Processing Systems 31: Annual Conference on Neural Information Processing Systems</note>
+</biblStruct>
+
+<biblStruct xml:id="b7">
+	<monogr>
+		<ptr target="https://github.com/neurips2020submission/invalid-action-maskingConv2d" />
+		<title level="m">Conv2d(27, 16, kernel size=3</title>
+		<imprint>
+			<date>25b9e8b234e6ee1bca43083f8f3cf974143998/baselines/ppo2/model.py#L107 10. 25b9e8b234e6ee1bca43083f8f3cf974143998/baselines/a2c/utils.py#L58 11</date>
+			<biblScope unit="volume">27</biblScope>
+		</imprint>
+	</monogr>
+	<note>ReLU( ReLU( Conv2d kernel size=3), Linear(144, 128 ReLU(), ReLU() Linear(128, 68</note>
+</biblStruct>
+
+<biblStruct xml:id="b8">
+	<monogr>
+		<title level="m" type="main">Linear(1152, 128)</title>
+		<author>
+			<persName><surname>Flatten</surname></persName>
+		</author>
+		<imprint/>
+	</monogr>
+	<note>ReLU(), Linear(128, 236</note>
+</biblStruct>
+
+<biblStruct xml:id="b9">
+	<analytic>
+	</analytic>
+	<monogr>
+		<title level="m">Conv2d(27, 16, kernel size=3, stride=1), MaxPool2d(1), MaxPool2d</title>
+		<imprint>
+			<date type="published" when="2003">2d(27, 16, kernel size=3</date>
+		</imprint>
+		<respStmt>
+			<orgName>ReLU( ; ReLU(</orgName>
+		</respStmt>
+	</monogr>
+	<note>ReLU( Conv2d(16, 32, kernel size=3) Conv2d(16, 32, kernel size=2, stride=1), MaxPool2d Conv Flatten( Flatten() Linear(4608, 128), Linear(800, 128</note>
+</biblStruct>
+
+				</listBibl>
+			</div>
+		</back>
+	</text>
+</TEI>
