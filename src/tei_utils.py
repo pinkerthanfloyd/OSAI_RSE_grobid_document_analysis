@@ -3,6 +3,13 @@ from __future__ import annotations
 import re
 from lxml import etree
 
+''''
+Utilities to extract information from GROBID TEI XML output: 
+- extract_abstract: Get the abstract text
+- count_figures: Count the number of <figure> elements
+- extract_links: Get all URLs from structured TEI links and fallback regex scan
+'''
+
 TEI_NS = {"tei": "http://www.tei-c.org/ns/1.0"}
 URL_RE = re.compile(r"https?://[^\s<>\"]+")
 
